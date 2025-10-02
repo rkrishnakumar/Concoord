@@ -86,7 +86,7 @@ export class SyncService {
           issuesProcessed: result.issuesProcessed,
           issuesCreated: result.issuesCreated,
           issuesUpdated: result.issuesUpdated,
-          errors: result.errors.length > 0 ? result.errors : null,
+          errors: result.errors.length > 0 ? result.errors : undefined,
           completedAt: new Date()
         }
       })

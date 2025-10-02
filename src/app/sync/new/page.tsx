@@ -256,7 +256,7 @@ export default function NewSyncPage() {
         ]
       }
     }
-    return fieldMappings[dataType] || { source: [], destination: [] }
+    return fieldMappings[dataType as keyof typeof fieldMappings] || { source: [], destination: [] }
   }
 
   const handleSourceDataTypeChange = (dataType: string, checked: boolean) => {
@@ -917,13 +917,13 @@ export default function NewSyncPage() {
                     {selectedSourceSystem === 'procore' && selectedProcoreCompany && (
                       <div>
                         <p className="text-gray-400">Company:</p>
-                        <p className="text-white font-medium">{selectedProcoreCompany.name}</p>
+                        <p className="text-white font-medium">{procoreCompanies?.find(c => c.id === selectedProcoreCompany)?.name || selectedProcoreCompany}</p>
                       </div>
                     )}
                     {selectedSourceSystem === 'procore' && selectedProcoreProject && (
                       <div>
                         <p className="text-gray-400">Project:</p>
-                        <p className="text-white font-medium">{selectedProcoreProject.name}</p>
+                        <p className="text-white font-medium">{procoreProjects?.find(p => p.id === selectedProcoreProject)?.name || selectedProcoreProject}</p>
                       </div>
                     )}
                     {selectedSourceSystem === 'acc' && selectedAccProject && (
@@ -966,13 +966,13 @@ export default function NewSyncPage() {
                     {selectedDestinationSystem === 'procore' && selectedProcoreCompany && (
                       <div>
                         <p className="text-gray-400">Company:</p>
-                        <p className="text-white font-medium">{selectedProcoreCompany.name}</p>
+                        <p className="text-white font-medium">{procoreCompanies?.find(c => c.id === selectedProcoreCompany)?.name || selectedProcoreCompany}</p>
                       </div>
                     )}
                     {selectedDestinationSystem === 'procore' && selectedProcoreProject && (
                       <div>
                         <p className="text-gray-400">Project:</p>
-                        <p className="text-white font-medium">{selectedProcoreProject.name}</p>
+                        <p className="text-white font-medium">{procoreProjects?.find(p => p.id === selectedProcoreProject)?.name || selectedProcoreProject}</p>
                       </div>
                     )}
                     {selectedDestinationSystem === 'acc' && selectedAccProject && (
