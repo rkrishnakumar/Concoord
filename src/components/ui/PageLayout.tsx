@@ -22,8 +22,8 @@ export default function PageLayout({
         <div className={`${spacing.container} w-full`}>
           {(title || description) && (
             <div className="mb-8 text-center">
-              {title && <h1 className="text-3xl font-bold text-white">{title}</h1>}
-              {description && <p className="mt-2 text-gray-300">{description}</p>}
+              {title && <h1 className="text-3xl font-bold text-gray-800">{title}</h1>}
+              {description && <p className="mt-2 text-gray-700">{description}</p>}
             </div>
           )}
           {children}

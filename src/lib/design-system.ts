@@ -1,7 +1,7 @@
 // Design System - Centralized styling and theme
 export const colors = {
   background: {
-    primary: 'bg-cream',
+    primary: 'bg-[#f0eee6]',
     secondary: 'bg-gray-100',
     card: 'bg-white',
     input: 'bg-white',
@@ -30,7 +30,7 @@ export const colors = {
 }
 
 export const spacing = {
-  page: 'min-h-screen bg-cream',
+  page: 'min-h-screen bg-[#f0eee6]',
   container: 'max-w-7xl mx-auto px-4 sm:px-6 lg:px-8',
   card: 'bg-white rounded-xl shadow-lg border border-gray-200 p-6',
   section: 'mb-8',
