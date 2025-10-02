@@ -38,7 +38,7 @@ export async function POST(request: NextRequest) {
         data: {
           accessToken: tokenData.access_token,
           refreshToken: tokenData.refresh_token || credentials.refreshToken,
-          expiresAt: Date.now() + (60 * 60 * 1000) // 1 hour from now
+          expiresAt: new Date(Date.now() + (60 * 60 * 1000)) // 1 hour from now
         }
       })
 
