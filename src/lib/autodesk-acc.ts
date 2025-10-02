@@ -72,7 +72,7 @@ export class AutodeskAccApi {
       this.refreshToken = refresh_token
       
       // Update the client headers
-      this.client.defaults.headers['Authorization'] = `Bearer ${access_token}`
+      this.client.defaults.headers.common['Authorization'] = `Bearer ${access_token}`
       
       return access_token
     } catch (error) {
