@@ -1,0 +1,21 @@
+import { NextRequest, NextResponse } from 'next/server'
+
+export async function GET(request: NextRequest) {
+  try {
+    // Forward the callback to Railway backend
+    const url = new URL(request.url)
+    const railwayUrl = `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/auth/acc/callback${url.search}`
+    
+    const response = await fetch(railwayUrl)
+    
+    if (response.redirected) {
+      return NextResponse.redirect(response.url)
+    }
+    
+    const data = await response.json()
+    return NextResponse.json(data)
+  } catch (error) {
+    console.error('Error in ACC callback:', error)
+    return NextResponse.redirect(new URL('/auth/error', request.url))
+  }
+}

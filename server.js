@@ -110,6 +110,41 @@ initializeDatabase();
 app.use(cors());
 app.use(express.json());
 
+// OAuth callback endpoints
+app.get('/api/auth/acc/callback', async (req, res) => {
+  try {
+    const { code, state } = req.query;
+    
+    if (!code) {
+      return res.redirect(`${process.env.FRONTEND_URL}/auth/error?error=missing_code`);
+    }
+
+    // TODO: Implement ACC OAuth callback logic
+    // For now, just redirect to success
+    res.redirect(`${process.env.FRONTEND_URL}/home?success=acc_connected`);
+  } catch (error) {
+    console.error('Error in ACC callback:', error);
+    res.redirect(`${process.env.FRONTEND_URL}/auth/error?error=callback_failed`);
+  }
+});
+
+app.get('/api/auth/procore/callback', async (req, res) => {
+  try {
+    const { code, state } = req.query;
+    
+    if (!code) {
+      return res.redirect(`${process.env.FRONTEND_URL}/auth/error?error=missing_code`);
+    }
+
+    // TODO: Implement Procore OAuth callback logic
+    // For now, just redirect to success
+    res.redirect(`${process.env.FRONTEND_URL}/home?success=procore_connected`);
+  } catch (error) {
+    console.error('Error in Procore callback:', error);
+    res.redirect(`${process.env.FRONTEND_URL}/auth/error?error=callback_failed`);
+  }
+});
+
 // Health check
 app.get('/api/health', (req, res) => {
   res.json({ status: 'ok', message: 'Railway backend is running' });
