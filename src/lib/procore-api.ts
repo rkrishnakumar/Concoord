@@ -146,7 +146,7 @@ export class ProcoreApi {
       return this.companyId || ''
     } catch (error) {
       console.error('Error getting company ID:', error)
-      console.error('Error details:', error.response?.data)
+      console.error('Error details:', (error as any)?.response?.data)
       throw new Error('Failed to get Procore company ID')
     }
   }
