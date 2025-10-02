@@ -141,11 +141,11 @@ export class ReviztoApi {
     } catch (error) {
       console.error('Error fetching Revizto projects:', error)
       console.error('Error details:', (error as any)?.message)
-      console.error('Error stack:', error.stack)
-      console.error('Error type:', error.constructor.name)
-      if (error.response) {
-        console.error('Error response status:', error.response.status)
-        console.error('Error response data:', error.response.data)
+      console.error('Error stack:', (error as any)?.stack)
+      console.error('Error type:', (error as any)?.constructor?.name)
+      if ((error as any)?.response) {
+        console.error('Error response status:', (error as any).response.status)
+        console.error('Error response data:', (error as any).response.data)
       }
       throw new Error(`Failed to fetch projects from Revizto: ${(error as any)?.message}`)
     }
@@ -314,9 +314,9 @@ export class ReviztoApi {
     } catch (error) {
       console.error('Error refreshing Revizto token:', error)
       console.error('Error details:', (error as any)?.message)
-      if (error.response) {
-        console.error('Error response status:', error.response.status)
-        console.error('Error response data:', error.response.data)
+      if ((error as any)?.response) {
+        console.error('Error response status:', (error as any).response.status)
+        console.error('Error response data:', (error as any).response.data)
       }
       throw new Error(`Failed to refresh access token: ${(error as any)?.message}`)
     }
