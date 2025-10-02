@@ -1,7 +1,5 @@
 import NextAuth from 'next-auth'
 import Credentials from 'next-auth/providers/credentials'
-import { db } from './db'
-import bcrypt from 'bcryptjs'
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
   providers: [
@@ -17,22 +15,32 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         }
 
         try {
-          const user = await db.user.findUnique({
-            where: { email: credentials.email as string }
+          // Forward login request to Railway backend
+          const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/auth/login`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              email: credentials.email,
+              password: credentials.password
+            })
           })
 
-          if (!user) {
+          if (!response.ok) {
             return null
           }
 
-          // Verify password
-          const isValid = await bcrypt.compare(credentials.password as string, user.password)
-          if (!isValid) return null
+          const data = await response.json()
+          
+          if (!data.success) {
+            return null
+          }
 
           return {
-            id: user.id,
-            email: user.email,
-            name: user.name
+            id: data.user.id,
+            email: data.user.email,
+            name: data.user.name
           }
         } catch (error) {
           console.error('Auth error:', error)

@@ -67,6 +67,48 @@ app.post('/api/auth/signup', async (req, res) => {
   }
 });
 
+// User login
+app.post('/api/auth/login', async (req, res) => {
+  try {
+    const { email, password } = req.body;
+
+    if (!email || !password) {
+      return res.status(400).json({
+        error: 'Email and password are required'
+      });
+    }
+
+    // Find user
+    const user = await prisma.user.findUnique({
+      where: { email }
+    });
+
+    if (!user) {
+      return res.status(401).json({
+        error: 'Invalid credentials'
+      });
+    }
+
+    // Verify password
+    const isValid = await bcrypt.compare(password, user.password);
+    if (!isValid) {
+      return res.status(401).json({
+        error: 'Invalid credentials'
+      });
+    }
+
+    res.json({ 
+      success: true, 
+      user: { id: user.id, name: user.name, email: user.email }
+    });
+  } catch (error) {
+    console.error('Error logging in user:', error);
+    res.status(500).json({
+      error: 'Failed to login user'
+    });
+  }
+});
+
 // Get user credentials
 app.get('/api/credentials', async (req, res) => {
   try {
