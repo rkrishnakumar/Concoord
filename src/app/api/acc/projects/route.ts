@@ -1,8 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { auth } from '@/lib/auth'
-import { db } from '@/lib/db'
-import { AutodeskAccApi } from '@/lib/autodesk-acc'
-
 
 export async function GET(request: NextRequest) {
   try {
@@ -12,39 +9,15 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
 
-    // Get user's ACC credentials
-    const credentials = await db.accCredentials.findUnique({
-      where: { userId: session.user.id }
-    })
+    // Forward request to Railway backend
+    const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/acc/projects?userId=${session.user.id}`)
+    const data = await response.json()
 
-    if (!credentials?.accessToken) {
-      return NextResponse.json({ error: 'No ACC credentials found' }, { status: 404 })
+    if (!response.ok) {
+      return NextResponse.json(data, { status: response.status })
     }
 
-    // Create ACC API client
-    const accApi = new AutodeskAccApi(
-      credentials.accessToken,
-      credentials.baseUrl,
-      credentials.clientId,
-      credentials.clientSecret,
-      credentials.refreshToken || undefined
-    )
-
-    try {
-      // Get projects
-      const projects = await accApi.getProjects()
-      
-      return NextResponse.json({ 
-        success: true, 
-        projects 
-      })
-    } catch (error) {
-      console.error('Error fetching ACC projects:', error)
-      return NextResponse.json(
-        { error: 'Failed to fetch projects from ACC' },
-        { status: 500 }
-      )
-    }
+    return NextResponse.json(data)
   } catch (error) {
     console.error('Error in ACC projects API:', error)
     return NextResponse.json(
