@@ -3,6 +3,8 @@ import { auth } from '@/lib/auth'
 import { db } from '@/lib/db'
 import { ReviztoApi } from '@/lib/revizto-api'
 
+export const dynamic = 'force-dynamic'
+
 export async function GET(request: NextRequest) {
   try {
     const session = await auth()
@@ -64,3 +66,4 @@ export async function GET(request: NextRequest) {
     )
   }
 }
+export const dynamic = "force-dynamic"

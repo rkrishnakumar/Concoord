@@ -102,3 +102,4 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: 'Failed to configure access code' }, { status: 500 })
   }
 }
+export const dynamic = "force-dynamic"
