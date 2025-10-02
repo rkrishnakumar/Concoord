@@ -141,7 +141,7 @@ export class ProcoreApi {
       console.log('Using company ID:', this.companyId)
       
       // Update client headers with company ID
-      this.client.defaults.headers['Procore-Company-Id'] = this.companyId
+      this.client.defaults.headers.common['Procore-Company-Id'] = this.companyId
       
       return this.companyId
     } catch (error) {
@@ -339,7 +339,7 @@ export class ProcoreApi {
       this.refreshToken = tokenData.refresh_token || this.refreshToken
       
       // Update the default authorization header
-      this.client.defaults.headers['Authorization'] = `Bearer ${this.accessToken}`
+      this.client.defaults.headers.common['Authorization'] = `Bearer ${this.accessToken}`
       
       // Note: We don't update the database here because this method is called
       // from the interceptor and we don't have access to the user ID or db instance.
