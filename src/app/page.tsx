@@ -88,44 +88,44 @@ export default function Home() {
             <h2 className="text-4xl font-bold text-gray-800 mb-6">
               Why Choose Concoord?
             </h2>
-            <p className="text-xl text-gray-300 max-w-3xl mx-auto">
+            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
               Universal data interoperability for construction. Connect any system, sync any data.
             </p>
           </div>
           
           <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
             <div className="text-center">
-              <div className="w-20 h-20 bg-gray-700 rounded-2xl flex items-center justify-center mx-auto mb-6">
+              <div className="w-20 h-20 bg-white rounded-2xl flex items-center justify-center mx-auto mb-6">
                 <svg className="w-10 h-10 text-gray-800" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
                 </svg>
               </div>
               <h3 className="text-2xl font-semibold text-gray-800 mb-4">Lightning Fast</h3>
-              <p className="text-lg text-gray-300 leading-relaxed">
+              <p className="text-lg text-gray-600 leading-relaxed">
                 Sync data between systems in seconds, not hours. Automated data transfer saves you time and reduces errors.
               </p>
             </div>
             
             <div className="text-center">
-              <div className="w-20 h-20 bg-gray-700 rounded-2xl flex items-center justify-center mx-auto mb-6">
+              <div className="w-20 h-20 bg-white rounded-2xl flex items-center justify-center mx-auto mb-6">
                 <svg className="w-10 h-10 text-gray-800" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
               </div>
               <h3 className="text-2xl font-semibold text-gray-800 mb-4">Accurate Mapping</h3>
-              <p className="text-lg text-gray-300 leading-relaxed">
+              <p className="text-lg text-gray-600 leading-relaxed">
                 Intelligent field mapping ensures your data transfers correctly between any construction systems.
               </p>
             </div>
             
             <div className="text-center">
-              <div className="w-20 h-20 bg-gray-700 rounded-2xl flex items-center justify-center mx-auto mb-6">
+              <div className="w-20 h-20 bg-white rounded-2xl flex items-center justify-center mx-auto mb-6">
                 <svg className="w-10 h-10 text-gray-800" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
                 </svg>
               </div>
               <h3 className="text-2xl font-semibold text-gray-800 mb-4">Secure & Reliable</h3>
-              <p className="text-lg text-gray-300 leading-relaxed">
+              <p className="text-lg text-gray-600 leading-relaxed">
                 Enterprise-grade security with OAuth 2.0 authentication. Your data is always protected across all systems.
               </p>
             </div>
@@ -140,7 +140,7 @@ export default function Home() {
             <h2 className="text-4xl font-bold text-gray-800 mb-6">
               How It Works
             </h2>
-            <p className="text-xl text-gray-300 max-w-3xl mx-auto">
+            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
               Get started in just a few simple steps
             </p>
           </div>
@@ -151,7 +151,7 @@ export default function Home() {
                 1
               </div>
               <h3 className="text-2xl font-semibold text-gray-800 mb-4">Connect Your Systems</h3>
-              <p className="text-lg text-gray-300 leading-relaxed">
+              <p className="text-lg text-gray-600 leading-relaxed">
                 Securely connect your construction management systems with OAuth 2.0 authentication.
               </p>
             </div>
@@ -161,7 +161,7 @@ export default function Home() {
                 2
               </div>
               <h3 className="text-2xl font-semibold text-gray-800 mb-4">Select Projects</h3>
-              <p className="text-lg text-gray-300 leading-relaxed">
+              <p className="text-lg text-gray-600 leading-relaxed">
                 Choose your source and destination projects for seamless data synchronization.
               </p>
             </div>
@@ -171,7 +171,7 @@ export default function Home() {
                 3
               </div>
               <h3 className="text-2xl font-semibold text-gray-800 mb-4">Sync Data</h3>
-              <p className="text-lg text-gray-300 leading-relaxed">
+              <p className="text-lg text-gray-600 leading-relaxed">
                 Select the data you want to transfer and let Concoord handle the rest automatically.
               </p>
             </div>
@@ -185,7 +185,7 @@ export default function Home() {
           <h2 className="text-4xl font-bold text-gray-800 mb-6">
             Ready to Streamline Your Workflow?
           </h2>
-          <p className="text-xl text-gray-300 mb-12 max-w-3xl mx-auto">
+          <p className="text-xl text-gray-600 mb-12 max-w-3xl mx-auto">
             Join construction teams who are already saving hours with universal data interoperability.
           </p>
           <Link

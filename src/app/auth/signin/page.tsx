@@ -46,7 +46,7 @@ export default function SignInPage() {
           <div className="flex items-center justify-center mb-4">
             <h1 className="text-3xl font-bold text-orange-500">Concoord</h1>
           </div>
-          <p className="text-gray-300">Universal data interoperability for construction</p>
+          <p className="text-gray-600">Universal data interoperability for construction</p>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-6">
@@ -82,7 +82,7 @@ export default function SignInPage() {
         </form>
 
         <div className="mt-6 text-center">
-          <p className="text-sm text-gray-300">
+          <p className="text-sm text-gray-600">
             Don't have an account?{' '}
             <a href="/auth/signup" className="text-blue-400 hover:text-blue-300">
               Sign up

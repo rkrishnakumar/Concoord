@@ -19,7 +19,7 @@ export default function AuthErrorPage() {
           <div className="space-y-3">
             <Link
               href="/auth/signin"
-              className="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 transition-colors inline-block"
+              className="w-full bg-blue-600 text-gray-800 py-2 px-4 rounded-md hover:bg-blue-700 transition-colors inline-block"
             >
               Try Again
             </Link>

@@ -166,8 +166,8 @@ export default function SettingsPage() {
     return (
       <div className="min-h-screen  flex items-center justify-center">
         <div className="text-center">
-          <h1 className="text-2xl font-bold text-white mb-4">Please sign in</h1>
-          <p className="text-gray-300">You need to be signed in to access settings.</p>
+          <h1 className="text-2xl font-bold text-gray-800 mb-4">Please sign in</h1>
+          <p className="text-gray-600">You need to be signed in to access settings.</p>
         </div>
       </div>
     )
@@ -182,8 +182,8 @@ export default function SettingsPage() {
 
       {/* How it works */}
       <Card className="mb-6">
-        <h2 className="text-xl font-semibold text-white mb-4">How it works</h2>
-        <p className="text-gray-300">
+        <h2 className="text-xl font-semibold text-gray-800 mb-4">How it works</h2>
+        <p className="text-gray-600">
           Simply click "Connect" for each system below. You'll be redirected to sign in with your existing account and grant permissions to Concoord. No credentials or technical setup required!
         </p>
       </Card>
@@ -195,9 +195,9 @@ export default function SettingsPage() {
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center space-x-3">
               <div className="w-10 h-10 bg-black rounded-lg flex items-center justify-center">
-                <span className="text-white font-bold text-sm">S</span>
+                <span className="text-gray-800 font-bold text-sm">S</span>
               </div>
-              <h3 className="text-lg font-semibold text-white">Source System</h3>
+              <h3 className="text-lg font-semibold text-gray-800">Source System</h3>
             </div>
             {accConnected ? (
               <>
@@ -224,7 +224,7 @@ export default function SettingsPage() {
               </Button>
             )}
           </div>
-          <p className="text-gray-300 text-sm mb-4">
+          <p className="text-gray-600 text-sm mb-4">
             Connect your source system to enable data synchronization.
           </p>
           {accConnected && (
@@ -246,7 +246,7 @@ export default function SettingsPage() {
               <div className="w-10 h-10 rounded-lg flex items-center justify-center" style={{ backgroundColor: '#FF5200' }}>
                 <span className="text-black font-bold text-sm">D</span>
               </div>
-              <h3 className="text-lg font-semibold text-white">Destination System</h3>
+              <h3 className="text-lg font-semibold text-gray-800">Destination System</h3>
             </div>
             {procoreConnected ? (
               <>
@@ -275,7 +275,7 @@ export default function SettingsPage() {
               </Button>
             )}
           </div>
-          <p className="text-gray-300 text-sm mb-4">
+          <p className="text-gray-600 text-sm mb-4">
             Connect your destination system to receive synchronized data.
           </p>
           {procoreConnected && (

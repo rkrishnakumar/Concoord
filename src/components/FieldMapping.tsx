@@ -104,19 +104,19 @@ export default function FieldMapping({
     return (
       <div className="text-center py-8">
         <div className="inline-block animate-spin rounded-full h-6 w-6 border-b-2 border-orange-500"></div>
-        <p className="text-gray-300 mt-2">Loading fields from systems...</p>
+        <p className="text-gray-600 mt-2">Loading fields from systems...</p>
       </div>
     )
   }
 
   return (
-    <div className="bg-gray-700 rounded-lg p-4">
-      <h3 className="text-lg font-semibold text-white mb-4">
+    <div className="bg-white rounded-lg p-4">
+      <h3 className="text-lg font-semibold text-gray-800 mb-4">
         {dataType.charAt(0).toUpperCase() + dataType.slice(1)} Field Mapping
       </h3>
       
       {/* Debug Info */}
-      <div className="mb-4 p-2 bg-gray-600 rounded text-xs text-gray-300">
+      <div className="mb-4 p-2 bg-gray-600 rounded text-xs text-gray-600">
         <p>Source fields: {sourceFields.length} | Destination fields: {destinationFields.length}</p>
         {sourceFields.length > 0 && (
           <p>Source field IDs: {sourceFields.map(f => f.id).join(', ')}</p>
@@ -125,10 +125,10 @@ export default function FieldMapping({
 
       {/* Add New Mapping */}
       <div className="mb-6 p-4 bg-gray-600 rounded-lg">
-        <h4 className="text-sm font-medium text-white mb-3">Add Field Mapping</h4>
+        <h4 className="text-sm font-medium text-gray-800 mb-3">Add Field Mapping</h4>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div>
-            <label className="block text-xs font-medium text-gray-300 mb-1">Source Field</label>
+            <label className="block text-xs font-medium text-gray-600 mb-1">Source Field</label>
             <Select
               value={newMapping.sourceField}
               onChange={(value) => setNewMapping(prev => ({ ...prev, sourceField: value }))}
@@ -140,7 +140,7 @@ export default function FieldMapping({
             <span className="text-gray-400 text-sm">→</span>
           </div>
           <div>
-            <label className="block text-xs font-medium text-gray-300 mb-1">Destination Field</label>
+            <label className="block text-xs font-medium text-gray-600 mb-1">Destination Field</label>
             <Select
               value={newMapping.destinationField}
               onChange={(value) => setNewMapping(prev => ({ ...prev, destinationField: value }))}
@@ -183,7 +183,7 @@ export default function FieldMapping({
         <button
           onClick={addMapping}
           disabled={!newMapping.sourceField || !newMapping.destinationField || (currentCompatibility && !currentCompatibility.compatible) || false}
-          className="mt-3 px-4 py-2 bg-orange-600 text-white rounded-md text-sm font-medium hover:bg-orange-700 disabled:opacity-50 disabled:cursor-not-allowed"
+          className="mt-3 px-4 py-2 bg-orange-600 text-gray-800 rounded-md text-sm font-medium hover:bg-orange-700 disabled:opacity-50 disabled:cursor-not-allowed"
         >
           Add Mapping
         </button>
@@ -231,7 +231,7 @@ export default function FieldMapping({
 
       {/* Existing Mappings */}
       <div>
-        <h4 className="text-sm font-medium text-white mb-3">
+        <h4 className="text-sm font-medium text-gray-800 mb-3">
           Field Mappings ({mappings.length})
           {validation.valid && mappings.length > 0 && (
             <span className="ml-2 text-green-400 text-xs">✓ All mappings valid</span>
@@ -250,11 +250,11 @@ export default function FieldMapping({
               return (
                 <div key={index} className="flex items-center justify-between p-3 bg-gray-600 rounded-lg">
                   <div className="flex items-center space-x-4">
-                    <span className="text-sm text-white font-medium">
+                    <span className="text-sm text-gray-800 font-medium">
                       {getFieldLabel(mapping.sourceField, sourceFields)}
                     </span>
                     <span className="text-gray-400">→</span>
-                    <span className="text-sm text-white font-medium">
+                    <span className="text-sm text-gray-800 font-medium">
                       {getFieldLabel(mapping.destinationField, destinationFields)}
                     </span>
                     {compatibility && (

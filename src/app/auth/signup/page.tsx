@@ -55,7 +55,7 @@ export default function SignUpPage() {
             </svg>
           </div>
           <h2 className="text-2xl font-bold text-gray-800 mb-2">Account Created!</h2>
-          <p className="text-gray-300">Redirecting to sign in...</p>
+          <p className="text-gray-600">Redirecting to sign in...</p>
         </Card>
       </div>
     )
@@ -68,7 +68,7 @@ export default function SignUpPage() {
           <div className="flex items-center justify-center mb-4">
             <h1 className="text-3xl font-bold text-orange-500">Create Account</h1>
           </div>
-          <p className="text-gray-300">Get started with universal data interoperability</p>
+          <p className="text-gray-600">Get started with universal data interoperability</p>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-6">
@@ -112,7 +112,7 @@ export default function SignUpPage() {
         </form>
 
         <div className="mt-6 text-center">
-          <p className="text-sm text-gray-300">
+          <p className="text-sm text-gray-600">
             Already have an account?{' '}
             <a href="/auth/signin" className="text-blue-400 hover:text-blue-300">
               Sign in

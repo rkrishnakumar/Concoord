@@ -603,10 +603,10 @@ export default function NewSyncPage() {
 
   if (!session) {
     return (
-      <div className="min-h-screen bg-gray-800 flex items-center justify-center">
+      <div className="min-h-screen  flex items-center justify-center">
         <div className="text-center">
-          <h1 className="text-2xl font-bold text-white mb-4">Please sign in</h1>
-          <p className="text-gray-300">You need to be signed in to create syncs.</p>
+          <h1 className="text-2xl font-bold text-gray-800 mb-4">Please sign in</h1>
+          <p className="text-gray-600">You need to be signed in to create syncs.</p>
         </div>
       </div>
     )
@@ -639,7 +639,7 @@ export default function NewSyncPage() {
       <form onSubmit={handleSubmit} className="space-y-8">
         {/* Basic Information */}
         <Card>
-          <h2 className="text-xl font-semibold text-white mb-6">Basic Information</h2>
+          <h2 className="text-xl font-semibold text-gray-800 mb-6">Basic Information</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <Input
               label="Sync Name"
@@ -659,7 +659,7 @@ export default function NewSyncPage() {
 
         {/* Source System */}
         <Card>
-          <h2 className="text-xl font-semibold text-white mb-6">Source System</h2>
+          <h2 className="text-xl font-semibold text-gray-800 mb-6">Source System</h2>
           
           <Select
             label="Select Source System"
@@ -736,7 +736,7 @@ export default function NewSyncPage() {
 
         {/* Destination System */}
         <Card>
-          <h2 className="text-xl font-semibold text-white mb-6">Destination System</h2>
+          <h2 className="text-xl font-semibold text-gray-800 mb-6">Destination System</h2>
           
           <Select
             label="Select Destination System"
@@ -814,12 +814,12 @@ export default function NewSyncPage() {
         {/* Data Type Selection */}
         {selectedSourceSystem && selectedDestinationSystem && selectedSourceSystem !== selectedDestinationSystem && (
           <Card>
-            <h2 className="text-xl font-semibold text-white mb-6">Data Type Selection</h2>
+            <h2 className="text-xl font-semibold text-gray-800 mb-6">Data Type Selection</h2>
             
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
               {/* Source Data Types */}
               <div>
-                <h3 className="text-lg font-semibold text-white mb-4">
+                <h3 className="text-lg font-semibold text-gray-800 mb-4">
                   What to sync from {selectedSourceSystem === 'acc' ? 'Autodesk Construction Cloud' : selectedSourceSystem === 'procore' ? 'Procore' : 'Revizto'}
                 </h3>
                 <div className="space-y-3">
@@ -829,10 +829,10 @@ export default function NewSyncPage() {
                         type="checkbox"
                         checked={selectedSourceDataTypes.includes(dataType.value)}
                         onChange={(e) => handleSourceDataTypeChange(dataType.value, e.target.checked)}
-                        className="mt-1 h-4 w-4 text-orange-600 bg-gray-700 border-gray-600 rounded focus:ring-orange-500 focus:ring-2"
+                        className="mt-1 h-4 w-4 text-orange-600 bg-white border-gray-300 rounded focus:ring-orange-500 focus:ring-2"
                       />
                       <div>
-                        <div className="text-white font-medium">{dataType.label}</div>
+                        <div className="text-gray-800 font-medium">{dataType.label}</div>
                         <div className="text-gray-400 text-sm">{dataType.description}</div>
                       </div>
                     </label>
@@ -842,7 +842,7 @@ export default function NewSyncPage() {
 
               {/* Destination Data Types */}
               <div>
-                <h3 className="text-lg font-semibold text-white mb-4">
+                <h3 className="text-lg font-semibold text-gray-800 mb-4">
                   What to sync to {selectedDestinationSystem === 'acc' ? 'Autodesk Construction Cloud' : selectedDestinationSystem === 'procore' ? 'Procore' : 'Revizto'}
                 </h3>
                 <div className="space-y-3">
@@ -852,10 +852,10 @@ export default function NewSyncPage() {
                         type="checkbox"
                         checked={selectedDestinationDataTypes.includes(dataType.value)}
                         onChange={(e) => handleDestinationDataTypeChange(dataType.value, e.target.checked)}
-                        className="mt-1 h-4 w-4 text-orange-600 bg-gray-700 border-gray-600 rounded focus:ring-orange-500 focus:ring-2"
+                        className="mt-1 h-4 w-4 text-orange-600 bg-white border-gray-300 rounded focus:ring-orange-500 focus:ring-2"
                       />
                       <div>
-                        <div className="text-white font-medium">{dataType.label}</div>
+                        <div className="text-gray-800 font-medium">{dataType.label}</div>
                         <div className="text-gray-400 text-sm">{dataType.description}</div>
                       </div>
                     </label>
@@ -870,8 +870,8 @@ export default function NewSyncPage() {
         {selectedSourceSystem && selectedDestinationSystem && selectedSourceSystem !== selectedDestinationSystem && 
          selectedSourceDataTypes.length > 0 && selectedDestinationDataTypes.length > 0 && (
           <Card>
-            <h2 className="text-xl font-semibold text-white mb-6">Field Mapping</h2>
-            <p className="text-gray-300 mb-6">
+            <h2 className="text-xl font-semibold text-gray-800 mb-6">Field Mapping</h2>
+            <p className="text-gray-600 mb-6">
               Map fields between your source and destination systems to ensure data syncs correctly.
             </p>
             
@@ -900,15 +900,15 @@ export default function NewSyncPage() {
         {/* Summary */}
         {selectedSourceSystem && selectedDestinationSystem && selectedSourceSystem !== selectedDestinationSystem && (
           <Card>
-            <h2 className="text-xl font-semibold text-white mb-4">Sync Summary</h2>
-            <div className="bg-gray-700 rounded-lg p-4">
+            <h2 className="text-xl font-semibold text-gray-800 mb-4">Sync Summary</h2>
+            <div className="bg-white rounded-lg p-4">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-sm">
                 <div>
-                  <h3 className="font-semibold text-white mb-3">Source</h3>
+                  <h3 className="font-semibold text-gray-800 mb-3">Source</h3>
                   <div className="space-y-2">
                     <div>
                       <p className="text-gray-400">System:</p>
-                      <p className="text-white font-medium">
+                      <p className="text-gray-800 font-medium">
                         {selectedSourceSystem === 'acc' ? 'Autodesk Construction Cloud' : 
                          selectedSourceSystem === 'procore' ? 'Procore' : 
                          selectedSourceSystem === 'revizto' ? 'Revizto' : 'Not selected'}
@@ -917,30 +917,30 @@ export default function NewSyncPage() {
                     {selectedSourceSystem === 'procore' && selectedProcoreCompany && (
                       <div>
                         <p className="text-gray-400">Company:</p>
-                        <p className="text-white font-medium">{procoreCompanies?.find(c => c.id === selectedProcoreCompany)?.name || selectedProcoreCompany}</p>
+                        <p className="text-gray-800 font-medium">{procoreCompanies?.find(c => c.id === selectedProcoreCompany)?.name || selectedProcoreCompany}</p>
                       </div>
                     )}
                     {selectedSourceSystem === 'procore' && selectedProcoreProject && (
                       <div>
                         <p className="text-gray-400">Project:</p>
-                        <p className="text-white font-medium">{procoreProjects?.find(p => p.id === selectedProcoreProject)?.name || selectedProcoreProject}</p>
+                        <p className="text-gray-800 font-medium">{procoreProjects?.find(p => p.id === selectedProcoreProject)?.name || selectedProcoreProject}</p>
                       </div>
                     )}
                     {selectedSourceSystem === 'acc' && selectedAccProject && (
                       <div>
                         <p className="text-gray-400">Project:</p>
-                        <p className="text-white font-medium">{accProjects.find(p => p.id === selectedAccProject)?.name}</p>
+                        <p className="text-gray-800 font-medium">{accProjects.find(p => p.id === selectedAccProject)?.name}</p>
                       </div>
                     )}
                     {selectedSourceSystem === 'revizto' && selectedReviztoProject && (
                       <div>
                         <p className="text-gray-400">Project:</p>
-                        <p className="text-white font-medium">{reviztoProjects.find(p => p.uuid === selectedReviztoProject)?.title}</p>
+                        <p className="text-gray-800 font-medium">{reviztoProjects.find(p => p.uuid === selectedReviztoProject)?.title}</p>
                       </div>
                     )}
                     <div>
                       <p className="text-gray-400">Data Types:</p>
-                      <p className="text-white font-medium">
+                      <p className="text-gray-800 font-medium">
                         {selectedSourceDataTypes.length > 0 
                           ? selectedSourceDataTypes.map(type => 
                               getAvailableDataTypes(selectedSourceSystem).find(dt => dt.value === type)?.label
@@ -953,11 +953,11 @@ export default function NewSyncPage() {
                 </div>
                 
                 <div>
-                  <h3 className="font-semibold text-white mb-3">Destination</h3>
+                  <h3 className="font-semibold text-gray-800 mb-3">Destination</h3>
                   <div className="space-y-2">
                     <div>
                       <p className="text-gray-400">System:</p>
-                      <p className="text-white font-medium">
+                      <p className="text-gray-800 font-medium">
                         {selectedDestinationSystem === 'acc' ? 'Autodesk Construction Cloud' : 
                          selectedDestinationSystem === 'procore' ? 'Procore' : 
                          selectedDestinationSystem === 'revizto' ? 'Revizto' : 'Not selected'}
@@ -966,30 +966,30 @@ export default function NewSyncPage() {
                     {selectedDestinationSystem === 'procore' && selectedProcoreCompany && (
                       <div>
                         <p className="text-gray-400">Company:</p>
-                        <p className="text-white font-medium">{procoreCompanies?.find(c => c.id === selectedProcoreCompany)?.name || selectedProcoreCompany}</p>
+                        <p className="text-gray-800 font-medium">{procoreCompanies?.find(c => c.id === selectedProcoreCompany)?.name || selectedProcoreCompany}</p>
                       </div>
                     )}
                     {selectedDestinationSystem === 'procore' && selectedProcoreProject && (
                       <div>
                         <p className="text-gray-400">Project:</p>
-                        <p className="text-white font-medium">{procoreProjects?.find(p => p.id === selectedProcoreProject)?.name || selectedProcoreProject}</p>
+                        <p className="text-gray-800 font-medium">{procoreProjects?.find(p => p.id === selectedProcoreProject)?.name || selectedProcoreProject}</p>
                       </div>
                     )}
                     {selectedDestinationSystem === 'acc' && selectedAccProject && (
                       <div>
                         <p className="text-gray-400">Project:</p>
-                        <p className="text-white font-medium">{accProjects.find(p => p.id === selectedAccProject)?.name}</p>
+                        <p className="text-gray-800 font-medium">{accProjects.find(p => p.id === selectedAccProject)?.name}</p>
                       </div>
                     )}
                     {selectedDestinationSystem === 'revizto' && selectedReviztoProject && (
                       <div>
                         <p className="text-gray-400">Project:</p>
-                        <p className="text-white font-medium">{reviztoProjects.find(p => p.uuid === selectedReviztoProject)?.title}</p>
+                        <p className="text-gray-800 font-medium">{reviztoProjects.find(p => p.uuid === selectedReviztoProject)?.title}</p>
                       </div>
                     )}
                     <div>
                       <p className="text-gray-400">Data Types:</p>
-                      <p className="text-white font-medium">
+                      <p className="text-gray-800 font-medium">
                         {selectedDestinationDataTypes.length > 0 
                           ? selectedDestinationDataTypes.map(type => 
                               getAvailableDataTypes(selectedDestinationSystem).find(dt => dt.value === type)?.label
@@ -1002,11 +1002,11 @@ export default function NewSyncPage() {
                 </div>
               </div>
               
-              <div className="mt-4 pt-4 border-t border-gray-600">
+              <div className="mt-4 pt-4 border-t border-gray-300">
                 <div className="flex items-center justify-between">
                   <div>
                     <p className="text-gray-400">Sync Name:</p>
-                    <p className="text-white font-medium">{syncName || 'Untitled Sync'}</p>
+                    <p className="text-gray-800 font-medium">{syncName || 'Untitled Sync'}</p>
                   </div>
                   <div className="text-right">
                     <p className="text-gray-400">Status:</p>

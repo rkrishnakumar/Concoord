@@ -149,9 +149,9 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
     <Modal isOpen={isOpen} onClose={onClose} title="" size="xl">
       <div className="flex h-[600px]">
         {/* Left Sidebar */}
-        <div className="w-64 bg-gray-700 border-r border-gray-600 flex flex-col">
+        <div className="w-64 bg-white border-r border-gray-300 flex flex-col">
           {/* Close button */}
-          <div className="p-4 border-b border-gray-600">
+          <div className="p-4 border-b border-gray-300">
             <button
               onClick={onClose}
               className="text-gray-400 hover:text-gray-800 transition-colors"
@@ -206,17 +206,17 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
             
             {activeSection === 'about' ? (
               <div className="text-left space-y-4">
-                <p className="text-base text-gray-300 leading-relaxed">
+                <p className="text-base text-gray-600 leading-relaxed">
                   Construction moves faster when systems speak the same language. ConCoord makes coordination seamless, so your team can focus on progress, not process.
                 </p>
-                <p className="text-base text-gray-300 leading-relaxed">
+                <p className="text-base text-gray-600 leading-relaxed">
                   ConCoord was made by <a href="https://www.linkedin.com/in/rahulkrishnakumar/" target="_blank" rel="noopener noreferrer" className="text-orange-500 hover:text-orange-400 underline">Rahul Krishnakumar</a>, a product manager at Procore and is licensed under <a href="https://github.com/rkrishnakumar/Concoord" target="_blank" rel="noopener noreferrer" className="text-orange-500 hover:text-orange-400 underline">GPL-3.0 license on GitHub</a> for anyone to fork and improve for non-commercial purposes.
                 </p>
               </div>
             ) : (
               <div className="space-y-4">
               {/* Autodesk Integration */}
-              <div className="bg-gray-700 rounded-xl p-6 border border-gray-600">
+              <div className="bg-white rounded-xl p-6 border border-gray-300">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center space-x-4">
                     {/* Autodesk Logo */}
@@ -229,7 +229,7 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
                     </div>
                     <div>
                       <h3 className="text-lg font-semibold text-gray-800">Autodesk Construction Cloud</h3>
-                      <p className="text-gray-300 text-sm">Connect to Autodesk, to select your projects and issues.</p>
+                      <p className="text-gray-600 text-sm">Connect to Autodesk, to select your projects and issues.</p>
                     </div>
                   </div>
                   <div className="flex items-center space-x-3">
@@ -260,7 +260,7 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
                   </div>
                 </div>
                 {accConnected && (
-                  <div className="mt-4 pt-4 border-t border-gray-600">
+                  <div className="mt-4 pt-4 border-t border-gray-300">
                     <Button
                       variant="secondary"
                       size="sm"
@@ -274,7 +274,7 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
               </div>
 
               {/* Procore Integration */}
-              <div className="bg-gray-700 rounded-xl p-6 border border-gray-600">
+              <div className="bg-white rounded-xl p-6 border border-gray-300">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center space-x-4">
                     {/* Procore Logo */}
@@ -287,7 +287,7 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
                     </div>
                     <div>
                       <h3 className="text-lg font-semibold text-gray-800">Procore</h3>
-                      <p className="text-gray-300 text-sm">Connect to Procore, to select your projects and issues.</p>
+                      <p className="text-gray-600 text-sm">Connect to Procore, to select your projects and issues.</p>
                     </div>
                   </div>
                   <div className="flex items-center space-x-3">
@@ -320,7 +320,7 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
                   </div>
                 </div>
                 {procoreConnected && (
-                  <div className="mt-4 pt-4 border-t border-gray-600">
+                  <div className="mt-4 pt-4 border-t border-gray-300">
                     <Button
                       variant="secondary"
                       size="sm"
@@ -334,7 +334,7 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
               </div>
 
               {/* Revizto Integration */}
-              <div className="bg-gray-700 rounded-xl p-6 border border-gray-600">
+              <div className="bg-white rounded-xl p-6 border border-gray-300">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center space-x-4">
                     {/* Revizto Logo */}
@@ -347,7 +347,7 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
                     </div>
                     <div>
                       <h3 className="text-lg font-semibold text-gray-800">Revizto</h3>
-                      <p className="text-gray-300 text-sm">Enter your Revizto access code to connect and select your projects and issues.</p>
+                      <p className="text-gray-600 text-sm">Enter your Revizto access code to connect and select your projects and issues.</p>
                     </div>
                   </div>
                   <div className="flex items-center space-x-3">
@@ -380,9 +380,9 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
                   </div>
                 </div>
                 {!reviztoConnected && (
-                  <div className="mt-4 pt-4 border-t border-gray-600">
+                  <div className="mt-4 pt-4 border-t border-gray-300">
                     <div className="space-y-3">
-                      <label className="block text-sm font-medium text-gray-300">
+                      <label className="block text-sm font-medium text-gray-600">
                         Access Code
                       </label>
                       <div className="flex items-center space-x-3">
@@ -408,7 +408,7 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
                   </div>
                 )}
                 {reviztoConnected && (
-                  <div className="mt-4 pt-4 border-t border-gray-600">
+                  <div className="mt-4 pt-4 border-t border-gray-300">
                     <Button
                       variant="secondary"
                       size="sm"

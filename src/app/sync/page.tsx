@@ -189,20 +189,20 @@ export default function SyncPage() {
     return (
       <div className="min-h-screen bg-gray-900 flex items-center justify-center">
         <div className="text-center">
-          <h1 className="text-2xl font-bold text-white mb-4">Please sign in</h1>
-          <p className="text-gray-300">You need to be signed in to access the sync page.</p>
+          <h1 className="text-2xl font-bold text-gray-800 mb-4">Please sign in</h1>
+          <p className="text-gray-600">You need to be signed in to access the sync page.</p>
         </div>
       </div>
     )
   }
 
   return (
-    <div className="min-h-screen bg-gray-800">
+    <div className="min-h-screen ">
       <Navigation />
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-white">Data Sync</h1>
-          <p className="mt-2 text-gray-300">
+          <h1 className="text-3xl font-bold text-gray-800">Data Sync</h1>
+          <p className="mt-2 text-gray-600">
             Select data from your source system and sync it to your destination system.
           </p>
         </div>
@@ -214,20 +214,20 @@ export default function SyncPage() {
         )}
 
         {/* Step 1: Select ACC Project & Issues */}
-        <div className="bg-gray-800 rounded-xl shadow-lg border border-gray-700 p-6 mb-8">
-          <h2 className="text-xl font-semibold text-white mb-4">
+        <div className=" rounded-xl shadow-lg border border-gray-200 p-6 mb-8">
+          <h2 className="text-xl font-semibold text-gray-800 mb-4">
             Step 1: Select Source Project & Data
           </h2>
           
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
-              <label className="block text-sm font-medium text-gray-300 mb-2">
+              <label className="block text-sm font-medium text-gray-600 mb-2">
                 Source Project
               </label>
               <select
                 value={selectedAccProject}
                 onChange={(e) => handleAccProjectChange(e.target.value)}
-                className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-md text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-3 py-2 bg-white border border-gray-300 rounded-md text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500"
               >
                 <option value="">Choose a source project...</option>
                 {accProjects.map((project) => (
@@ -241,7 +241,7 @@ export default function SyncPage() {
             {accIssues.length > 0 && (
               <div>
                 <div className="flex items-center justify-between mb-2">
-                  <label className="block text-sm font-medium text-gray-300">
+                  <label className="block text-sm font-medium text-gray-600">
                     Data Items ({accIssues.length})
                   </label>
                   <Button
@@ -254,18 +254,18 @@ export default function SyncPage() {
                 </div>
                 <div className="max-h-60 overflow-y-auto space-y-2">
                   {accIssues.map((issue) => (
-                    <label key={issue.id} className="flex items-start space-x-3 p-3 bg-gray-700 rounded-lg hover:bg-gray-600 cursor-pointer">
+                    <label key={issue.id} className="flex items-start space-x-3 p-3 bg-white rounded-lg hover:bg-gray-600 cursor-pointer">
                       <input
                         type="checkbox"
                         checked={selectedIssues.includes(issue.id)}
                         onChange={() => handleIssueToggle(issue.id)}
-                        className="mt-1 rounded border-gray-600 text-blue-600 focus:ring-blue-500"
+                        className="mt-1 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
                       />
                       <div className="flex-1 min-w-0">
-                        <p className="text-sm font-medium text-white truncate">
+                        <p className="text-sm font-medium text-gray-800 truncate">
                           {issue.title}
                         </p>
-                        <p className="text-xs text-gray-300">
+                        <p className="text-xs text-gray-600">
                           Status: {issue.status} • Priority: {issue.priority || 'N/A'}
                         </p>
                       </div>
@@ -278,20 +278,20 @@ export default function SyncPage() {
         </div>
 
         {/* Step 2: Select Procore Project */}
-        <div className="bg-gray-800 rounded-xl shadow-lg border border-gray-700 p-6 mb-8">
-          <h2 className="text-xl font-semibold text-white mb-4">
+        <div className=" rounded-xl shadow-lg border border-gray-200 p-6 mb-8">
+          <h2 className="text-xl font-semibold text-gray-800 mb-4">
             Step 2: Select Destination Project
           </h2>
           
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
-              <label className="block text-sm font-medium text-gray-300 mb-2">
+              <label className="block text-sm font-medium text-gray-600 mb-2">
                 Destination Company
               </label>
               <select
                 value={selectedProcoreCompany}
                 onChange={(e) => handleCompanyChange(e.target.value)}
-                className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-md text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-3 py-2 bg-white border border-gray-300 rounded-md text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500"
               >
                 <option value="">Choose a company...</option>
                 {procoreCompanies.map((company) => (
@@ -303,13 +303,13 @@ export default function SyncPage() {
             </div>
             
             <div>
-              <label className="block text-sm font-medium text-gray-300 mb-2">
+              <label className="block text-sm font-medium text-gray-600 mb-2">
                 Destination Project
               </label>
               <select
                 value={selectedProcoreProject}
                 onChange={(e) => setSelectedProcoreProject(e.target.value)}
-                className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-md text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-3 py-2 bg-white border border-gray-300 rounded-md text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500"
               >
                 <option value="">Choose a project...</option>
                 {procoreProjects.map((project) => (
@@ -323,27 +323,27 @@ export default function SyncPage() {
         </div>
 
         {/* Step 3: Configure Field Mapping */}
-        <div className="bg-gray-800 rounded-xl shadow-lg border border-gray-700 p-6 mb-8">
-          <h2 className="text-xl font-semibold text-white mb-4">
+        <div className=" rounded-xl shadow-lg border border-gray-200 p-6 mb-8">
+          <h2 className="text-xl font-semibold text-gray-800 mb-4">
             Step 3: Configure Field Mapping
           </h2>
           
           <div className="space-y-4">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-medium text-gray-300 mb-2">
+                <label className="block text-sm font-medium text-gray-600 mb-2">
                   Title Mapping
                 </label>
-                <select className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-md text-white focus:outline-none focus:ring-2 focus:ring-blue-500">
+                <select className="w-full px-3 py-2 bg-white border border-gray-300 rounded-md text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500">
                   <option>ACC Title → Procore Title</option>
                 </select>
               </div>
               
               <div>
-                <label className="block text-sm font-medium text-gray-300 mb-2">
+                <label className="block text-sm font-medium text-gray-600 mb-2">
                   Status Mapping
                 </label>
-                <select className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-md text-white focus:outline-none focus:ring-2 focus:ring-blue-500">
+                <select className="w-full px-3 py-2 bg-white border border-gray-300 rounded-md text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500">
                   <option>ACC Status → Procore Status</option>
                 </select>
               </div>
@@ -351,19 +351,19 @@ export default function SyncPage() {
             
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-medium text-gray-300 mb-2">
+                <label className="block text-sm font-medium text-gray-600 mb-2">
                   Priority Mapping
                 </label>
-                <select className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-md text-white focus:outline-none focus:ring-2 focus:ring-blue-500">
+                <select className="w-full px-3 py-2 bg-white border border-gray-300 rounded-md text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500">
                   <option>ACC Priority → Procore Priority</option>
                 </select>
               </div>
               
               <div>
-                <label className="block text-sm font-medium text-gray-300 mb-2">
+                <label className="block text-sm font-medium text-gray-600 mb-2">
                   Assignee Mapping
                 </label>
-                <select className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-md text-white focus:outline-none focus:ring-2 focus:ring-blue-500">
+                <select className="w-full px-3 py-2 bg-white border border-gray-300 rounded-md text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500">
                   <option>ACC Assignee → Procore Assignee</option>
                 </select>
               </div>
@@ -372,15 +372,15 @@ export default function SyncPage() {
         </div>
 
         {/* Step 4: Execute Sync */}
-        <div className="bg-gray-800 rounded-xl shadow-lg border border-gray-700 p-6">
-          <h2 className="text-xl font-semibold text-white mb-4">
+        <div className=" rounded-xl shadow-lg border border-gray-200 p-6">
+          <h2 className="text-xl font-semibold text-gray-800 mb-4">
             Step 4: Execute Sync
           </h2>
           
           <div className="space-y-4">
-            <div className="bg-gray-700 rounded-lg p-4">
-              <h3 className="text-lg font-medium text-white mb-2">Sync Summary</h3>
-              <div className="space-y-2 text-sm text-gray-300">
+            <div className="bg-white rounded-lg p-4">
+              <h3 className="text-lg font-medium text-gray-800 mb-2">Sync Summary</h3>
+              <div className="space-y-2 text-sm text-gray-600">
                 <p>• Source Project: {selectedAccProject ? accProjects.find(p => p.id === selectedAccProject)?.name : 'Not selected'}</p>
                 <p>• Destination Project: {selectedProcoreProject ? procoreProjects.find(p => p.id === selectedProcoreProject)?.display_name : 'Not selected'}</p>
                 <p>• Data items to sync: {selectedIssues.length}</p>
