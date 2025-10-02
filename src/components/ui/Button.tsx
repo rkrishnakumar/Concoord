@@ -12,6 +12,7 @@ interface ButtonProps {
   href?: string
   type?: 'button' | 'submit'
   className?: string
+  style?: React.CSSProperties
 }
 
 export default function Button({ 
@@ -23,7 +24,8 @@ export default function Button({
   onClick,
   href,
   type = 'button',
-  className = ''
+  className = '',
+  style
 }: ButtonProps) {
   const baseClasses = 'rounded-[2.5rem] font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed h-[2.5rem] flex items-center justify-center'
   const variantClasses = colors.buttons[variant]
@@ -38,7 +40,7 @@ export default function Button({
   
   if (href) {
     return (
-      <Link href={href} className={buttonClasses}>
+      <Link href={href} className={buttonClasses} style={style}>
         {loading ? 'Loading...' : children}
       </Link>
     )
@@ -50,6 +52,7 @@ export default function Button({
       onClick={onClick}
       disabled={disabled || loading}
       className={buttonClasses}
+      style={style}
     >
       {loading ? 'Loading...' : children}
     </button>

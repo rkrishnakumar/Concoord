@@ -217,9 +217,9 @@ export async function POST(
 
     // Execute the sync based on data types
     const results = {
-      issues: { created: 0, updated: 0, errors: [] },
-      rfis: { created: 0, updated: 0, errors: [] },
-      submittals: { created: 0, updated: 0, errors: [] }
+      issues: { created: 0, updated: 0, errors: [] as Array<{issue?: string, error: string}> },
+      rfis: { created: 0, updated: 0, errors: [] as Array<{issue?: string, error: string}> },
+      submittals: { created: 0, updated: 0, errors: [] as Array<{issue?: string, error: string}> }
     }
 
     // Sync Issues
@@ -306,7 +306,7 @@ export async function POST(
     // Update sync status to error
     try {
       await db.sync.update({
-        where: { id: params.id },
+        where: { id: (await params).id },
         data: {
           status: 'error',
           lastRunAt: new Date(),

@@ -30,7 +30,7 @@ export async function GET(request: NextRequest) {
       credentials.clientId,
       credentials.clientSecret,
       credentials.refreshToken || undefined,
-      credentials.expiresAt
+      credentials.expiresAt ? new Date(credentials.expiresAt).getTime() : undefined
     )
 
     try {
@@ -70,7 +70,7 @@ export async function GET(request: NextRequest) {
     } catch (error) {
       console.error('Error testing Revizto API:', error)
       return NextResponse.json(
-        { error: 'Failed to test Revizto API', details: error.message },
+        { error: 'Failed to test Revizto API', details: (error as any)?.message },
         { status: 500 }
       )
     }

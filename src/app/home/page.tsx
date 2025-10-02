@@ -124,7 +124,7 @@ export default function HomePage() {
       }
     } catch (error) {
       console.error('Error executing sync:', error)
-      setMessage(`❌ Sync failed: ${error.message}`)
+      setMessage(`❌ Sync failed: ${(error as any)?.message}`)
     } finally {
       setExecutingSync(null)
     }

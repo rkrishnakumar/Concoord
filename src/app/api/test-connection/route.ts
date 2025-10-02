@@ -114,7 +114,7 @@ export async function POST(request: NextRequest) {
           user.reviztoCredentials.clientId,
           user.reviztoCredentials.clientSecret,
           user.reviztoCredentials.refreshToken || undefined,
-          user.reviztoCredentials.expiresAt
+          user.reviztoCredentials.expiresAt ? new Date(user.reviztoCredentials.expiresAt).getTime() : undefined
         )
 
         const isConnected = await reviztoApi.testConnection()
