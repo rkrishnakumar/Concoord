@@ -70,7 +70,7 @@ export async function POST(request: NextRequest) {
       projectMapping.user.procoreCredentials.baseUrl,
       projectMapping.user.accCredentials.clientId,
       projectMapping.user.accCredentials.clientSecret,
-      projectMapping.user.accCredentials.refreshToken
+      projectMapping.user.accCredentials.refreshToken || undefined
     )
 
     const result = await syncService.syncIssues()
