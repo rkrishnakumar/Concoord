@@ -132,10 +132,10 @@ export default function HomePage() {
 
   if (!session) {
     return (
-      <div className="min-h-screen bg-gray-800 flex items-center justify-center">
+      <div className="min-h-screen bg-[#f0eee6] flex items-center justify-center">
         <div className="text-center">
-          <h1 className="text-2xl font-bold text-white mb-4">Please sign in</h1>
-          <p className="text-gray-300">You need to be signed in to access your syncs.</p>
+          <h1 className="text-2xl font-bold text-gray-800 mb-4">Please sign in</h1>
+          <p className="text-gray-700">You need to be signed in to access your syncs.</p>
         </div>
       </div>
     )
@@ -173,8 +173,8 @@ export default function HomePage() {
         <Card>
           <div className="flex items-center justify-between">
             <div>
-              <h2 className="text-xl font-semibold text-white mb-2">Create New Sync</h2>
-              <p className="text-gray-300">
+              <h2 className="text-xl font-semibold text-gray-800 mb-2">Create New Sync</h2>
+              <p className="text-gray-700">
                 Set up a new data synchronization workflow between your connected systems.
               </p>
             </div>
@@ -193,7 +193,7 @@ export default function HomePage() {
       {/* Syncs List */}
       <div className="space-y-4">
         <div className="flex items-center justify-between">
-          <h2 className="text-xl font-semibold text-white">Your Syncs ({syncs.length})</h2>
+          <h2 className="text-xl font-semibold text-gray-800">Your Syncs ({syncs.length})</h2>
           {syncs.length > 0 && (
             <Button variant="secondary" size="sm">
               View All
@@ -209,8 +209,8 @@ export default function HomePage() {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
                 </svg>
               </div>
-              <h3 className="text-lg font-semibold text-white mb-2">No syncs yet</h3>
-              <p className="text-gray-300 mb-6">
+              <h3 className="text-lg font-semibold text-gray-800 mb-2">No syncs yet</h3>
+              <p className="text-gray-700 mb-6">
                 Create your first sync to start transferring data between systems.
               </p>
               <Button 
@@ -230,12 +230,12 @@ export default function HomePage() {
                 <div className="flex items-center justify-between">
                   <div className="flex-1">
                     <div className="flex items-center space-x-3 mb-2">
-                      <h3 className="text-lg font-semibold text-white">{sync.name}</h3>
+                      <h3 className="text-lg font-semibold text-gray-800">{sync.name}</h3>
                       <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(sync.status)}`}>
                         {getStatusIcon(sync.status)} {sync.status}
                       </span>
                     </div>
-                    <div className="flex items-center space-x-6 text-sm text-gray-300">
+                    <div className="flex items-center space-x-6 text-sm text-gray-600">
                       <span>{sync.sourceProjectName} → {sync.destinationProjectName}</span>
                       {sync.lastRunAt && <span>Last run: {formatDate(sync.lastRunAt)}</span>}
                       {sync.nextRunAt && <span>Next: {formatDate(sync.nextRunAt)}</span>}
