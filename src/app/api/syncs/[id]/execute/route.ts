@@ -191,7 +191,7 @@ export async function POST(
         user.reviztoCredentials.clientId,
         user.reviztoCredentials.clientSecret,
         user.reviztoCredentials.refreshToken || undefined,
-        user.reviztoCredentials.expiresAt
+        user.reviztoCredentials.expiresAt ? new Date(user.reviztoCredentials.expiresAt).getTime() : undefined
       )
     } else if (sync.destinationSystem === 'procore') {
       if (!user.procoreCredentials) {
