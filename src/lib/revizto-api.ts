@@ -305,7 +305,7 @@ export class ReviztoApi {
       this.expiresAt = Date.now() + (60 * 60 * 1000)
       
       // Update the default authorization header
-      this.client.defaults.headers['Authorization'] = `Bearer ${this.accessToken}`
+      this.client.defaults.headers.common['Authorization'] = `Bearer ${this.accessToken}`
       
       // Note: Database update will be handled by the API endpoint that calls this
       console.log('Revizto token refreshed successfully')
