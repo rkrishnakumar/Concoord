@@ -3,7 +3,6 @@ import { auth } from '@/lib/auth'
 import { db } from '@/lib/db'
 import { ProcoreApi } from '@/lib/procore-api'
 
-export const dynamic = 'force-dynamic'
 
 export async function GET(request: NextRequest) {
   try {
@@ -57,4 +56,3 @@ export async function GET(request: NextRequest) {
     )
   }
 }
-export const dynamic = "force-dynamic"

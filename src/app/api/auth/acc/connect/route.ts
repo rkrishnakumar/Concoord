@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { auth } from '@/lib/auth'
 import { db } from '@/lib/db'
+
 import crypto from 'crypto'
 
 // Generate PKCE code challenge and verifier
@@ -76,4 +77,3 @@ export async function GET(request: NextRequest) {
     )
   }
 }
-export const dynamic = "force-dynamic"
