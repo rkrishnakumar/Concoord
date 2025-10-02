@@ -22,6 +22,7 @@ export async function POST(request: NextRequest) {
     console.log('NEXT_PUBLIC_API_BASE_URL:', process.env.NEXT_PUBLIC_API_BASE_URL)
     
     if (!process.env.NEXT_PUBLIC_API_BASE_URL) {
+      console.error('NEXT_PUBLIC_API_BASE_URL is not set!')
       return NextResponse.json(
         { error: 'Backend URL not configured' },
         { status: 500 }
