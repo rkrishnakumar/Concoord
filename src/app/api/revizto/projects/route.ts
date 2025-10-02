@@ -52,7 +52,7 @@ export async function GET(request: NextRequest) {
       }
       
       return NextResponse.json(
-        { error: 'Failed to fetch projects from Revizto', details: error.message },
+        { error: 'Failed to fetch projects from Revizto', details: (error as any)?.message },
         { status: 500 }
       )
     }
