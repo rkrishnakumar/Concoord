@@ -141,7 +141,7 @@ export class ProcoreApi {
       console.log('Using company ID:', this.companyId)
       
       // Update client headers with company ID
-      this.client.defaults.headers.common['Procore-Company-Id'] = this.companyId
+      this.client.defaults.headers.common['Procore-Company-Id'] = this.companyId || ''
       
       return this.companyId
     } catch (error) {
