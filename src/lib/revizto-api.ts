@@ -84,7 +84,8 @@ export class ReviztoApi {
       }
       
       // Extract licenses from the nested structure: response.data.data.entities
-      const licenses = licensesResponse.data?.data?.entities || []
+      const licensesData = licensesResponse.data as any
+      const licenses = licensesData?.data?.entities || []
       console.log('Found licenses:', licenses.length)
       
       if (licenses.length === 0) {
@@ -104,23 +105,24 @@ export class ReviztoApi {
            // Extract projects from the response structure
            // The response has: { result: 0, data: { data: [...], count: 3 } }
            let projects = []
+           const projectsData = projectsResponse.data as any
            console.log('Checking projects response structure...')
-           console.log('Has data.data.data?', !!projectsResponse.data?.data?.data)
-           console.log('Has data.data.projects?', !!projectsResponse.data?.data?.projects)
-           console.log('Has data.projects?', !!projectsResponse.data?.projects)
-           console.log('Is data array?', Array.isArray(projectsResponse.data))
+           console.log('Has data.data.data?', !!projectsData?.data?.data)
+           console.log('Has data.data.projects?', !!projectsData?.data?.projects)
+           console.log('Has data.projects?', !!projectsData?.projects)
+           console.log('Is data array?', Array.isArray(projectsData))
            
-           if (projectsResponse.data?.data?.data && Array.isArray(projectsResponse.data.data.data)) {
-             projects = projectsResponse.data.data.data
+           if (projectsData?.data?.data && Array.isArray(projectsData.data.data)) {
+             projects = projectsData.data.data
              console.log('Using data.data.data')
-           } else if (projectsResponse.data?.data?.projects && Array.isArray(projectsResponse.data.data.projects)) {
-             projects = projectsResponse.data.data.projects
+           } else if (projectsData?.data?.projects && Array.isArray(projectsData.data.projects)) {
+             projects = projectsData.data.projects
              console.log('Using data.data.projects')
-           } else if (projectsResponse.data?.projects && Array.isArray(projectsResponse.data.projects)) {
-             projects = projectsResponse.data.projects
+           } else if (projectsData?.projects && Array.isArray(projectsData.projects)) {
+             projects = projectsData.projects
              console.log('Using data.projects')
-           } else if (Array.isArray(projectsResponse.data)) {
-             projects = projectsResponse.data
+           } else if (Array.isArray(projectsData)) {
+             projects = projectsData
              console.log('Using data directly')
            } else {
              console.log('No projects found in any expected structure')
@@ -174,20 +176,21 @@ export class ReviztoApi {
       console.log('Response data structure:', JSON.stringify(response.data, null, 2))
       
       // According to Revizto API documentation, issues are in response.data.data.data
-      if (response.data?.data?.data && Array.isArray(response.data.data.data)) {
+      const issuesData = response.data as any
+      if (issuesData?.data?.data && Array.isArray(issuesData.data.data)) {
         console.log('Found issues in response.data.data.data')
-        return response.data.data.data
+        return issuesData.data.data
       }
       
       // Fallback to other possible structures
-      if (response.data?.data && Array.isArray(response.data.data)) {
+      if (issuesData?.data && Array.isArray(issuesData.data)) {
         console.log('Found issues in response.data.data')
-        return response.data.data
+        return issuesData.data
       }
       
-      if (response.data?.issues && Array.isArray(response.data.issues)) {
+      if (issuesData?.issues && Array.isArray(issuesData.issues)) {
         console.log('Found issues in response.data.issues')
-        return response.data.issues
+        return issuesData.issues
       }
       
       if (Array.isArray(response.data)) {
@@ -294,8 +297,9 @@ export class ReviztoApi {
       console.log('Token refresh response status:', response.status)
       console.log('Token refresh response data:', JSON.stringify(response.data, null, 2))
 
-      this.accessToken = response.data.access_token
-      this.refreshToken = response.data.refresh_token || this.refreshToken
+      const tokenData = response.data as any
+      this.accessToken = tokenData.access_token
+      this.refreshToken = tokenData.refresh_token || this.refreshToken
       
       // Update expiry time (1 hour from now)
       this.expiresAt = Date.now() + (60 * 60 * 1000)
