@@ -119,18 +119,20 @@ export class ProcoreApi {
       console.log('Procore user info:', userResponse.data)
       
       // Try to extract company ID from user info
-      if (userResponse.data.company_id) {
-        this.companyId = userResponse.data.company_id.toString()
-      } else if (userResponse.data.company) {
-        this.companyId = userResponse.data.company.id.toString()
+      const userData = userResponse.data as any
+      if (userData.company_id) {
+        this.companyId = userData.company_id.toString()
+      } else if (userData.company) {
+        this.companyId = userData.company.id.toString()
       } else {
         // If not in user info, get it from companies endpoint
         console.log('Getting company ID from companies endpoint...')
         const companiesResponse = await this.client.get('/rest/v1.0/companies')
         console.log('Companies response:', companiesResponse.data)
         
-        if (companiesResponse.data && companiesResponse.data.length > 0) {
-          this.companyId = companiesResponse.data[0].id.toString()
+        const companiesData = companiesResponse.data as any
+        if (companiesData && companiesData.length > 0) {
+          this.companyId = companiesData[0].id.toString()
         } else {
           throw new Error('Could not determine company ID from companies endpoint')
         }
@@ -156,12 +158,13 @@ export class ProcoreApi {
       console.log('Procore companies response:', response.data)
       
       // Handle different response formats
-      if (Array.isArray(response.data)) {
-        return response.data
-      } else if (response.data.companies) {
-        return response.data.companies
-      } else if (response.data.data) {
-        return response.data.data
+      const responseData = response.data as any
+      if (Array.isArray(responseData)) {
+        return responseData
+      } else if (responseData.companies) {
+        return responseData.companies
+      } else if (responseData.data) {
+        return responseData.data
       } else {
         return []
       }
@@ -193,12 +196,13 @@ export class ProcoreApi {
         console.log('Procore projects response:', response.data)
         
         // Handle different response formats
-        if (Array.isArray(response.data)) {
-          return response.data
-        } else if (response.data.projects) {
-          return response.data.projects
-        } else if (response.data.data) {
-          return response.data.data
+        const responseData = response.data as any
+        if (Array.isArray(responseData)) {
+          return responseData
+        } else if (responseData.projects) {
+          return responseData.projects
+        } else if (responseData.data) {
+          return responseData.data
         } else {
           return []
         }
@@ -211,12 +215,13 @@ export class ProcoreApi {
         console.log('Procore API Response:', response.data)
         
         // Handle different response formats
-        if (Array.isArray(response.data)) {
-          return response.data
-        } else if (response.data.projects) {
-          return response.data.projects
-        } else if (response.data.data) {
-          return response.data.data
+        const responseData = response.data as any
+        if (Array.isArray(responseData)) {
+          return responseData
+        } else if (responseData.projects) {
+          return responseData.projects
+        } else if (responseData.data) {
+          return responseData.data
         } else {
           return []
         }
@@ -329,8 +334,9 @@ export class ProcoreApi {
         client_secret: this.clientSecret
       })
 
-      this.accessToken = response.data.access_token
-      this.refreshToken = response.data.refresh_token || this.refreshToken
+      const tokenData = response.data as any
+      this.accessToken = tokenData.access_token
+      this.refreshToken = tokenData.refresh_token || this.refreshToken
       
       // Update the default authorization header
       this.client.defaults.headers['Authorization'] = `Bearer ${this.accessToken}`
