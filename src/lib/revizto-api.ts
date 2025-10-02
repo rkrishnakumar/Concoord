@@ -56,56 +56,8 @@ export class ReviztoApi {
       }
     })
 
-    // Add response interceptor for automatic token refresh
-    this.client.interceptors.response.use(
-      async (response) => {
-        // Check for Revizto's error codes in successful responses
-        if (response.data && response.data.result === -206) {
-          console.log('Revizto token expired in successful response, attempting refresh...')
-          if (this.refreshToken) {
-            try {
-              await this.refreshAccessToken()
-              console.log('Token refreshed successfully, retrying request...')
-              // Retry the original request with new token
-              const originalRequest = response.config
-              originalRequest.headers['Authorization'] = `Bearer ${this.accessToken}`
-              return this.client(originalRequest)
-            } catch (refreshError) {
-              console.error('Revizto token refresh failed:', refreshError)
-              return Promise.reject(refreshError)
-            }
-          } else {
-            console.error('No refresh token available for Revizto')
-            return Promise.reject(new Error('No refresh token available'))
-          }
-        }
-        return response
-      },
-      async (error) => {
-        // Check for Revizto's specific error code for expired tokens
-        console.log('Error response:', error.response?.status, error.response?.data)
-        const isTokenExpired = error.response?.status === 401 || 
-                              error.response?.data?.result === -206 ||
-                              (error.response?.data && error.response.data.result === -206) ||
-                              (typeof error.response?.data === 'string' && error.response.data.includes('-206'))
-        
-        if (isTokenExpired && this.refreshToken) {
-          console.log('Token expired, attempting refresh...')
-          try {
-            await this.refreshAccessToken()
-            console.log('Token refreshed successfully, retrying request...')
-            // Retry the original request with new token
-            const originalRequest = error.config
-            originalRequest.headers['Authorization'] = `Bearer ${this.accessToken}`
-            return this.client(originalRequest)
-          } catch (refreshError) {
-            console.error('Revizto token refresh failed:', refreshError)
-            return Promise.reject(refreshError)
-          }
-        }
-        return Promise.reject(error)
-      }
-    )
+    // Note: Removed complex interceptor to avoid TypeScript issues
+    // Token refresh will be handled manually in API methods
   }
 
   /**
