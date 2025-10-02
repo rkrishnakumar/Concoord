@@ -80,7 +80,7 @@ export class ReviztoApi {
         console.log('Licenses response data:', JSON.stringify(licensesResponse.data, null, 2))
       } catch (error) {
         console.error('Error fetching licenses:', error)
-        throw new Error(`Failed to fetch licenses: ${error.message}`)
+        throw new Error(`Failed to fetch licenses: ${(error as any)?.message}`)
       }
       
       // Extract licenses from the nested structure: response.data.data.entities
@@ -138,14 +138,14 @@ export class ReviztoApi {
       return allProjects
     } catch (error) {
       console.error('Error fetching Revizto projects:', error)
-      console.error('Error details:', error.message)
+      console.error('Error details:', (error as any)?.message)
       console.error('Error stack:', error.stack)
       console.error('Error type:', error.constructor.name)
       if (error.response) {
         console.error('Error response status:', error.response.status)
         console.error('Error response data:', error.response.data)
       }
-      throw new Error(`Failed to fetch projects from Revizto: ${error.message}`)
+      throw new Error(`Failed to fetch projects from Revizto: ${(error as any)?.message}`)
     }
   }
 
@@ -309,12 +309,12 @@ export class ReviztoApi {
       return this.accessToken
     } catch (error) {
       console.error('Error refreshing Revizto token:', error)
-      console.error('Error details:', error.message)
+      console.error('Error details:', (error as any)?.message)
       if (error.response) {
         console.error('Error response status:', error.response.status)
         console.error('Error response data:', error.response.data)
       }
-      throw new Error(`Failed to refresh access token: ${error.message}`)
+      throw new Error(`Failed to refresh access token: ${(error as any)?.message}`)
     }
   }
 
