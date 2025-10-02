@@ -1,4 +1,4 @@
-import axios, { AxiosInstance } from 'axios'
+import axios from 'axios'
 
 export interface AccProject {
   id: string
@@ -23,7 +23,7 @@ export interface AccIssue {
 }
 
 export class AutodeskAccApi {
-  private client: AxiosInstance
+  private client: ReturnType<typeof axios.create>
   private accessToken: string
   private baseUrl: string
   private clientId?: string

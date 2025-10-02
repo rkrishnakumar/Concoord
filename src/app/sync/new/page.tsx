@@ -30,8 +30,8 @@ interface ProcoreProject {
 }
 
 interface ReviztoProject {
-  id: string
-  name: string
+  uuid: string
+  title: string
   description?: string
 }
 

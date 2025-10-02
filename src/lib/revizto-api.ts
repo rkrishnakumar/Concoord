@@ -1,4 +1,4 @@
-import axios, { AxiosInstance } from 'axios'
+import axios from 'axios'
 
 export interface ReviztoProject {
   uuid: string
@@ -24,7 +24,7 @@ export interface ReviztoIssue {
 }
 
 export class ReviztoApi {
-  private client: AxiosInstance
+  private client: ReturnType<typeof axios.create>
   private accessToken: string
   private baseUrl: string
   private clientId: string

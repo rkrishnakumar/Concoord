@@ -1,4 +1,4 @@
-import axios, { AxiosInstance } from 'axios'
+import axios from 'axios'
 
 export interface ProcoreProject {
   id: string
@@ -50,7 +50,7 @@ export interface UpdateCoordinationIssueRequest {
 }
 
 export class ProcoreApi {
-  private client: AxiosInstance
+  private client: ReturnType<typeof axios.create>
   private accessToken: string
   private baseUrl: string
   private companyId: string | null = null
