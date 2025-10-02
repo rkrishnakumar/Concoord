@@ -203,8 +203,8 @@ export class AutodeskAccApi {
         }
       })
       
-      const issueData = response.data as any
-      const issue = issueData.data
+      const responseData = response.data as any
+      const issue = responseData.data
       return {
         id: issue.id,
         title: issue.attributes?.title || issue.title,
