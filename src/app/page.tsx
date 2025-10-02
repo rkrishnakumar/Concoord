@@ -23,27 +23,32 @@ export default function Home() {
 
   // Show marketing/landing page for unauthenticated users
   return (
-    <div className="min-h-screen bg-gray-800">
+    <div className="min-h-screen bg-cream">
       {/* Navigation */}
-      <nav className="bg-gray-800 border-b border-gray-600">
+      <nav className="bg-white border-b border-gray-200 shadow-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             {/* Logo and Company Name */}
             <div className="flex items-center">
-              <span className="text-xl font-semibold text-orange-500">Concoord</span>
+              <img 
+                src="/concoord-logo.png" 
+                alt="Concoord Logo" 
+                className="h-12 w-12 mr-4 bg-cream rounded-lg p-2"
+              />
+              <span className="text-xl font-semibold text-gray-900">Concoord</span>
             </div>
             
             {/* Right side buttons */}
             <div className="flex items-center space-x-4">
               <Link
                 href="/auth/signin"
-                className="text-gray-300 hover:text-white px-3 py-2 text-sm font-medium transition-colors"
+                className="text-gray-700 hover:text-gray-900 px-3 py-2 text-sm font-medium transition-colors"
               >
                 Sign In
               </Link>
               <Link
                 href="/auth/signup"
-                className="bg-white hover:bg-gray-100 text-black px-4 py-2 rounded-xl text-sm font-medium transition-colors"
+                className="bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 rounded-xl text-sm font-medium transition-colors"
               >
                 Get Started
               </Link>
@@ -55,20 +60,20 @@ export default function Home() {
       {/* Hero Section */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
         <div className="text-center">
-          <h1 className="text-5xl md:text-6xl font-bold text-white mb-12">
+          <h1 className="text-5xl md:text-6xl font-bold text-gray-900 mb-12">
             Coordination, the way it should be:
-            <span className="block text-gray-300">open, interoperable, connected</span>
+            <span className="block text-gray-700">open, interoperable, connected</span>
           </h1>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link
               href="/auth/signup"
-              className="bg-white hover:bg-gray-100 text-gray-900 px-8 py-4 rounded-lg text-lg font-semibold transition-colors"
+              className="bg-orange-500 hover:bg-orange-600 text-white px-8 py-4 rounded-lg text-lg font-semibold transition-colors"
             >
               Start Syncing Issues
             </Link>
             <Link
               href="/auth/signin"
-              className="bg-gray-800 hover:bg-gray-700 text-white px-8 py-4 rounded-lg text-lg font-semibold border border-gray-600 transition-colors"
+              className="bg-gray-200 hover:bg-gray-300 text-gray-900 px-8 py-4 rounded-lg text-lg font-semibold border border-gray-300 transition-colors"
             >
               Sign In
             </Link>

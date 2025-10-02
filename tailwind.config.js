@@ -10,6 +10,9 @@ module.exports = {
       fontFamily: {
         sans: ['var(--font-inter)', 'system-ui', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'sans-serif'],
       },
+      colors: {
+        cream: '#F5F5DC',
+      },
     },
   },
   plugins: [],

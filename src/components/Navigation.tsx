@@ -21,6 +21,11 @@ export default function Navigation() {
           {/* Logo and Brand */}
           <div className="flex items-center">
             <Link href="/home" className="flex items-center">
+              <img 
+                src="/concoord-logo.png" 
+                alt="Concoord Logo" 
+                className="h-14 w-14 mr-4 bg-cream rounded-lg p-2"
+              />
               <span className="text-3xl font-bold text-orange-500">Concoord</span>
             </Link>
           </div>

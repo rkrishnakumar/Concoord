@@ -1,19 +1,19 @@
 // Design System - Centralized styling and theme
 export const colors = {
   background: {
-    primary: 'bg-gray-800',
-    secondary: 'bg-gray-700',
-    card: 'bg-gray-800',
-    input: 'bg-gray-600',
+    primary: 'bg-cream',
+    secondary: 'bg-gray-100',
+    card: 'bg-white',
+    input: 'bg-white',
   },
   text: {
-    primary: 'text-white',
-    secondary: 'text-gray-300',
-    muted: 'text-gray-400',
+    primary: 'text-gray-900',
+    secondary: 'text-gray-700',
+    muted: 'text-gray-500',
   },
   borders: {
-    primary: 'border-gray-700',
-    secondary: 'border-gray-600',
+    primary: 'border-gray-300',
+    secondary: 'border-gray-200',
   },
   buttons: {
     primary: 'bg-white hover:bg-gray-50 text-gray-900',
@@ -30,17 +30,17 @@ export const colors = {
 }
 
 export const spacing = {
-  page: 'min-h-screen bg-gray-800',
+  page: 'min-h-screen bg-cream',
   container: 'max-w-7xl mx-auto px-4 sm:px-6 lg:px-8',
-  card: 'bg-gray-800 rounded-xl shadow-lg border border-gray-700 p-6',
+  card: 'bg-white rounded-xl shadow-lg border border-gray-200 p-6',
   section: 'mb-8',
 }
 
 export const typography = {
-  h1: 'text-3xl font-bold text-white',
-  h2: 'text-xl font-semibold text-white',
-  h3: 'text-lg font-semibold text-white',
-  body: 'text-gray-300',
-  label: 'text-sm font-medium text-gray-300',
-  caption: 'text-sm text-gray-400',
+  h1: 'text-3xl font-bold text-gray-900',
+  h2: 'text-xl font-semibold text-gray-900',
+  h3: 'text-lg font-semibold text-gray-900',
+  body: 'text-gray-700',
+  label: 'text-sm font-medium text-gray-700',
+  caption: 'text-sm text-gray-500',
 }
