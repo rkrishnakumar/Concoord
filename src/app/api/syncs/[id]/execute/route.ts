@@ -223,7 +223,9 @@ export async function POST(
     }
 
     // Sync Issues
-    if (sync.sourceDataTypes?.includes('issues') && sync.destinationDataTypes?.includes('issues')) {
+    const sourceDataTypes = sync.sourceDataTypes as string[] | undefined
+    const destinationDataTypes = sync.destinationDataTypes as string[] | undefined
+    if (sourceDataTypes?.includes('issues') && destinationDataTypes?.includes('issues')) {
       console.log('Syncing Issues...')
       try {
         // Get issues from source
