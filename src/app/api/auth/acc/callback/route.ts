@@ -70,7 +70,11 @@ export async function GET(request: NextRequest) {
       }
     )
 
-    const { access_token, refresh_token, expires_in } = tokenResponse.data
+    const { access_token, refresh_token, expires_in } = tokenResponse.data as {
+      access_token: string
+      refresh_token: string
+      expires_in: number
+    }
     const expiresAt = new Date(Date.now() + (expires_in * 1000))
 
     // Store real tokens in database
