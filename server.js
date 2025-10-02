@@ -7,6 +7,106 @@ const { PrismaClient } = require('@prisma/client');
 const app = express();
 const prisma = new PrismaClient();
 
+// Initialize database tables
+async function initializeDatabase() {
+  try {
+    console.log('Initializing database tables...');
+    await prisma.$executeRaw`
+      CREATE TABLE IF NOT EXISTS "users" (
+        "id" TEXT NOT NULL PRIMARY KEY,
+        "email" TEXT NOT NULL UNIQUE,
+        "name" TEXT,
+        "password" TEXT NOT NULL,
+        "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+        "updatedAt" TIMESTAMP(3) NOT NULL
+      );
+    `;
+    
+    await prisma.$executeRaw`
+      CREATE TABLE IF NOT EXISTS "acc_credentials" (
+        "id" TEXT NOT NULL PRIMARY KEY,
+        "userId" TEXT NOT NULL,
+        "clientId" TEXT NOT NULL,
+        "clientSecret" TEXT NOT NULL,
+        "accessToken" TEXT NOT NULL,
+        "refreshToken" TEXT,
+        "expiresAt" TIMESTAMP(3) NOT NULL,
+        "baseUrl" TEXT NOT NULL DEFAULT 'https://developer.api.autodesk.com',
+        "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+        "updatedAt" TIMESTAMP(3) NOT NULL,
+        FOREIGN KEY ("userId") REFERENCES "users"("id") ON DELETE CASCADE ON UPDATE CASCADE
+      );
+    `;
+    
+    await prisma.$executeRaw`
+      CREATE TABLE IF NOT EXISTS "procore_credentials" (
+        "id" TEXT NOT NULL PRIMARY KEY,
+        "userId" TEXT NOT NULL,
+        "clientId" TEXT NOT NULL,
+        "clientSecret" TEXT NOT NULL,
+        "accessToken" TEXT NOT NULL,
+        "refreshToken" TEXT,
+        "expiresAt" TIMESTAMP(3) NOT NULL,
+        "baseUrl" TEXT NOT NULL DEFAULT 'https://api.procore.com',
+        "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+        "updatedAt" TIMESTAMP(3) NOT NULL,
+        FOREIGN KEY ("userId") REFERENCES "users"("id") ON DELETE CASCADE ON UPDATE CASCADE
+      );
+    `;
+    
+    await prisma.$executeRaw`
+      CREATE TABLE IF NOT EXISTS "revizto_credentials" (
+        "id" TEXT NOT NULL PRIMARY KEY,
+        "userId" TEXT NOT NULL,
+        "clientId" TEXT NOT NULL,
+        "clientSecret" TEXT NOT NULL,
+        "accessToken" TEXT NOT NULL,
+        "refreshToken" TEXT,
+        "expiresAt" TIMESTAMP(3) NOT NULL,
+        "baseUrl" TEXT NOT NULL DEFAULT 'https://developer.revizto.com',
+        "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+        "updatedAt" TIMESTAMP(3) NOT NULL,
+        FOREIGN KEY ("userId") REFERENCES "users"("id") ON DELETE CASCADE ON UPDATE CASCADE
+      );
+    `;
+    
+    await prisma.$executeRaw`
+      CREATE TABLE IF NOT EXISTS "syncs" (
+        "id" TEXT NOT NULL PRIMARY KEY,
+        "userId" TEXT NOT NULL,
+        "name" TEXT NOT NULL,
+        "description" TEXT,
+        "sourceSystem" TEXT NOT NULL,
+        "sourceProjectId" TEXT NOT NULL,
+        "sourceProjectName" TEXT NOT NULL,
+        "sourceDataTypes" JSONB NOT NULL,
+        "destinationSystem" TEXT NOT NULL,
+        "destinationProjectId" TEXT NOT NULL,
+        "destinationProjectName" TEXT NOT NULL,
+        "destinationCompanyId" TEXT,
+        "destinationDataTypes" JSONB NOT NULL,
+        "status" TEXT NOT NULL DEFAULT 'draft',
+        "scheduleType" TEXT NOT NULL DEFAULT 'manual',
+        "scheduleValue" TEXT,
+        "lastRunAt" TIMESTAMP(3),
+        "lastRunStatus" TEXT,
+        "nextRunAt" TIMESTAMP(3),
+        "fieldMappings" JSONB,
+        "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+        "updatedAt" TIMESTAMP(3) NOT NULL,
+        FOREIGN KEY ("userId") REFERENCES "users"("id") ON DELETE CASCADE ON UPDATE CASCADE
+      );
+    `;
+    
+    console.log('Database tables initialized successfully!');
+  } catch (error) {
+    console.error('Error initializing database:', error);
+  }
+}
+
+// Initialize database on startup
+initializeDatabase();
+
 app.use(cors());
 app.use(express.json());
 
