@@ -119,7 +119,7 @@ export class AutodeskAccApi {
       return allProjects
     } catch (error) {
       console.error('Error fetching ACC projects:', error)
-      throw new Error(`Failed to fetch ACC projects: ${error.response?.status || 'Unknown error'}`)
+      throw new Error(`Failed to fetch ACC projects: ${(error as any)?.response?.status || 'Unknown error'}`)
     }
   }
 
