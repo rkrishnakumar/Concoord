@@ -23,7 +23,7 @@ export async function GET(request: NextRequest) {
     
     return NextResponse.json({ 
       success: true,
-      session: session ? {
+      session: session?.user ? {
         userId: session.user.id,
         email: session.user.email,
         name: session.user.name
