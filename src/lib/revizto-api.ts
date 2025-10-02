@@ -195,7 +195,7 @@ export class ReviztoApi {
       
       if (Array.isArray(response.data)) {
         console.log('Found issues in response.data')
-        return response.data
+        return response.data as any
       }
       
       console.log('No issues found in response')
@@ -215,7 +215,7 @@ export class ReviztoApi {
       await this.checkAndRefreshToken()
       
       const response = await this.client.get(`/v5/project/${projectId}/issue/${issueId}`)
-      return response.data
+      return response.data as any
     } catch (error) {
       console.error('Error fetching Revizto issue:', error)
       throw new Error('Failed to fetch issue from Revizto')
@@ -231,7 +231,7 @@ export class ReviztoApi {
       await this.checkAndRefreshToken()
       
       const response = await this.client.post(`/v5/project/${projectId}/issue`, issueData)
-      return response.data
+      return response.data as any
     } catch (error) {
       console.error('Error creating Revizto issue:', error)
       throw new Error('Failed to create issue in Revizto')
@@ -247,7 +247,7 @@ export class ReviztoApi {
       await this.checkAndRefreshToken()
       
       const response = await this.client.put(`/v5/project/${projectId}/issue/${issueId}`, issueData)
-      return response.data
+      return response.data as any
     } catch (error) {
       console.error('Error updating Revizto issue:', error)
       throw new Error('Failed to update issue in Revizto')
