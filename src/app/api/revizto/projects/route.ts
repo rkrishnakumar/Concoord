@@ -36,11 +36,11 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ success: true, projects })
     } catch (error) {
       console.error('Error fetching Revizto projects:', error)
-      console.error('Error details:', error.message)
-      console.error('Error stack:', error.stack)
+      console.error('Error details:', (error as any)?.message)
+      console.error('Error stack:', (error as any)?.stack)
       
       // Check if it's a token refresh issue
-      if (error.message.includes('Failed to refresh access token') && error.message.includes('403')) {
+      if ((error as any)?.message?.includes('Failed to refresh access token') && (error as any)?.message?.includes('403')) {
         return NextResponse.json(
           { 
             error: 'Revizto tokens have expired. Please reconnect to Revizto in Settings.',
