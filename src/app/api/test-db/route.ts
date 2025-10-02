@@ -6,6 +6,7 @@ export async function GET(request: NextRequest) {
     console.log('Testing database connection...')
     console.log('POSTGRES_URL exists:', !!process.env.POSTGRES_URL)
     console.log('DATABASE_URL exists:', !!process.env.DATABASE_URL)
+    console.log('Environment check complete')
     
     // Try to connect to database
     await db.$connect()
