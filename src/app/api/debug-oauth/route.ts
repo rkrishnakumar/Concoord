@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { auth } from '@/lib/auth'
+import { db } from '@/lib/db'
 
 export async function GET(request: NextRequest) {
   try {
@@ -19,11 +20,22 @@ export async function GET(request: NextRequest) {
     }
     console.log('Environment check:', envCheck)
     
+    // Test database connection
+    let dbTest = 'not tested'
+    try {
+      await db.$connect()
+      const userCount = await db.user.count()
+      dbTest = `connected, ${userCount} users`
+    } catch (dbError) {
+      dbTest = `error: ${dbError instanceof Error ? dbError.message : 'unknown'}`
+    }
+    
     return NextResponse.json({ 
       success: true, 
       session: session ? 'exists' : 'null',
       userId: session?.user?.id,
-      envCheck
+      envCheck,
+      dbTest
     })
     
   } catch (error) {
