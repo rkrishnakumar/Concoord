@@ -170,9 +170,9 @@ export class ProcoreApi {
       }
     } catch (error) {
       console.error('Error fetching Procore companies:', error)
-      console.error('Response status:', error.response?.status)
-      console.error('Response data:', error.response?.data)
-      throw new Error(`Failed to fetch Procore companies: ${error.response?.status || 'Unknown error'}`)
+      console.error('Response status:', (error as any)?.response?.status)
+      console.error('Response data:', (error as any)?.response?.data)
+      throw new Error(`Failed to fetch Procore companies: ${(error as any)?.response?.status || 'Unknown error'}`)
     }
   }
 
@@ -228,10 +228,10 @@ export class ProcoreApi {
       }
     } catch (error) {
       console.error('Error fetching Procore projects:', error)
-      console.error('Response status:', error.response?.status)
-      console.error('Response data:', error.response?.data)
-      console.error('Response headers:', error.response?.headers)
-      throw new Error(`Failed to fetch Procore projects: ${error.response?.status || 'Unknown error'}`)
+      console.error('Response status:', (error as any)?.response?.status)
+      console.error('Response data:', (error as any)?.response?.data)
+      console.error('Response headers:', (error as any)?.response?.headers)
+      throw new Error(`Failed to fetch Procore projects: ${(error as any)?.response?.status || 'Unknown error'}`)
     }
   }
 
@@ -275,8 +275,8 @@ export class ProcoreApi {
       return response.data
     } catch (error) {
       console.error('Error creating Procore coordination issue:', error)
-      if (error.response) {
-        console.error('Procore API error response:', error.response.status, error.response.data)
+      if ((error as any)?.response) {
+        console.error('Procore API error response:', (error as any).response.status, (error as any).response.data)
       }
       throw new Error('Failed to create Procore coordination issue')
     }
