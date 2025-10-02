@@ -32,18 +32,19 @@ export async function POST(request: NextRequest) {
       })
 
       // Update the database with new tokens
+      const tokenData = response.data as { access_token: string; refresh_token?: string }
       await db.reviztoCredentials.update({
         where: { userId: session.user.id },
         data: {
-          accessToken: response.data.access_token,
-          refreshToken: response.data.refresh_token || credentials.refreshToken,
+          accessToken: tokenData.access_token,
+          refreshToken: tokenData.refresh_token || credentials.refreshToken,
           expiresAt: Date.now() + (60 * 60 * 1000) // 1 hour from now
         }
       })
 
       return NextResponse.json({ 
         success: true, 
-        accessToken: response.data.access_token,
+        accessToken: tokenData.access_token,
         expiresAt: Date.now() + (60 * 60 * 1000)
       })
     } catch (error) {
