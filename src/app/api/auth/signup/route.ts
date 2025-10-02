@@ -18,6 +18,16 @@ export async function POST(request: NextRequest) {
       )
     }
 
+    // Debug environment variable
+    console.log('NEXT_PUBLIC_API_BASE_URL:', process.env.NEXT_PUBLIC_API_BASE_URL)
+    
+    if (!process.env.NEXT_PUBLIC_API_BASE_URL) {
+      return NextResponse.json(
+        { error: 'Backend URL not configured' },
+        { status: 500 }
+      )
+    }
+
     // Forward request to Railway backend
     const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/auth/signup`, {
       method: 'POST',
