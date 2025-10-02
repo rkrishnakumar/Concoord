@@ -334,94 +334,306 @@ app.post('/api/syncs/:id/execute', async (req, res) => {
   }
 });
 
-// Mock endpoints for external systems (return mock data)
+// ACC endpoints - real API calls
 app.get('/api/acc/projects', async (req, res) => {
-  res.json({
-    success: true,
-    projects: [
-      { id: 'project1', name: 'Sample ACC Project 1' },
-      { id: 'project2', name: 'Sample ACC Project 2' }
-    ]
-  });
+  try {
+    const { userId } = req.query;
+    
+    if (!userId) {
+      return res.status(400).json({ error: 'User ID is required' });
+    }
+
+    const user = await prisma.user.findUnique({
+      where: { id: userId },
+      include: { accCredentials: true }
+    });
+
+    if (!user?.accCredentials?.accessToken) {
+      return res.status(404).json({ error: 'No ACC credentials found' });
+    }
+
+    // Make real API call to ACC
+    const response = await axios.get('https://developer.api.autodesk.com/project/v1/hubs', {
+      headers: {
+        'Authorization': `Bearer ${user.accCredentials.accessToken}`,
+        'Content-Type': 'application/json'
+      }
+    });
+
+    res.json({ success: true, projects: response.data.data || [] });
+  } catch (error) {
+    console.error('Error fetching ACC projects:', error);
+    res.status(500).json({ error: 'Failed to fetch ACC projects' });
+  }
 });
 
 app.get('/api/acc/issues', async (req, res) => {
-  res.json({
-    success: true,
-    issues: [
-      { id: 'issue1', title: 'Sample Issue 1', status: 'open' },
-      { id: 'issue2', title: 'Sample Issue 2', status: 'closed' }
-    ]
-  });
+  try {
+    const { userId, projectId } = req.query;
+    
+    if (!userId || !projectId) {
+      return res.status(400).json({ error: 'User ID and project ID are required' });
+    }
+
+    const user = await prisma.user.findUnique({
+      where: { id: userId },
+      include: { accCredentials: true }
+    });
+
+    if (!user?.accCredentials?.accessToken) {
+      return res.status(404).json({ error: 'No ACC credentials found' });
+    }
+
+    // Make real API call to ACC Issues API
+    const response = await axios.get(`https://developer.api.autodesk.com/issues/v2/containers/${projectId}/issues`, {
+      headers: {
+        'Authorization': `Bearer ${user.accCredentials.accessToken}`,
+        'Content-Type': 'application/json'
+      }
+    });
+
+    res.json({ success: true, issues: response.data.data || [] });
+  } catch (error) {
+    console.error('Error fetching ACC issues:', error);
+    res.status(500).json({ error: 'Failed to fetch ACC issues' });
+  }
 });
 
 app.get('/api/acc/fields', async (req, res) => {
-  res.json({
-    success: true,
-    fields: {
-      issues: [
-        { id: 'title', label: 'Title', type: 'string' },
-        { id: 'description', label: 'Description', type: 'text' },
-        { id: 'status', label: 'Status', type: 'select' }
-      ]
+  try {
+    const { userId, projectId } = req.query;
+    
+    if (!userId || !projectId) {
+      return res.status(400).json({ error: 'User ID and project ID are required' });
     }
-  });
+
+    const user = await prisma.user.findUnique({
+      where: { id: userId },
+      include: { accCredentials: true }
+    });
+
+    if (!user?.accCredentials?.accessToken) {
+      return res.status(404).json({ error: 'No ACC credentials found' });
+    }
+
+    // Get issues to discover fields
+    const response = await axios.get(`https://developer.api.autodesk.com/issues/v2/containers/${projectId}/issues`, {
+      headers: {
+        'Authorization': `Bearer ${user.accCredentials.accessToken}`,
+        'Content-Type': 'application/json'
+      }
+    });
+
+    // Extract fields from issues
+    const issues = response.data.data || [];
+    const fields = issues.length > 0 ? Object.keys(issues[0]).map(key => ({
+      id: key,
+      label: key.charAt(0).toUpperCase() + key.slice(1),
+      type: typeof issues[0][key]
+    })) : [];
+
+    res.json({ success: true, fields: { issues: fields } });
+  } catch (error) {
+    console.error('Error fetching ACC fields:', error);
+    res.status(500).json({ error: 'Failed to fetch ACC fields' });
+  }
 });
 
+// Procore endpoints - real API calls
 app.get('/api/procore/companies', async (req, res) => {
-  res.json({
-    success: true,
-    companies: [
-      { id: 'company1', name: 'Sample Procore Company 1' },
-      { id: 'company2', name: 'Sample Procore Company 2' }
-    ]
-  });
+  try {
+    const { userId } = req.query;
+    
+    if (!userId) {
+      return res.status(400).json({ error: 'User ID is required' });
+    }
+
+    const user = await prisma.user.findUnique({
+      where: { id: userId },
+      include: { procoreCredentials: true }
+    });
+
+    if (!user?.procoreCredentials?.accessToken) {
+      return res.status(404).json({ error: 'No Procore credentials found' });
+    }
+
+    // Make real API call to Procore
+    const response = await axios.get('https://api.procore.com/rest/v1.0/companies', {
+      headers: {
+        'Authorization': `Bearer ${user.procoreCredentials.accessToken}`,
+        'Content-Type': 'application/json'
+      }
+    });
+
+    res.json({ success: true, companies: response.data || [] });
+  } catch (error) {
+    console.error('Error fetching Procore companies:', error);
+    res.status(500).json({ error: 'Failed to fetch Procore companies' });
+  }
 });
 
 app.get('/api/procore/projects', async (req, res) => {
-  res.json({
-    success: true,
-    projects: [
-      { id: 'project1', name: 'Sample Procore Project 1' },
-      { id: 'project2', name: 'Sample Procore Project 2' }
-    ]
-  });
+  try {
+    const { userId, companyId } = req.query;
+    
+    if (!userId || !companyId) {
+      return res.status(400).json({ error: 'User ID and company ID are required' });
+    }
+
+    const user = await prisma.user.findUnique({
+      where: { id: userId },
+      include: { procoreCredentials: true }
+    });
+
+    if (!user?.procoreCredentials?.accessToken) {
+      return res.status(404).json({ error: 'No Procore credentials found' });
+    }
+
+    // Make real API call to Procore
+    const response = await axios.get(`https://api.procore.com/rest/v1.0/projects?company_id=${companyId}`, {
+      headers: {
+        'Authorization': `Bearer ${user.procoreCredentials.accessToken}`,
+        'Procore-Company-Id': companyId,
+        'Content-Type': 'application/json'
+      }
+    });
+
+    res.json({ success: true, projects: response.data || [] });
+  } catch (error) {
+    console.error('Error fetching Procore projects:', error);
+    res.status(500).json({ error: 'Failed to fetch Procore projects' });
+  }
 });
 
 app.get('/api/procore/fields', async (req, res) => {
-  res.json({
-    success: true,
-    fields: {
-      issues: [
-        { id: 'title', label: 'Title', type: 'string' },
-        { id: 'description', label: 'Description', type: 'text' },
-        { id: 'status', label: 'Status', type: 'select' }
-      ]
+  try {
+    const { userId, projectId } = req.query;
+    
+    if (!userId || !projectId) {
+      return res.status(400).json({ error: 'User ID and project ID are required' });
     }
-  });
+
+    const user = await prisma.user.findUnique({
+      where: { id: userId },
+      include: { procoreCredentials: true }
+    });
+
+    if (!user?.procoreCredentials?.accessToken) {
+      return res.status(404).json({ error: 'No Procore credentials found' });
+    }
+
+    // Get coordination issues to discover fields
+    const response = await axios.get(`https://api.procore.com/rest/v1.0/coordination_issues?project_id=${projectId}`, {
+      headers: {
+        'Authorization': `Bearer ${user.procoreCredentials.accessToken}`,
+        'Content-Type': 'application/json'
+      }
+    });
+
+    // Extract fields from issues
+    const issues = response.data || [];
+    const fields = issues.length > 0 ? Object.keys(issues[0]).map(key => ({
+      id: key,
+      label: key.charAt(0).toUpperCase() + key.slice(1),
+      type: typeof issues[0][key]
+    })) : [];
+
+    res.json({ success: true, fields: { issues: fields } });
+  } catch (error) {
+    console.error('Error fetching Procore fields:', error);
+    res.status(500).json({ error: 'Failed to fetch Procore fields' });
+  }
 });
 
+// Revizto endpoints - real API calls
 app.get('/api/revizto/projects', async (req, res) => {
-  res.json({
-    success: true,
-    projects: [
-      { id: 'project1', name: 'Sample Revizto Project 1' },
-      { id: 'project2', name: 'Sample Revizto Project 2' }
-    ]
-  });
+  try {
+    const { userId } = req.query;
+    
+    if (!userId) {
+      return res.status(400).json({ error: 'User ID is required' });
+    }
+
+    const user = await prisma.user.findUnique({
+      where: { id: userId },
+      include: { reviztoCredentials: true }
+    });
+
+    if (!user?.reviztoCredentials?.accessToken) {
+      return res.status(404).json({ error: 'No Revizto credentials found' });
+    }
+
+    // Get user licenses first
+    const licensesResponse = await axios.get('https://api.virginia.revizto.com/v5/user/licenses', {
+      headers: {
+        'Authorization': `Bearer ${user.reviztoCredentials.accessToken}`,
+        'Content-Type': 'application/json'
+      }
+    });
+
+    const licenses = licensesResponse.data.data || [];
+    let allProjects = [];
+
+    // Get projects for each license
+    for (const license of licenses) {
+      try {
+        const projectsResponse = await axios.get(`https://api.virginia.revizto.com/v5/project/list/${license.uuid}/paged`, {
+          headers: {
+            'Authorization': `Bearer ${user.reviztoCredentials.accessToken}`,
+            'Content-Type': 'application/json'
+          }
+        });
+        allProjects = allProjects.concat(projectsResponse.data.data || []);
+      } catch (error) {
+        console.error(`Error fetching projects for license ${license.uuid}:`, error);
+      }
+    }
+
+    res.json({ success: true, projects: allProjects });
+  } catch (error) {
+    console.error('Error fetching Revizto projects:', error);
+    res.status(500).json({ error: 'Failed to fetch Revizto projects' });
+  }
 });
 
 app.get('/api/revizto/fields', async (req, res) => {
-  res.json({
-    success: true,
-    fields: {
-      issues: [
-        { id: 'title', label: 'Title', type: 'string' },
-        { id: 'description', label: 'Description', type: 'text' },
-        { id: 'status', label: 'Status', type: 'select' }
-      ]
+  try {
+    const { userId, projectId } = req.query;
+    
+    if (!userId || !projectId) {
+      return res.status(400).json({ error: 'User ID and project ID are required' });
     }
-  });
+
+    const user = await prisma.user.findUnique({
+      where: { id: userId },
+      include: { reviztoCredentials: true }
+    });
+
+    if (!user?.reviztoCredentials?.accessToken) {
+      return res.status(404).json({ error: 'No Revizto credentials found' });
+    }
+
+    // Get issues to discover fields
+    const response = await axios.get(`https://api.virginia.revizto.com/v5/project/${projectId}/issue-filter/filter`, {
+      headers: {
+          'Authorization': `Bearer ${user.reviztoCredentials.accessToken}`,
+          'Content-Type': 'application/json'
+        }
+    });
+
+    // Extract fields from issues
+    const issues = response.data.data?.data || [];
+    const fields = issues.length > 0 ? Object.keys(issues[0]).map(key => ({
+      id: key,
+      label: key.charAt(0).toUpperCase() + key.slice(1),
+      type: typeof issues[0][key]
+    })) : [];
+
+    res.json({ success: true, fields: { issues: fields } });
+  } catch (error) {
+    console.error('Error fetching Revizto fields:', error);
+    res.status(500).json({ error: 'Failed to fetch Revizto fields' });
+  }
 });
 
 const PORT = process.env.PORT || 3000;
