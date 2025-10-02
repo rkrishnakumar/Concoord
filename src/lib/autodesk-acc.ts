@@ -111,7 +111,7 @@ export class AutodeskAccApi {
           
           allProjects.push(...projects)
         } catch (hubError) {
-          console.log(`Could not fetch projects for hub ${hub.id}:`, hubError.response?.status)
+          console.log(`Could not fetch projects for hub ${hub.id}:`, (hubError as any)?.response?.status)
           // Continue with other hubs
         }
       }
