@@ -238,7 +238,7 @@ export class ProcoreApi {
   async getProjectUsers(projectId: string): Promise<ProcoreUser[]> {
     try {
       const response = await this.client.get(`/rest/v1.0/projects/${projectId}/users`)
-      return response.data || []
+      return (response.data as any) || []
     } catch (error) {
       console.error('Error fetching Procore project users:', error)
       throw new Error('Failed to fetch Procore project users')
@@ -256,7 +256,7 @@ export class ProcoreApi {
       }
 
       const response = await this.client.get('/rest/v1.0/coordination_issues', { params })
-      return response.data || []
+      return (response.data as any) || []
     } catch (error) {
       console.error('Error fetching Procore coordination issues:', error)
       throw new Error('Failed to fetch Procore coordination issues')
@@ -272,7 +272,7 @@ export class ProcoreApi {
       console.log('Creating Procore coordination issue with data:', JSON.stringify(requestData, null, 2))
       
       const response = await this.client.post('/rest/v1.0/coordination_issues', requestData)
-      return response.data
+      return response.data as any
     } catch (error) {
       console.error('Error creating Procore coordination issue:', error)
       if ((error as any)?.response) {
@@ -288,7 +288,7 @@ export class ProcoreApi {
         ...issueData,
         project_id: projectId,
       })
-      return response.data
+      return response.data as any
     } catch (error) {
       console.error('Error updating Procore coordination issue:', error)
       throw new Error('Failed to update Procore coordination issue')
@@ -300,7 +300,7 @@ export class ProcoreApi {
       const response = await this.client.get(`/rest/v1.0/coordination_issues/${issueId}`, {
         params: { project_id: projectId }
       })
-      return response.data
+      return response.data as any
     } catch (error) {
       console.error('Error fetching Procore coordination issue details:', error)
       throw new Error('Failed to fetch Procore coordination issue details')
