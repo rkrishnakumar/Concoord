@@ -47,7 +47,7 @@ export async function GET(request: NextRequest) {
     authUrl.searchParams.set('code_challenge_method', 'S256')
 
     // Store OAuth state and PKCE data in database
-    await db.AccCredentials.upsert({
+    await db.accCredentials.upsert({
       where: { userId: session.user.id },
       update: {
         clientId: clientId,
