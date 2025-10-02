@@ -269,17 +269,17 @@ export async function POST(
               console.log(`Created issue in ACC: ${newIssue.id}`)
             }
           } catch (error) {
-            console.error(`Error creating issue: ${error.message}`)
+            console.error(`Error creating issue: ${(error as any)?.message}`)
             results.issues.errors.push({
               issue: issue.title || issue.name,
-              error: error.message
+              error: (error as any)?.message
             })
           }
         }
       } catch (error) {
         console.error('Error syncing issues:', error)
         results.issues.errors.push({
-          error: `Failed to sync issues: ${error.message}`
+          error: `Failed to sync issues: ${(error as any)?.message}`
         })
       }
     }
