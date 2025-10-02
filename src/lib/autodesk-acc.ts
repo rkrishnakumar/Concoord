@@ -67,7 +67,7 @@ export class AutodeskAccApi {
         }
       )
 
-      const { access_token, refresh_token, expires_in } = response.data
+      const { access_token, refresh_token, expires_in } = response.data as { access_token: string; refresh_token: string; expires_in: number }
       this.accessToken = access_token
       this.refreshToken = refresh_token
       
