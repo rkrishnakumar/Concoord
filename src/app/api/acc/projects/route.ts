@@ -26,7 +26,7 @@ export async function GET(request: NextRequest) {
       credentials.baseUrl,
       credentials.clientId,
       credentials.clientSecret,
-      credentials.refreshToken
+      credentials.refreshToken || undefined
     )
 
     try {

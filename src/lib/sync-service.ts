@@ -25,7 +25,7 @@ export class SyncService {
     accClientSecret?: string,
     accRefreshToken?: string
   ) {
-    this.accApi = new AutodeskAccApi(accAccessToken, accBaseUrl, accClientId, accClientSecret, accRefreshToken)
+    this.accApi = new AutodeskAccApi(accAccessToken, accBaseUrl, accClientId, accClientSecret, accRefreshToken || undefined)
     this.procoreApi = new ProcoreApi(procoreAccessToken, procoreBaseUrl)
     this.projectMappingId = projectMappingId
   }
