@@ -244,7 +244,7 @@ export async function POST(
         for (const issue of sourceIssues) {
           try {
             // Get field mappings for issues
-            const fieldMappings = sync.fieldMappings?.issues || []
+            const fieldMappings = (sync.fieldMappings as any)?.issues || []
             
             // Map source fields to destination fields using the new mapping structure
             const mappedIssueData = mapIssueFieldsWithMappings(issue, fieldMappings, sync.sourceSystem, sync.destinationSystem)
