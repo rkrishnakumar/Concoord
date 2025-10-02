@@ -55,8 +55,9 @@ export async function POST(request: NextRequest) {
       return NextResponse.json(data)
     } catch (fetchError) {
       console.error('Fetch error:', fetchError)
+      const errorMessage = fetchError instanceof Error ? fetchError.message : 'Unknown network error'
       return NextResponse.json(
-        { error: `Network error: ${fetchError.message}` },
+        { error: `Network error: ${errorMessage}` },
         { status: 500 }
       )
     }
