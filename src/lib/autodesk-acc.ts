@@ -88,19 +88,21 @@ export class AutodeskAccApi {
       console.log('ACC Hubs Response:', JSON.stringify(hubsResponse.data, null, 2))
       
       // Check for warnings
-      if (hubsResponse.data.meta?.warnings) {
-        console.log('ACC Warnings:', JSON.stringify(hubsResponse.data.meta.warnings, null, 2))
+      const hubsData = hubsResponse.data as any
+      if (hubsData.meta?.warnings) {
+        console.log('ACC Warnings:', JSON.stringify(hubsData.meta.warnings, null, 2))
       }
       
       const allProjects: AccProject[] = []
       
       // For each hub, get its projects
-      for (const hub of hubsResponse.data.data || []) {
+      for (const hub of hubsData.data || []) {
         try {
           const projectsResponse = await this.client.get(`/project/v1/hubs/${hub.id}/projects`)
           console.log(`Projects for hub ${hub.id}:`, projectsResponse.data)
           
-          const projects = projectsResponse.data.data?.map((project: any) => ({
+          const projectsData = projectsResponse.data as any
+          const projects = projectsData.data?.map((project: any) => ({
             id: project.id,
             name: project.attributes?.name || project.name,
             description: project.attributes?.description || project.description || '',
@@ -133,7 +135,8 @@ export class AutodeskAccApi {
       const response = await this.client.get(`/issues/v1/projects/${projectId}/issues`, { params })
       
       // Transform the response to match our interface
-      const issues = response.data.data?.map((issue: any) => ({
+      const issuesData = response.data as any
+      const issues = issuesData.data?.map((issue: any) => ({
         id: issue.id,
         title: issue.attributes?.title || issue.title,
         description: issue.attributes?.description || issue.description || '',
@@ -159,7 +162,8 @@ export class AutodeskAccApi {
     try {
       const response = await this.client.get(`/issues/v1/projects/${projectId}/issues/${issueId}`)
       
-      const issue = response.data.data
+      const issueData = response.data as any
+      const issue = issueData.data
       return {
         id: issue.id,
         title: issue.attributes?.title || issue.title,
@@ -199,7 +203,8 @@ export class AutodeskAccApi {
         }
       })
       
-      const issue = response.data.data
+      const issueData = response.data as any
+      const issue = issueData.data
       return {
         id: issue.id,
         title: issue.attributes?.title || issue.title,
