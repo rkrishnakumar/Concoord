@@ -30,7 +30,10 @@ export async function POST(request: NextRequest) {
     }
 
     // Forward request to Railway backend
-    const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/auth/signup`, {
+    const url = `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/auth/signup`
+    console.log('Making request to:', url)
+    
+    const response = await fetch(url, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -38,7 +41,11 @@ export async function POST(request: NextRequest) {
       body: JSON.stringify({ name, email, password })
     })
 
+    console.log('Response status:', response.status)
+    console.log('Response headers:', Object.fromEntries(response.headers.entries()))
+
     const data = await response.json()
+    console.log('Response data:', data)
 
     if (!response.ok) {
       return NextResponse.json(data, { status: response.status })
