@@ -9,6 +9,7 @@ import Select from '@/components/ui/Select'
 import Input from '@/components/ui/Input'
 import Alert from '@/components/ui/Alert'
 import FieldMapping from '@/components/FieldMapping'
+import { apiFetch } from '@/lib/api-fetch'
 
 interface AccProject {
   id: string
@@ -153,7 +154,7 @@ export default function NewSyncPage() {
 
   const checkConnectionStatus = async () => {
     try {
-      const response = await fetch('/api/credentials')
+      const response = await apiFetch('/api/credentials')
       if (response.ok) {
         const data = await response.json()
         setAccConnected(!!data.accCredentials?.accessToken)
@@ -342,7 +343,7 @@ export default function NewSyncPage() {
         console.log(`Fetching Revizto fields for project: ${selectedReviztoProject}`)
       }
       
-      const response = await fetch(url)
+      const response = await apiFetch(url)
       console.log(`Response for ${system}:`, response.status, response.ok)
       
       if (!response.ok) {
@@ -382,7 +383,7 @@ export default function NewSyncPage() {
 
   const loadAccProjects = async () => {
     try {
-      const response = await fetch('/api/acc/projects')
+      const response = await apiFetch('/api/acc/projects')
       if (response.ok) {
         const data = await response.json()
         const projects = data.projects || data
@@ -399,7 +400,7 @@ export default function NewSyncPage() {
 
   const loadReviztoProjects = async () => {
     try {
-      const response = await fetch('/api/revizto/projects')
+      const response = await apiFetch('/api/revizto/projects')
       if (response.ok) {
         const data = await response.json()
         console.log('Revizto projects response:', data)
@@ -422,7 +423,7 @@ export default function NewSyncPage() {
 
   const loadProcoreCompanies = async () => {
     try {
-      const response = await fetch('/api/procore/companies')
+      const response = await apiFetch('/api/procore/companies')
       if (response.ok) {
         const data = await response.json()
         const companies = data.companies || data
@@ -563,7 +564,7 @@ export default function NewSyncPage() {
     }
 
     try {
-      const response = await fetch('/api/syncs', {
+      const response = await apiFetch('/api/syncs', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

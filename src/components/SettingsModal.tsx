@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react'
 import Modal from '@/components/ui/Modal'
 import Button from '@/components/ui/Button'
 import Alert from '@/components/ui/Alert'
+import { apiFetch } from '@/lib/api-fetch'
 
 interface SettingsModalProps {
   isOpen: boolean
@@ -27,7 +28,7 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
 
   const fetchCredentials = async () => {
     try {
-      const response = await fetch('/api/credentials')
+      const response = await apiFetch('/api/credentials')
       if (response.ok) {
         const data = await response.json()
         setAccConnected(!!data.accCredentials?.accessToken)
@@ -42,7 +43,8 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
   const authenticateWithAcc = async () => {
     setLoading(true)
     try {
-      window.location.href = '/api/auth/acc/connect'
+      const backendUrl = process.env.NEXT_PUBLIC_API_BASE_URL || ''
+      window.location.href = `${backendUrl}/api/auth/acc/connect`
     } catch (error) {
       console.error('ACC authentication error:', error)
     } finally {
@@ -53,7 +55,8 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
   const authenticateWithProcore = async () => {
     setLoading(true)
     try {
-      window.location.href = '/api/auth/procore/connect'
+      const backendUrl = process.env.NEXT_PUBLIC_API_BASE_URL || ''
+      window.location.href = `${backendUrl}/api/auth/procore/connect`
     } catch (error) {
       console.error('Procore authentication error:', error)
     } finally {
@@ -71,7 +74,7 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
 
     setLoading(true)
     try {
-      const response = await fetch('/api/auth/revizto/connect', {
+      const response = await apiFetch('/api/auth/revizto/connect', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ 
@@ -100,7 +103,7 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
     setLoading(true)
     setMessage('') // Clear previous message
     try {
-      const response = await fetch('/api/test-connection', {
+      const response = await apiFetch('/api/test-connection', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ type })
@@ -123,7 +126,7 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
   const disconnectAccount = async (type: 'acc' | 'procore' | 'revizto') => {
     setLoading(true)
     try {
-      const response = await fetch('/api/disconnect', {
+      const response = await apiFetch('/api/disconnect', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ type })

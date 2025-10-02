@@ -6,6 +6,7 @@ import Card from '@/components/ui/Card'
 import Button from '@/components/ui/Button'
 import Input from '@/components/ui/Input'
 import Alert from '@/components/ui/Alert'
+import { apiFetch } from '@/lib/api-fetch'
 
 export default function SignUpPage() {
   const [name, setName] = useState('')
@@ -22,7 +23,7 @@ export default function SignUpPage() {
     setError('')
 
     try {
-      const response = await fetch('/api/auth/signup', {
+      const response = await apiFetch('/api/auth/signup', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ name, email, password })

@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react'
 import { useSession } from 'next-auth/react'
 import Navigation from '@/components/Navigation'
 import Button from '@/components/ui/Button'
+import { apiFetch } from '@/lib/api-fetch'
 
 interface AccProject {
   id: string
@@ -63,7 +64,7 @@ export default function SyncPage() {
 
   const checkConnectionStatus = async () => {
     try {
-      const response = await fetch('/api/credentials')
+      const response = await apiFetch('/api/credentials')
       if (response.ok) {
         const data = await response.json()
         setAccConnected(!!data.accCredentials?.accessToken)
@@ -80,7 +81,7 @@ export default function SyncPage() {
 
   const loadProcoreCompanies = async () => {
     try {
-      const response = await fetch('/api/procore/companies')
+      const response = await apiFetch('/api/procore/companies')
       if (response.ok) {
         const companies = await response.json()
         setProcoreCompanies(companies)
@@ -158,7 +159,7 @@ export default function SyncPage() {
     setMessage('')
     
     try {
-      const response = await fetch('/api/sync', {
+      const response = await apiFetch('/api/sync', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

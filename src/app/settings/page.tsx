@@ -6,6 +6,7 @@ import PageLayout from '@/components/ui/PageLayout'
 import Card from '@/components/ui/Card'
 import Button from '@/components/ui/Button'
 import Alert from '@/components/ui/Alert'
+import { apiFetch } from '@/lib/api-fetch'
 
 interface AccCredentials {
   clientId: string
@@ -54,7 +55,7 @@ export default function SettingsPage() {
 
   const fetchCredentials = async () => {
     try {
-      const response = await fetch('/api/credentials')
+      const response = await apiFetch('/api/credentials')
       if (response.ok) {
         const data = await response.json()
         setAccConnected(!!data.accCredentials?.accessToken)
@@ -70,7 +71,7 @@ export default function SettingsPage() {
     setMessage('')
     
     try {
-      const response = await fetch('/api/auth/acc/connect')
+      const response = await apiFetch('/api/auth/acc/connect')
       if (response.ok) {
         const data = await response.json()
         if (data.authUrl) {
@@ -93,7 +94,7 @@ export default function SettingsPage() {
     setMessage('')
     
     try {
-      const response = await fetch('/api/auth/procore/connect')
+      const response = await apiFetch('/api/auth/procore/connect')
       if (response.ok) {
         const data = await response.json()
         if (data.authUrl) {
@@ -116,7 +117,7 @@ export default function SettingsPage() {
     setMessage('')
     
     try {
-      const response = await fetch('/api/test-connection', {
+      const response = await apiFetch('/api/test-connection', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ type }),
@@ -142,7 +143,7 @@ export default function SettingsPage() {
     setMessage('')
     
     try {
-      const response = await fetch('/api/disconnect', {
+      const response = await apiFetch('/api/disconnect', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ type }),

@@ -7,6 +7,7 @@ import Card from '@/components/ui/Card'
 import Button from '@/components/ui/Button'
 import Alert from '@/components/ui/Alert'
 import SettingsModal from '@/components/SettingsModal'
+import { apiFetch } from '@/lib/api-fetch'
 
 interface Sync {
   id: string
@@ -44,7 +45,7 @@ export default function HomePage() {
 
   const checkConnectionStatus = async () => {
     try {
-      const response = await fetch('/api/credentials')
+      const response = await apiFetch('/api/credentials')
       if (response.ok) {
         const data = await response.json()
         setAccConnected(!!data.accCredentials?.accessToken)
@@ -57,7 +58,7 @@ export default function HomePage() {
 
   const loadSyncs = async () => {
     try {
-      const response = await fetch('/api/syncs')
+      const response = await apiFetch('/api/syncs')
       if (response.ok) {
         const syncs = await response.json()
         setSyncs(syncs)
@@ -108,7 +109,7 @@ export default function HomePage() {
     setMessage('')
     
     try {
-      const response = await fetch(`/api/syncs/${syncId}/execute`, {
+      const response = await apiFetch(`/api/syncs/${syncId}/execute`, {
         method: 'POST'
       })
       
