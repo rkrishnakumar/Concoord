@@ -56,7 +56,11 @@ export async function GET(request: NextRequest) {
       }
       
       // Extract field structure from issues
-      const discoveredFields = {
+      const discoveredFields: {
+        issues: Array<{name: string, type: string, description: string}>
+        rfis: Array<{name: string, type: string, description: string}>
+        submittals: Array<{name: string, type: string, description: string}>
+      } = {
         issues: [],
         rfis: [],
         submittals: []
