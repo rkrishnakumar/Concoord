@@ -42,7 +42,7 @@ export async function GET(request: NextRequest) {
       })
     } catch (error) {
       console.error('Error fetching Procore projects:', error)
-      console.error('Error details:', error.response?.data)
+      console.error('Error details:', (error as any)?.response?.data)
       return NextResponse.json(
         { error: 'Failed to fetch projects from Procore' },
         { status: 500 }
