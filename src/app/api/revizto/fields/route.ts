@@ -67,7 +67,7 @@ export async function GET(request: NextRequest) {
         console.log('Sample issue structure:', JSON.stringify(sampleIssue, null, 2))
         
         // Dynamically discover fields from the actual issue structure
-        const issueFields = []
+        const issueFields: Array<{name: string, type: string, description: string}> = []
         
         // Extract all fields from the sample issue
         console.log('Processing sample issue fields...')
