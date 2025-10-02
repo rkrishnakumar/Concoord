@@ -33,25 +33,33 @@ export async function POST(request: NextRequest) {
     const url = `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/auth/signup`
     console.log('Making request to:', url)
     
-    const response = await fetch(url, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ name, email, password })
-    })
+    try {
+      const response = await fetch(url, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ name, email, password })
+      })
 
-    console.log('Response status:', response.status)
-    console.log('Response headers:', Object.fromEntries(response.headers.entries()))
+      console.log('Response status:', response.status)
+      console.log('Response headers:', Object.fromEntries(response.headers.entries()))
 
-    const data = await response.json()
-    console.log('Response data:', data)
+      const data = await response.json()
+      console.log('Response data:', data)
 
-    if (!response.ok) {
-      return NextResponse.json(data, { status: response.status })
+      if (!response.ok) {
+        return NextResponse.json(data, { status: response.status })
+      }
+
+      return NextResponse.json(data)
+    } catch (fetchError) {
+      console.error('Fetch error:', fetchError)
+      return NextResponse.json(
+        { error: `Network error: ${fetchError.message}` },
+        { status: 500 }
+      )
     }
-
-    return NextResponse.json(data)
   } catch (error) {
     console.error('Error creating user:', error)
     return NextResponse.json(
