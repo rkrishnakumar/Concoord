@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { auth } from '@/lib/auth'
-import { db } from '@/lib/db'
 
 export async function GET(request: NextRequest) {
   try {
@@ -10,24 +9,15 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
 
-    const user = await db.user.findUnique({
-      where: { id: session.user.id },
-      include: {
-        accCredentials: true,
-        procoreCredentials: true,
-        reviztoCredentials: true
-      }
-    })
+    // Forward request to Railway backend
+    const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/credentials?userId=${session.user.id}`)
+    const data = await response.json()
 
-    if (!user) {
-      return NextResponse.json({ error: 'User not found' }, { status: 404 })
+    if (!response.ok) {
+      return NextResponse.json(data, { status: response.status })
     }
 
-    return NextResponse.json({
-      accCredentials: user.accCredentials,
-      procoreCredentials: user.procoreCredentials,
-      reviztoCredentials: user.reviztoCredentials
-    })
+    return NextResponse.json(data)
   } catch (error) {
     console.error('Error fetching credentials:', error)
     return NextResponse.json(
