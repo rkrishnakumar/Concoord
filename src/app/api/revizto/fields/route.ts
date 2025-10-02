@@ -84,7 +84,7 @@ export async function GET(request: NextRequest) {
             return
           }
           
-          const fieldData = sampleIssue[key]
+          const fieldData = (sampleIssue as any)[key]
           let fieldType = 'string'
           let fieldValue = fieldData
           
