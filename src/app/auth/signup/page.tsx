@@ -47,14 +47,14 @@ export default function SignUpPage() {
 
   if (success) {
     return (
-      <div className="min-h-screen bg-gray-800 flex items-center justify-center">
+      <div className="min-h-screen  flex items-center justify-center">
         <Card className="max-w-md w-full text-center">
           <div className="text-green-400 mb-4">
             <svg className="w-16 h-16 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
             </svg>
           </div>
-          <h2 className="text-2xl font-bold text-white mb-2">Account Created!</h2>
+          <h2 className="text-2xl font-bold text-gray-800 mb-2">Account Created!</h2>
           <p className="text-gray-300">Redirecting to sign in...</p>
         </Card>
       </div>
@@ -62,7 +62,7 @@ export default function SignUpPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-800 flex items-center justify-center">
+    <div className="min-h-screen  flex items-center justify-center">
       <Card className="max-w-md w-full">
         <div className="text-center mb-8">
           <div className="flex items-center justify-center mb-4">

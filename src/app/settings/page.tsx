@@ -164,7 +164,7 @@ export default function SettingsPage() {
 
   if (!session) {
     return (
-      <div className="min-h-screen bg-gray-800 flex items-center justify-center">
+      <div className="min-h-screen  flex items-center justify-center">
         <div className="text-center">
           <h1 className="text-2xl font-bold text-white mb-4">Please sign in</h1>
           <p className="text-gray-300">You need to be signed in to access settings.</p>

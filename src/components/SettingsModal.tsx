@@ -154,7 +154,7 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
           <div className="p-4 border-b border-gray-600">
             <button
               onClick={onClose}
-              className="text-gray-400 hover:text-white transition-colors"
+              className="text-gray-400 hover:text-gray-800 transition-colors"
             >
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -169,8 +169,8 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
                 onClick={() => setActiveSection('about')}
                 className={`w-full flex items-center space-x-3 px-3 py-3 rounded-lg text-base font-medium transition-colors ${
                   activeSection === 'about' 
-                    ? 'bg-gray-600 text-white' 
-                    : 'text-gray-400 hover:text-white hover:bg-gray-600'
+                    ? 'bg-gray-600 text-gray-800' 
+                    : 'text-gray-400 hover:text-gray-800 hover:bg-gray-600'
                 }`}
               >
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -182,8 +182,8 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
                 onClick={() => setActiveSection('integrations')}
                 className={`w-full flex items-center space-x-3 px-3 py-3 rounded-lg text-base font-medium transition-colors ${
                   activeSection === 'integrations' 
-                    ? 'bg-gray-600 text-white' 
-                    : 'text-gray-400 hover:text-white hover:bg-gray-600'
+                    ? 'bg-gray-600 text-gray-800' 
+                    : 'text-gray-400 hover:text-gray-800 hover:bg-gray-600'
                 }`}
               >
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -196,9 +196,9 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
         </div>
 
         {/* Right Content */}
-        <div className="flex-1 bg-gray-800 overflow-y-auto">
+        <div className="flex-1  overflow-y-auto">
           <div className="p-6">
-            <h2 className="text-xl font-semibold text-white mb-6">
+            <h2 className="text-xl font-semibold text-gray-800 mb-6">
               {activeSection === 'about' ? 'About' : 'Integrations'}
             </h2>
             
@@ -228,7 +228,7 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
                       />
                     </div>
                     <div>
-                      <h3 className="text-lg font-semibold text-white">Autodesk Construction Cloud</h3>
+                      <h3 className="text-lg font-semibold text-gray-800">Autodesk Construction Cloud</h3>
                       <p className="text-gray-300 text-sm">Connect to Autodesk, to select your projects and issues.</p>
                     </div>
                   </div>
@@ -286,7 +286,7 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
                       />
                     </div>
                     <div>
-                      <h3 className="text-lg font-semibold text-white">Procore</h3>
+                      <h3 className="text-lg font-semibold text-gray-800">Procore</h3>
                       <p className="text-gray-300 text-sm">Connect to Procore, to select your projects and issues.</p>
                     </div>
                   </div>
@@ -346,7 +346,7 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
                       />
                     </div>
                     <div>
-                      <h3 className="text-lg font-semibold text-white">Revizto</h3>
+                      <h3 className="text-lg font-semibold text-gray-800">Revizto</h3>
                       <p className="text-gray-300 text-sm">Enter your Revizto access code to connect and select your projects and issues.</p>
                     </div>
                   </div>
@@ -391,7 +391,7 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
                           value={reviztoAccessCode}
                           onChange={(e) => setReviztoAccessCode(e.target.value)}
                           placeholder="Enter your Revizto access code"
-                          className="flex-1 px-3 py-2 bg-gray-600 border border-gray-500 rounded-md text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                          className="flex-1 px-3 py-2 bg-gray-600 border border-gray-500 rounded-md text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                         />
                         <Button
                           variant="primary"

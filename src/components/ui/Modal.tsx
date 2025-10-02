@@ -62,7 +62,7 @@ export default function Modal({
       />
       
       {/* Modal */}
-      <div className={`relative bg-gray-800 rounded-xl shadow-2xl w-full mx-4 ${sizeClasses[size]} max-h-[90vh] overflow-hidden`}>
+      <div className={`relative  rounded-xl shadow-2xl w-full mx-4 ${sizeClasses[size]} max-h-[90vh] overflow-hidden`}>
         {title && (
           <div className="flex items-center justify-between p-6 border-b border-gray-700">
             <h2 className="text-xl font-semibold text-white">{title}</h2>
