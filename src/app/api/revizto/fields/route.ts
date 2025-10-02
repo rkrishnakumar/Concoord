@@ -107,10 +107,9 @@ export async function GET(request: NextRequest) {
           const label = key.charAt(0).toUpperCase() + key.slice(1).replace(/([A-Z])/g, ' $1').replace(/_/g, ' ')
           
           const field = { 
-            id: key, 
-            label: label, 
-            description: `Revizto field: ${key}`, 
-            type: fieldType 
+            name: key, 
+            type: fieldType, 
+            description: `Revizto field: ${key}` 
           }
           
           console.log(`Adding field:`, field)
@@ -119,7 +118,7 @@ export async function GET(request: NextRequest) {
         
         discoveredFields.issues = issueFields
         console.log(`Discovered ${issueFields.length} fields for Revizto issues`)
-        console.log('Discovered fields:', issueFields.map(f => `${f.id} (${f.type})`))
+        console.log('Discovered fields:', issueFields.map(f => `${f.name} (${f.type})`))
       } else {
         console.log('No issues found in Revizto project - cannot discover fields')
         discoveredFields.issues = []
