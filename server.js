@@ -226,7 +226,7 @@ app.get('/api/auth/acc/connect', (req, res) => {
     
     // Store state in session or database for verification
     // For now, we'll include it in the URL
-    const accOAuthUrl = `https://developer.api.autodesk.com/authentication/v2/authorize?response_type=code&client_id=${process.env.ACC_CLIENT_ID}&redirect_uri=${process.env.FRONTEND_URL}/api/auth/acc/callback&scope=data:read data:write&state=${state}`
+    const accOAuthUrl = `https://developer.api.autodesk.com/authentication/v2/authorize?response_type=code&client_id=${process.env.ACC_CLIENT_ID}&redirect_uri=${process.env.FRONTEND_URL}/api/oauth/acc-callback&scope=data:read data:write&state=${state}`
     
     console.log('ACC OAuth URL:', accOAuthUrl)
     res.redirect(accOAuthUrl)
@@ -248,7 +248,7 @@ app.get('/api/auth/procore/connect', (req, res) => {
     
     // Store state in session or database for verification
     // For now, we'll include it in the URL
-    const procoreOAuthUrl = `https://login.procore.com/oauth/authorize?response_type=code&client_id=${process.env.PROCORE_CLIENT_ID}&redirect_uri=${process.env.FRONTEND_URL}/api/auth/procore/callback&state=${state}`
+    const procoreOAuthUrl = `https://login.procore.com/oauth/authorize?response_type=code&client_id=${process.env.PROCORE_CLIENT_ID}&redirect_uri=${process.env.FRONTEND_URL}/api/oauth/procore-callback&state=${state}`
     
     console.log('Procore OAuth URL:', procoreOAuthUrl)
     res.redirect(procoreOAuthUrl)
