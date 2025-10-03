@@ -4,6 +4,7 @@ import { useSession } from 'next-auth/react'
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import Logo from '@/components/Logo'
+import Button from '@/components/ui/Button'
 
 export default function Home() {
   const { data: session, status } = useSession()
@@ -44,7 +45,7 @@ export default function Home() {
               </Link>
               <Link
                 href="/auth/signup"
-                className="bg-orange-500 hover:bg-orange-600 text-gray-800 px-4 py-2 rounded-xl text-sm font-medium transition-colors"
+                className="bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 rounded-xl text-sm font-medium transition-colors"
               >
                 Get Started
               </Link>
@@ -63,13 +64,13 @@ export default function Home() {
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link
               href="/auth/signup"
-              className="bg-orange-500 hover:bg-orange-600 text-gray-800 px-8 py-4 rounded-lg text-lg font-semibold transition-colors"
+              className="bg-orange-500 hover:bg-orange-600 text-white px-8 py-4 rounded-lg text-lg font-semibold transition-colors"
             >
               Start Syncing Issues
             </Link>
             <Link
               href="/auth/signin"
-              className="bg-gray-200 hover:bg-gray-300 text-gray-900 px-8 py-4 rounded-lg text-lg font-semibold border border-gray-300 transition-colors"
+              className="bg-gray-200 hover:bg-gray-300 text-gray-800 px-8 py-4 rounded-lg text-lg font-semibold border border-gray-300 transition-colors"
             >
               Sign In
             </Link>
@@ -184,12 +185,13 @@ export default function Home() {
           <p className="text-xl text-gray-600 mb-12 max-w-3xl mx-auto">
             Join construction teams who are already saving hours with universal data interoperability.
           </p>
-          <Link
+          <Button
             href="/auth/signup"
-            className="bg-white hover:bg-gray-100 text-black px-8 py-4 rounded-xl text-lg font-semibold transition-colors"
+            variant="primary"
+            size="lg"
           >
             Get Started Free
-          </Link>
+          </Button>
         </div>
       </div>
 

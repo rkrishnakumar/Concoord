@@ -145,6 +145,31 @@ app.get('/api/auth/procore/callback', async (req, res) => {
   }
 });
 
+// OAuth connect endpoints
+app.get('/api/auth/acc/connect', (req, res) => {
+  try {
+    // TODO: Implement ACC OAuth flow
+    // For now, redirect to ACC OAuth URL
+    const accOAuthUrl = `https://developer.api.autodesk.com/authentication/v2/authorize?response_type=code&client_id=${process.env.ACC_CLIENT_ID}&redirect_uri=${process.env.FRONTEND_URL}/api/auth/acc/callback&scope=data:read data:write`
+    res.redirect(accOAuthUrl)
+  } catch (error) {
+    console.error('Error initiating ACC OAuth:', error)
+    res.redirect(`${process.env.FRONTEND_URL}/auth/error?error=oauth_failed`)
+  }
+})
+
+app.get('/api/auth/procore/connect', (req, res) => {
+  try {
+    // TODO: Implement Procore OAuth flow
+    // For now, redirect to Procore OAuth URL
+    const procoreOAuthUrl = `https://login.procore.com/oauth/authorize?response_type=code&client_id=${process.env.PROCORE_CLIENT_ID}&redirect_uri=${process.env.FRONTEND_URL}/api/auth/procore/callback&scope=read:coordination_issues write:coordination_issues`
+    res.redirect(procoreOAuthUrl)
+  } catch (error) {
+    console.error('Error initiating Procore OAuth:', error)
+    res.redirect(`${process.env.FRONTEND_URL}/auth/error?error=oauth_failed`)
+  }
+})
+
 // Health check
 app.get('/api/health', (req, res) => {
   res.json({ status: 'ok', message: 'Railway backend is running' });
