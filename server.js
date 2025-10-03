@@ -658,6 +658,7 @@ app.post('/api/credentials', async (req, res) => {
           expiresAt
         },
         create: {
+          id: `acc_${Date.now()}`,
           userId,
           accessToken,
           refreshToken,
@@ -673,6 +674,7 @@ app.post('/api/credentials', async (req, res) => {
           expiresAt
         },
         create: {
+          id: `procore_${Date.now()}`,
           userId,
           accessToken,
           refreshToken,
@@ -688,6 +690,7 @@ app.post('/api/credentials', async (req, res) => {
           expiresAt
         },
         create: {
+          id: `revizto_${Date.now()}`,
           userId,
           accessToken,
           refreshToken,
