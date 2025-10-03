@@ -52,6 +52,23 @@ export async function GET(request: NextRequest) {
       console.log('User ID:', session.user.id)
       console.log('Access token present:', !!tokenData.access_token)
       
+      // First, ensure user exists in the database
+      const userResponse = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/users`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          id: session.user.id,
+          email: session.user.email,
+          name: session.user.name
+        })
+      });
+      
+      if (!userResponse.ok) {
+        console.error('Failed to create user:', await userResponse.text());
+      }
+      
       const response = await fetch(credentialsUrl, {
         method: 'POST',
         headers: {
