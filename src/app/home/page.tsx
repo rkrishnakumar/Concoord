@@ -38,8 +38,9 @@ export default function HomePage() {
 
   useEffect(() => {
     if (session) {
-      checkConnectionStatus()
-      loadSyncs()
+      // Temporarily disabled to fix console spam
+      // checkConnectionStatus()
+      // loadSyncs()
     }
   }, [session])
 

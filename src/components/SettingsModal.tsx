@@ -46,13 +46,14 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
 
   const fetchCredentials = async () => {
     try {
-      const response = await apiFetch('/api/credentials')
-      if (response.ok) {
-        const data = await response.json()
-        setAccConnected(!!data.accCredentials?.accessToken)
-        setProcoreConnected(!!data.procoreCredentials?.accessToken)
-        setReviztoConnected(!!data.reviztoCredentials?.accessToken)
-      }
+      // Temporarily disabled to fix console spam
+      // const response = await apiFetch('/api/credentials')
+      // if (response.ok) {
+      //   const data = await response.json()
+      //   setAccConnected(!!data.accCredentials?.accessToken)
+      //   setProcoreConnected(!!data.procoreCredentials?.accessToken)
+      //   setReviztoConnected(!!data.reviztoCredentials?.accessToken)
+      // }
     } catch (error) {
       console.error('Error fetching credentials:', error)
     }
