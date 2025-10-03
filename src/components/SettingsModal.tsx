@@ -63,8 +63,13 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
       console.log('NEXT_PUBLIC_API_BASE_URL:', process.env.NEXT_PUBLIC_API_BASE_URL)
       console.log('About to redirect to:', url)
       
-      // Show alert with the values so you can see them
-      alert(`NEXT_PUBLIC_API_BASE_URL: ${process.env.NEXT_PUBLIC_API_BASE_URL}\n\nProcore OAuth URL: ${url}`)
+      // Test if the URL is accessible
+      try {
+        const response = await fetch(url, { method: 'HEAD' })
+        console.log('Railway endpoint response:', response.status, response.headers.get('location'))
+      } catch (error) {
+        console.error('Error testing Railway endpoint:', error)
+      }
       
       window.location.href = url
     } catch (error) {
