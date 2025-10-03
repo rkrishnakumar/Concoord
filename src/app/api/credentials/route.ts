@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { auth } from '@/lib/auth'
+import { buildApiUrl } from '@/lib/api-helper'
 
 export async function GET(request: NextRequest) {
   try {
@@ -10,7 +11,7 @@ export async function GET(request: NextRequest) {
     }
 
     // Forward request to Railway backend
-    const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/credentials?userId=${session.user.id}`)
+    const response = await fetch(`${buildApiUrl('/api/credentials')}?userId=${session.user.id}`)
     const data = await response.json()
 
     if (!response.ok) {
@@ -38,7 +39,7 @@ export async function POST(request: NextRequest) {
     const body = await request.json()
 
     // Forward request to Railway backend
-    const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/credentials`, {
+    const response = await fetch(`${buildApiUrl('/api/credentials')}`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

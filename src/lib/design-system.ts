@@ -18,6 +18,7 @@ export const colors = {
   buttons: {
     primary: 'bg-white hover:bg-gray-50 text-gray-900',
     secondary: 'bg-gray-100 hover:bg-gray-200 text-gray-900',
+    black: 'bg-black hover:bg-gray-800 text-white',
     success: 'bg-green-100 hover:bg-green-200 text-green-900',
     danger: 'bg-red-100 hover:bg-red-200 text-red-900',
   },

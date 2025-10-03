@@ -1,10 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { buildApiUrl } from '@/lib/api-helper'
 
 export async function GET(request: NextRequest) {
   try {
     // Forward the callback to Railway backend
     const url = new URL(request.url)
-    const railwayUrl = `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/auth/acc/callback${url.search}`
+    const railwayUrl = `${buildApiUrl('/api/auth/acc/callback')}${url.search}`
     
     const response = await fetch(railwayUrl)
     

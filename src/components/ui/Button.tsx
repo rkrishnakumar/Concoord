@@ -4,7 +4,7 @@ import { colors } from '@/lib/design-system'
 
 interface ButtonProps {
   children: ReactNode
-  variant?: 'primary' | 'secondary' | 'success' | 'danger'
+  variant?: 'primary' | 'secondary' | 'black' | 'success' | 'danger'
   size?: 'sm' | 'md' | 'lg'
   disabled?: boolean
   loading?: boolean

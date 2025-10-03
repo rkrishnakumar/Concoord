@@ -215,64 +215,6 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
               </div>
             ) : (
               <div className="space-y-4">
-              {/* Autodesk Integration */}
-              <div className="bg-white rounded-xl p-6 border border-gray-200">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center space-x-4">
-                    {/* Autodesk Logo */}
-                    <div className="w-12 h-12 bg-white rounded-lg flex items-center justify-center p-2">
-                      <img 
-                        src="/autodesk-logo.png" 
-                        alt="Autodesk" 
-                        className="w-8 h-8 object-contain"
-                      />
-                    </div>
-                    <div>
-                      <h3 className="text-lg font-semibold text-gray-800">Autodesk Construction Cloud</h3>
-                      <p className="text-gray-600 text-sm">Connect to Autodesk, to select your projects and issues.</p>
-                    </div>
-                  </div>
-                  <div className="flex items-center space-x-3">
-                    {accConnected ? (
-                      <>
-                        <span className="inline-flex items-center px-3 h-[2.5rem] rounded-full text-sm font-medium bg-green-900 text-green-200">
-                          Connected
-                        </span>
-                        <Button
-                          variant="danger"
-                          size="sm"
-                          onClick={() => disconnectAccount('acc')}
-                          loading={loading}
-                        >
-                          Disconnect
-                        </Button>
-                      </>
-                    ) : (
-                      <Button
-                        variant="primary"
-                        size="lg"
-                        onClick={authenticateWithAcc}
-                        loading={loading}
-                      >
-                        Connect
-                      </Button>
-                    )}
-                  </div>
-                </div>
-                {accConnected && (
-                  <div className="mt-4 pt-4 border-t border-gray-300">
-                    <Button
-                      variant="secondary"
-                      size="sm"
-                      onClick={() => testConnection('acc')}
-                      loading={loading}
-                    >
-                      Test Connection
-                    </Button>
-                  </div>
-                )}
-              </div>
-
               {/* Procore Integration */}
               <div className="bg-white rounded-xl p-6 border border-gray-200">
                 <div className="flex items-center justify-between">
@@ -307,12 +249,10 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
                       </>
                     ) : (
                       <Button
-                        variant="primary"
+                        variant="black"
                         size="lg"
                         onClick={authenticateWithProcore}
                         loading={loading}
-                        className="text-black"
-                        style={{ backgroundColor: '#FF5200' }}
                       >
                         Connect
                       </Button>
@@ -325,6 +265,64 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
                       variant="secondary"
                       size="sm"
                       onClick={() => testConnection('procore')}
+                      loading={loading}
+                    >
+                      Test Connection
+                    </Button>
+                  </div>
+                )}
+              </div>
+
+              {/* Autodesk Integration */}
+              <div className="bg-white rounded-xl p-6 border border-gray-200">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center space-x-4">
+                    {/* Autodesk Logo */}
+                    <div className="w-12 h-12 bg-white rounded-lg flex items-center justify-center p-2">
+                      <img 
+                        src="/autodesk-logo.png" 
+                        alt="Autodesk" 
+                        className="w-8 h-8 object-contain"
+                      />
+                    </div>
+                    <div>
+                      <h3 className="text-lg font-semibold text-gray-800">Autodesk Construction Cloud</h3>
+                      <p className="text-gray-600 text-sm">Connect to Autodesk, to select your projects and issues.</p>
+                    </div>
+                  </div>
+                  <div className="flex items-center space-x-3">
+                    {accConnected ? (
+                      <>
+                        <span className="inline-flex items-center px-3 h-[2.5rem] rounded-full text-sm font-medium bg-green-900 text-green-200">
+                          Connected
+                        </span>
+                        <Button
+                          variant="danger"
+                          size="sm"
+                          onClick={() => disconnectAccount('acc')}
+                          loading={loading}
+                        >
+                          Disconnect
+                        </Button>
+                      </>
+                    ) : (
+                      <Button
+                        variant="black"
+                        size="lg"
+                        onClick={authenticateWithAcc}
+                        loading={loading}
+                      >
+                        Connect
+                      </Button>
+                    )}
+                  </div>
+                </div>
+                {accConnected && (
+                  <div className="mt-4 pt-4 border-t border-gray-300">
+                    <Button
+                      variant="secondary"
+                      size="sm"
+                      onClick={() => testConnection('acc')}
                       loading={loading}
                     >
                       Test Connection
@@ -367,12 +365,10 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
                       </>
                     ) : (
                       <Button
-                        variant="primary"
+                        variant="black"
                         size="lg"
                         onClick={authenticateWithRevizto}
                         loading={loading}
-                        className="text-black"
-                        style={{ backgroundColor: '#00A8CC' }}
                       >
                         Connect
                       </Button>
@@ -394,12 +390,10 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
                           className="flex-1 px-3 py-2 bg-white border border-gray-300 rounded-md text-gray-800 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                         />
                         <Button
-                          variant="primary"
+                          variant="black"
                           size="lg"
                           onClick={authenticateWithRevizto}
                           loading={loading}
-                          className="text-black"
-                          style={{ backgroundColor: '#00A8CC' }}
                         >
                           Configure
                         </Button>
