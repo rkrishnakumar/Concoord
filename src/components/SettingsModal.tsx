@@ -59,18 +59,6 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
     setLoading(true)
     try {
       const url = `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/auth/procore/connect`
-      console.log('Procore OAuth URL:', url)
-      console.log('NEXT_PUBLIC_API_BASE_URL:', process.env.NEXT_PUBLIC_API_BASE_URL)
-      console.log('About to redirect to:', url)
-      
-      // Test if the URL is accessible
-      try {
-        const response = await fetch(url, { method: 'HEAD' })
-        console.log('Railway endpoint response:', response.status, response.headers.get('location'))
-      } catch (error) {
-        console.error('Error testing Railway endpoint:', error)
-      }
-      
       window.location.href = url
     } catch (error) {
       console.error('Procore authentication error:', error)

@@ -103,7 +103,7 @@ app.post('/api/auth/login', async (req, res) => {
     });
   } catch (error) {
     console.error('Error logging in user:', error);
-    res.status(500).json({
+    res.status(500).json({ 
       error: 'Failed to login user'
     });
   }
