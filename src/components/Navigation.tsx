@@ -5,6 +5,7 @@ import { useSession, signOut } from 'next-auth/react'
 import Link from 'next/link'
 import Button from '@/components/ui/Button'
 import SettingsModal from '@/components/SettingsModal'
+import Logo from '@/components/Logo'
 
 export default function Navigation() {
   const { data: session } = useSession()
@@ -20,13 +21,8 @@ export default function Navigation() {
         <div className="flex justify-between items-center h-16">
           {/* Logo and Brand */}
           <div className="flex items-center">
-            <Link href="/home" className="flex items-center">
-              <img 
-                src="/concoord-logo.png" 
-                alt="Concoord Logo" 
-                className="h-14 w-14 mr-4 bg-cream rounded-lg p-2"
-              />
-              <span className="text-3xl font-bold text-gray-800">Concoord</span>
+            <Link href="/home">
+              <Logo size="lg" />
             </Link>
           </div>
 

@@ -3,6 +3,7 @@
 import { useSession } from 'next-auth/react'
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
+import Logo from '@/components/Logo'
 
 export default function Home() {
   const { data: session, status } = useSession()
@@ -30,12 +31,7 @@ export default function Home() {
           <div className="flex justify-between items-center h-16">
             {/* Logo and Company Name */}
             <div className="flex items-center">
-              <img 
-                src="/concoord-logo.png" 
-                alt="Concoord Logo" 
-                className="h-12 w-12 mr-4 bg-white rounded-lg p-2"
-              />
-              <span className="text-xl font-semibold text-gray-900">Concoord</span>
+              <Logo size="md" />
             </div>
             
             {/* Right side buttons */}
