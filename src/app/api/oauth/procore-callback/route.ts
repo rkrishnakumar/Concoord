@@ -23,7 +23,7 @@ export async function GET(request: NextRequest) {
         code: code,
         client_id: process.env.PROCORE_CLIENT_ID,
         client_secret: process.env.PROCORE_CLIENT_SECRET,
-        redirect_uri: `${process.env.NEXT_PUBLIC_NEXTAUTH_URL}/api/oauth/procore-callback`
+        redirect_uri: `https://concoord.vercel.app/api/oauth/procore-callback`
       })
     });
 

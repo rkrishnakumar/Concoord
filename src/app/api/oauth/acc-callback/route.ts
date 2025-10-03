@@ -23,7 +23,7 @@ export async function GET(request: NextRequest) {
         code: code,
         client_id: process.env.ACC_CLIENT_ID,
         client_secret: process.env.ACC_CLIENT_SECRET,
-        redirect_uri: `${process.env.NEXT_PUBLIC_NEXTAUTH_URL}/api/oauth/acc-callback`
+        redirect_uri: `https://concoord.vercel.app/api/oauth/acc-callback`
       })
     });
 
