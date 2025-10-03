@@ -59,12 +59,12 @@ export default function Navigation() {
             >
               Home
             </Link>
-            <Link
-              href="/settings"
-              className="text-gray-700 hover:text-gray-900 block px-3 py-2 rounded-md text-base font-medium"
+            <button
+              onClick={() => setIsSettingsOpen(true)}
+              className="text-gray-700 hover:text-gray-900 block px-3 py-2 rounded-md text-base font-medium w-full text-left"
             >
               Settings
-            </Link>
+            </button>
             <Button
               variant="primary"
               size="lg"
