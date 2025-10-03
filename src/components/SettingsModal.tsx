@@ -58,7 +58,11 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
   const authenticateWithProcore = async () => {
     setLoading(true)
     try {
-      window.location.href = `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/auth/procore/connect`
+      const url = `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/auth/procore/connect`
+      console.log('Procore OAuth URL:', url)
+      console.log('NEXT_PUBLIC_API_BASE_URL:', process.env.NEXT_PUBLIC_API_BASE_URL)
+      console.log('About to redirect to:', url)
+      window.location.href = url
     } catch (error) {
       console.error('Procore authentication error:', error)
     } finally {
