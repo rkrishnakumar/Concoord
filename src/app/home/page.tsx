@@ -159,7 +159,12 @@ export default function HomePage() {
                 }
               </p>
             </div>
-            <Button variant="primary" size="lg" onClick={() => setIsSettingsOpen(true)}>
+            <Button 
+              variant="primary" 
+              size="lg" 
+              onClick={() => setIsSettingsOpen(true)}
+              className="bg-black hover:bg-gray-800 text-white"
+            >
               Connect Systems
             </Button>
           </div>
@@ -174,6 +179,7 @@ export default function HomePage() {
           size="lg"
           href="/sync/new"
           disabled={!accConnected || !procoreConnected}
+          className="bg-black hover:bg-gray-800 text-white"
         >
           + New Sync
         </Button>
