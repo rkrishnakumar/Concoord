@@ -37,17 +37,14 @@ model AccCredentials {
   userId    String   @unique
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   
-  // Client credentials (stored by user)
-  clientId     String?
-  clientSecret String?
+  // Client credentials are stored in environment variables
   
   // OAuth tokens (generated through OAuth flow)
   accessToken  String
   refreshToken String?
   expiresAt    DateTime
   
-  // Base URL is hardcoded for all customers
-  baseUrl      String @default("https://developer.api.autodesk.com")
+  // Base URL is hardcoded in the application
   
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -60,17 +57,14 @@ model ProcoreCredentials {
   userId    String   @unique
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   
-  // Client credentials (stored by user)
-  clientId     String?
-  clientSecret String?
+  // Client credentials are stored in environment variables
   
   // OAuth tokens (generated through OAuth flow)
   accessToken  String
   refreshToken String?
   expiresAt    DateTime
   
-  // Base URL is hardcoded for all customers
-  baseUrl      String @default("https://api.procore.com")
+  // Base URL is hardcoded in the application
   
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -83,17 +77,14 @@ model ReviztoCredentials {
   userId    String   @unique
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   
-  // Client credentials (stored by user)
-  clientId     String?
-  clientSecret String?
+  // Client credentials are stored in environment variables
   
   // OAuth tokens (generated through OAuth flow)
   accessToken  String
   refreshToken String?
   expiresAt    DateTime
   
-  // Base URL is hardcoded for all customers
-  baseUrl      String @default("https://developer.revizto.com")
+  // Base URL is hardcoded in the application
   
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

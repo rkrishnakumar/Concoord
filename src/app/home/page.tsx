@@ -162,7 +162,10 @@ export default function HomePage() {
             <Button 
               variant="primary" 
               size="lg" 
-              onClick={() => setIsSettingsOpen(true)}
+              onClick={() => {
+                console.log('Connect Systems clicked');
+                setIsSettingsOpen(true);
+              }}
             >
               Connect Systems
             </Button>
