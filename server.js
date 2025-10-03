@@ -139,7 +139,8 @@ app.get('/api/auth/acc/callback', async (req, res) => {
     });
 
     if (!tokenResponse.ok) {
-      console.error('ACC token exchange failed:', await tokenResponse.text());
+      const errorText = await tokenResponse.text();
+      console.error('ACC token exchange failed:', errorText);
       return res.redirect(`${process.env.FRONTEND_URL}/auth/error?error=token_exchange_failed`);
     }
 
@@ -152,6 +153,7 @@ app.get('/api/auth/acc/callback', async (req, res) => {
     const userId = req.query.userId || 'default-user'; // TODO: Get from session
     
     try {
+      console.log('Attempting to store ACC credentials for userId:', userId);
       await prisma.accCredentials.upsert({
         where: { userId },
         update: {
@@ -177,6 +179,7 @@ app.get('/api/auth/acc/callback', async (req, res) => {
       console.log('ACC credentials stored successfully');
     } catch (dbError) {
       console.error('Error storing ACC credentials:', dbError);
+      console.error('Database error details:', dbError.message);
       return res.redirect(`${process.env.FRONTEND_URL}/auth/error?error=storage_failed`);
     }
 
