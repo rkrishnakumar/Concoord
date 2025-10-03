@@ -152,7 +152,11 @@ export default function HomePage() {
           <Button 
             variant="primary" 
             size="lg"
-            href="/sync/new"
+            onClick={() => {
+              if (accConnected && procoreConnected) {
+                window.location.href = '/sync/new'
+              }
+            }}
             disabled={!accConnected || !procoreConnected}
           >
             + New Sync
@@ -185,17 +189,9 @@ export default function HomePage() {
                 </svg>
               </div>
               <h3 className="text-lg font-semibold text-gray-800 mb-2">No syncs yet</h3>
-              <p className="text-gray-700 mb-6">
+              <p className="text-gray-700">
                 Create your first sync to start transferring data between systems.
               </p>
-              <Button 
-                variant="primary" 
-                size="lg"
-                href="/sync/new"
-                disabled={!accConnected || !procoreConnected}
-              >
-                Create Your First Sync
-              </Button>
             </div>
           </Card>
         ) : (
