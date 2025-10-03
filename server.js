@@ -157,8 +157,6 @@ app.get('/api/auth/acc/callback', async (req, res) => {
       await prisma.accCredentials.upsert({
         where: { userId },
         update: {
-          clientId: process.env.ACC_CLIENT_ID,
-          clientSecret: process.env.ACC_CLIENT_SECRET,
           accessToken: tokenData.access_token,
           refreshToken: tokenData.refresh_token || null,
           expiresAt: new Date(Date.now() + (tokenData.expires_in * 1000)),
@@ -167,8 +165,6 @@ app.get('/api/auth/acc/callback', async (req, res) => {
         create: {
           id: `acc_${Date.now()}`,
           userId,
-          clientId: process.env.ACC_CLIENT_ID,
-          clientSecret: process.env.ACC_CLIENT_SECRET,
           accessToken: tokenData.access_token,
           refreshToken: tokenData.refresh_token || null,
           expiresAt: new Date(Date.now() + (tokenData.expires_in * 1000)),
@@ -232,8 +228,6 @@ app.get('/api/auth/procore/callback', async (req, res) => {
       await prisma.procoreCredentials.upsert({
         where: { userId },
         update: {
-          clientId: process.env.PROCORE_CLIENT_ID,
-          clientSecret: process.env.PROCORE_CLIENT_SECRET,
           accessToken: tokenData.access_token,
           refreshToken: tokenData.refresh_token || null,
           expiresAt: new Date(Date.now() + (tokenData.expires_in * 1000)),
@@ -242,8 +236,6 @@ app.get('/api/auth/procore/callback', async (req, res) => {
         create: {
           id: `procore_${Date.now()}`,
           userId,
-          clientId: process.env.PROCORE_CLIENT_ID,
-          clientSecret: process.env.PROCORE_CLIENT_SECRET,
           accessToken: tokenData.access_token,
           refreshToken: tokenData.refresh_token || null,
           expiresAt: new Date(Date.now() + (tokenData.expires_in * 1000)),
@@ -322,8 +314,6 @@ app.post('/api/revizto/tokens', async (req, res) => {
     await prisma.reviztoCredentials.upsert({
       where: { userId },
       update: {
-        clientId: 'revizto-access-code', // Revizto uses access codes, not client ID/secret
-        clientSecret: 'revizto-access-code',
         accessToken: accessToken,
         refreshToken: refreshToken || null,
         expiresAt: new Date(Date.now() + ((expiresIn || 3600) * 1000)),
@@ -332,8 +322,6 @@ app.post('/api/revizto/tokens', async (req, res) => {
       create: {
         id: `revizto_${Date.now()}`,
         userId,
-        clientId: 'revizto-access-code',
-        clientSecret: 'revizto-access-code',
         accessToken: accessToken,
         refreshToken: refreshToken || null,
         expiresAt: new Date(Date.now() + ((expiresIn || 3600) * 1000)),
