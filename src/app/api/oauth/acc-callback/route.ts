@@ -47,7 +47,12 @@ export async function GET(request: NextRequest) {
 
     // Store credentials in database
     try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/credentials`, {
+      const credentialsUrl = `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/credentials`
+      console.log('Storing credentials at:', credentialsUrl)
+      console.log('User ID:', session.user.id)
+      console.log('Access token present:', !!tokenData.access_token)
+      
+      const response = await fetch(credentialsUrl, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

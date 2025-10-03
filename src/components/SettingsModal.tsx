@@ -62,7 +62,11 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
     setLoading(true)
     try {
       // Direct redirect to Railway OAuth endpoint
-      window.location.href = `${process.env.NEXT_PUBLIC_API_BASE_URL?.replace(/\/$/, '')}/api/auth/acc/connect`
+      const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL?.replace(/\/$/, '')
+      const oauthUrl = `${baseUrl}/api/auth/acc/connect`
+      console.log('ACC OAuth URL:', oauthUrl)
+      console.log('NEXT_PUBLIC_API_BASE_URL:', process.env.NEXT_PUBLIC_API_BASE_URL)
+      window.location.href = oauthUrl
     } catch (error) {
       console.error('ACC authentication error:', error)
     } finally {
@@ -74,7 +78,11 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
     setLoading(true)
     try {
       // Direct redirect to Railway OAuth endpoint
-      window.location.href = `${process.env.NEXT_PUBLIC_API_BASE_URL?.replace(/\/$/, '')}/api/auth/procore/connect`
+      const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL?.replace(/\/$/, '')
+      const oauthUrl = `${baseUrl}/api/auth/procore/connect`
+      console.log('Procore OAuth URL:', oauthUrl)
+      console.log('NEXT_PUBLIC_API_BASE_URL:', process.env.NEXT_PUBLIC_API_BASE_URL)
+      window.location.href = oauthUrl
     } catch (error) {
       console.error('Procore authentication error:', error)
     } finally {
