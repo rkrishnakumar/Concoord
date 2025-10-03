@@ -119,7 +119,34 @@ app.get('/api/auth/acc/callback', async (req, res) => {
       return res.redirect(`${process.env.FRONTEND_URL}/auth/error?error=missing_code`);
     }
 
-    // TODO: Implement ACC OAuth callback logic
+    if (!process.env.ACC_CLIENT_ID || !process.env.ACC_CLIENT_SECRET) {
+      return res.redirect(`${process.env.FRONTEND_URL}/auth/error?error=missing_credentials`);
+    }
+
+    // Exchange code for access token
+    const tokenResponse = await fetch('https://developer.api.autodesk.com/authentication/v2/token', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+      },
+      body: new URLSearchParams({
+        grant_type: 'authorization_code',
+        code: code,
+        client_id: process.env.ACC_CLIENT_ID,
+        client_secret: process.env.ACC_CLIENT_SECRET,
+        redirect_uri: `${process.env.FRONTEND_URL}/api/auth/acc/callback`
+      })
+    });
+
+    if (!tokenResponse.ok) {
+      console.error('ACC token exchange failed:', await tokenResponse.text());
+      return res.redirect(`${process.env.FRONTEND_URL}/auth/error?error=token_exchange_failed`);
+    }
+
+    const tokenData = await tokenResponse.json();
+    console.log('ACC OAuth successful:', tokenData);
+
+    // TODO: Store credentials in database for the user
     // For now, just redirect to success
     res.redirect(`${process.env.FRONTEND_URL}/home?success=acc_connected`);
   } catch (error) {
@@ -136,7 +163,34 @@ app.get('/api/auth/procore/callback', async (req, res) => {
       return res.redirect(`${process.env.FRONTEND_URL}/auth/error?error=missing_code`);
     }
 
-    // TODO: Implement Procore OAuth callback logic
+    if (!process.env.PROCORE_CLIENT_ID || !process.env.PROCORE_CLIENT_SECRET) {
+      return res.redirect(`${process.env.FRONTEND_URL}/auth/error?error=missing_credentials`);
+    }
+
+    // Exchange code for access token
+    const tokenResponse = await fetch('https://login.procore.com/oauth/token', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+      },
+      body: new URLSearchParams({
+        grant_type: 'authorization_code',
+        code: code,
+        client_id: process.env.PROCORE_CLIENT_ID,
+        client_secret: process.env.PROCORE_CLIENT_SECRET,
+        redirect_uri: `${process.env.FRONTEND_URL}/api/auth/procore/callback`
+      })
+    });
+
+    if (!tokenResponse.ok) {
+      console.error('Procore token exchange failed:', await tokenResponse.text());
+      return res.redirect(`${process.env.FRONTEND_URL}/auth/error?error=token_exchange_failed`);
+    }
+
+    const tokenData = await tokenResponse.json();
+    console.log('Procore OAuth successful:', tokenData);
+
+    // TODO: Store credentials in database for the user
     // For now, just redirect to success
     res.redirect(`${process.env.FRONTEND_URL}/home?success=procore_connected`);
   } catch (error) {
@@ -148,9 +202,16 @@ app.get('/api/auth/procore/callback', async (req, res) => {
 // OAuth connect endpoints
 app.get('/api/auth/acc/connect', (req, res) => {
   try {
-    // TODO: Implement ACC OAuth flow
-    // For now, redirect to ACC OAuth URL
-    const accOAuthUrl = `https://developer.api.autodesk.com/authentication/v2/authorize?response_type=code&client_id=${process.env.ACC_CLIENT_ID}&redirect_uri=${process.env.FRONTEND_URL}/api/auth/acc/callback&scope=data:read data:write`
+    if (!process.env.ACC_CLIENT_ID) {
+      return res.redirect(`${process.env.FRONTEND_URL}/auth/error?error=missing_client_id`)
+    }
+    
+    // Generate state parameter for security
+    const state = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15)
+    
+    // Store state in session or database for verification
+    // For now, we'll include it in the URL
+    const accOAuthUrl = `https://developer.api.autodesk.com/authentication/v2/authorize?response_type=code&client_id=${process.env.ACC_CLIENT_ID}&redirect_uri=${process.env.FRONTEND_URL}/api/auth/acc/callback&scope=data:read data:write&state=${state}`
     res.redirect(accOAuthUrl)
   } catch (error) {
     console.error('Error initiating ACC OAuth:', error)
@@ -160,9 +221,16 @@ app.get('/api/auth/acc/connect', (req, res) => {
 
 app.get('/api/auth/procore/connect', (req, res) => {
   try {
-    // TODO: Implement Procore OAuth flow
-    // For now, redirect to Procore OAuth URL
-    const procoreOAuthUrl = `https://login.procore.com/oauth/authorize?response_type=code&client_id=${process.env.PROCORE_CLIENT_ID}&redirect_uri=${process.env.FRONTEND_URL}/api/auth/procore/callback&scope=read:coordination_issues write:coordination_issues`
+    if (!process.env.PROCORE_CLIENT_ID) {
+      return res.redirect(`${process.env.FRONTEND_URL}/auth/error?error=missing_client_id`)
+    }
+    
+    // Generate state parameter for security
+    const state = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15)
+    
+    // Store state in session or database for verification
+    // For now, we'll include it in the URL
+    const procoreOAuthUrl = `https://login.procore.com/oauth/authorize?response_type=code&client_id=${process.env.PROCORE_CLIENT_ID}&redirect_uri=${process.env.FRONTEND_URL}/api/auth/procore/callback&scope=read:coordination_issues write:coordination_issues&state=${state}`
     res.redirect(procoreOAuthUrl)
   } catch (error) {
     console.error('Error initiating Procore OAuth:', error)
