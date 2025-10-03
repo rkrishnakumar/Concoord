@@ -48,6 +48,10 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
   const fetchCredentials = async () => {
     try {
       console.log('Current connection states:', { accConnected, procoreConnected, reviztoConnected })
+      console.log('Resetting all connection states to false for debugging')
+      setAccConnected(false)
+      setProcoreConnected(false)
+      setReviztoConnected(false)
       // Temporarily disabled to fix console spam
       // const response = await apiFetch('/api/credentials')
       // if (response.ok) {
