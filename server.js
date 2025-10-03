@@ -386,6 +386,60 @@ app.post('/api/revizto/tokens', async (req, res) => {
   }
 });
 
+// Fix database constraints on startup
+async function fixDatabaseConstraints() {
+  try {
+    console.log('Checking and fixing database constraints...');
+    
+    // Add unique constraints if they don't exist
+    await prisma.$executeRaw`
+      DO $$ 
+      BEGIN
+        IF NOT EXISTS (
+          SELECT 1 FROM pg_constraint 
+          WHERE conname = 'procore_credentials_userId_key'
+        ) THEN
+          ALTER TABLE procore_credentials ADD CONSTRAINT procore_credentials_userId_key UNIQUE ("userId");
+        END IF;
+      END $$;
+    `;
+    console.log('✅ procore_credentials unique constraint fixed');
+    
+    await prisma.$executeRaw`
+      DO $$ 
+      BEGIN
+        IF NOT EXISTS (
+          SELECT 1 FROM pg_constraint 
+          WHERE conname = 'acc_credentials_userId_key'
+        ) THEN
+          ALTER TABLE acc_credentials ADD CONSTRAINT acc_credentials_userId_key UNIQUE ("userId");
+        END IF;
+      END $$;
+    `;
+    console.log('✅ acc_credentials unique constraint fixed');
+    
+    await prisma.$executeRaw`
+      DO $$ 
+      BEGIN
+        IF NOT EXISTS (
+          SELECT 1 FROM pg_constraint 
+          WHERE conname = 'revizto_credentials_userId_key'
+        ) THEN
+          ALTER TABLE revizto_credentials ADD CONSTRAINT revizto_credentials_userId_key UNIQUE ("userId");
+        END IF;
+      END $$;
+    `;
+    console.log('✅ revizto_credentials unique constraint fixed');
+    
+    console.log('🎉 Database constraints fixed successfully!');
+  } catch (error) {
+    console.error('Error fixing database constraints:', error);
+  }
+}
+
+// Run database fixes on startup
+fixDatabaseConstraints();
+
 // Health check
 app.get('/api/health', (req, res) => {
   res.json({ status: 'ok', message: 'Railway backend is running' });
