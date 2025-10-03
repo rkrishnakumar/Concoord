@@ -399,9 +399,9 @@ async function fixDatabaseConstraints() {
       BEGIN
         IF NOT EXISTS (
           SELECT 1 FROM pg_constraint 
-          WHERE conname = 'procore_credentials_userId_key'
+          WHERE conname = 'procore_credentials_userid_key'
         ) THEN
-          ALTER TABLE procore_credentials ADD CONSTRAINT procore_credentials_userId_key UNIQUE ("userId");
+          ALTER TABLE procore_credentials ADD CONSTRAINT procore_credentials_userid_key UNIQUE ("userId");
         END IF;
       END $$;
     `;
@@ -412,9 +412,9 @@ async function fixDatabaseConstraints() {
       BEGIN
         IF NOT EXISTS (
           SELECT 1 FROM pg_constraint 
-          WHERE conname = 'acc_credentials_userId_key'
+          WHERE conname = 'acc_credentials_userid_key'
         ) THEN
-          ALTER TABLE acc_credentials ADD CONSTRAINT acc_credentials_userId_key UNIQUE ("userId");
+          ALTER TABLE acc_credentials ADD CONSTRAINT acc_credentials_userid_key UNIQUE ("userId");
         END IF;
       END $$;
     `;
@@ -425,9 +425,9 @@ async function fixDatabaseConstraints() {
       BEGIN
         IF NOT EXISTS (
           SELECT 1 FROM pg_constraint 
-          WHERE conname = 'revizto_credentials_userId_key'
+          WHERE conname = 'revizto_credentials_userid_key'
         ) THEN
-          ALTER TABLE revizto_credentials ADD CONSTRAINT revizto_credentials_userId_key UNIQUE ("userId");
+          ALTER TABLE revizto_credentials ADD CONSTRAINT revizto_credentials_userid_key UNIQUE ("userId");
         END IF;
       END $$;
     `;
