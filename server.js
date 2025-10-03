@@ -295,39 +295,6 @@ app.get('/api/auth/procore/connect', (req, res) => {
   }
 })
 
-// User creation endpoint
-app.post('/api/users', async (req, res) => {
-  try {
-    const { id, email, name } = req.body;
-    
-    if (!id || !email) {
-      return res.status(400).json({ error: 'User ID and email are required' });
-    }
-
-    console.log(`Creating user ${id} with email ${email}`);
-
-    await prisma.user.upsert({
-      where: { id },
-      update: {
-        email,
-        name: name || email
-      },
-      create: {
-        id,
-        email,
-        name: name || email,
-        password: 'oauth-user' // Placeholder for OAuth users
-      }
-    });
-    
-    console.log(`User ${id} created/updated successfully`);
-    res.json({ success: true, message: 'User created successfully' });
-  } catch (error) {
-    console.error('Error creating user:', error);
-    res.status(500).json({ error: 'Failed to create user' });
-  }
-});
-
 // Credentials storage endpoint for all OAuth providers
 
 // Revizto token storage endpoint
