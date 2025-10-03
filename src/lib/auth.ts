@@ -16,7 +16,8 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
 
         try {
           // Forward login request to Railway backend
-          const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/auth/login`, {
+          const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL?.replace(/\/$/, '') // Remove trailing slash
+          const response = await fetch(`${baseUrl}/api/auth/login`, {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
