@@ -140,10 +140,21 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
     setLoading(true)
     setMessage('') // Clear previous message
     try {
+      // Get the current user ID from the session
+      const sessionResponse = await fetch('/api/auth/session')
+      const session = await sessionResponse.json()
+      const userId = session?.user?.id
+      
+      if (!userId) {
+        setMessage('No user session found')
+        setLoading(false)
+        return
+      }
+      
       const response = await apiFetch('/api/test-connection', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ type })
+        body: JSON.stringify({ userId, type })
       })
       
       if (response.ok) {
