@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { auth } from '@/lib/auth'
 
 export async function GET(request: NextRequest) {
   try {
@@ -36,6 +37,13 @@ export async function GET(request: NextRequest) {
     const tokenData = await tokenResponse.json()
     console.log('Procore OAuth successful:', tokenData)
 
+    // Get user session
+    const session = await auth()
+    if (!session?.user?.id) {
+      console.error('No user session found')
+      return NextResponse.redirect(new URL('/auth/error?error=no_session', request.url))
+    }
+
     // Store credentials in database
     try {
       const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/credentials`, {
@@ -44,7 +52,7 @@ export async function GET(request: NextRequest) {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          userId: 'default-user', // TODO: Get from session
+          userId: session.user.id,
           system: 'procore',
           accessToken: tokenData.access_token,
           refreshToken: tokenData.refresh_token,
