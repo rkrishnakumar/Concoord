@@ -124,7 +124,7 @@ app.get('/api/auth/acc/callback', async (req, res) => {
     }
 
     // Exchange code for access token
-    const tokenResponse = await fetch('https://developer.api.autodesk.com/authentication/v2/token', {
+    const tokenResponse = await fetch('https://developer.api.autodesk.com/authentication/v1/gettoken', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded',
@@ -274,7 +274,7 @@ app.get('/api/auth/acc/connect', (req, res) => {
     
     // Store state in session or database for verification
     // For now, we'll include it in the URL
-    const accOAuthUrl = `https://developer.api.autodesk.com/authentication/v2/authorize?response_type=code&client_id=${process.env.ACC_CLIENT_ID}&redirect_uri=${process.env.FRONTEND_URL}/api/auth/acc/callback&state=${state}`
+    const accOAuthUrl = `https://developer.api.autodesk.com/authentication/v1/authorize?response_type=code&client_id=${process.env.ACC_CLIENT_ID}&redirect_uri=${process.env.FRONTEND_URL}/api/auth/acc/callback&state=${state}`
     
     console.log('ACC OAuth URL:', accOAuthUrl)
     res.redirect(accOAuthUrl)
