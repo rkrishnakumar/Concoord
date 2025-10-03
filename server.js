@@ -248,7 +248,7 @@ app.get('/api/auth/procore/connect', (req, res) => {
     
     // Store state in session or database for verification
     // For now, we'll include it in the URL
-    const procoreOAuthUrl = `https://login.procore.com/oauth/authorize?response_type=code&client_id=${process.env.PROCORE_CLIENT_ID}&redirect_uri=${process.env.FRONTEND_URL}/api/oauth/procore-callback&state=${state}`
+    const procoreOAuthUrl = `https://login.procore.com/oauth/authorize?response_type=code&client_id=${process.env.PROCORE_CLIENT_ID}&redirect_uri=https://concoord-production.up.railway.app/api/oauth/procore-callback&state=${state}`
     
     console.log('Procore OAuth URL:', procoreOAuthUrl)
     res.redirect(procoreOAuthUrl)
@@ -432,6 +432,71 @@ app.get('/api/credentials', async (req, res) => {
   } catch (error) {
     console.error('Error fetching credentials:', error);
     res.status(500).json({ error: 'Failed to fetch credentials' });
+  }
+});
+
+// OAuth callback endpoints
+app.get('/api/oauth/procore-callback', async (req, res) => {
+  try {
+    const { code, state } = req.query;
+    
+    if (!code) {
+      return res.redirect(`${process.env.FRONTEND_URL}/auth/error?error=missing_code`);
+    }
+
+    if (!process.env.PROCORE_CLIENT_ID || !process.env.PROCORE_CLIENT_SECRET) {
+      return res.redirect(`${process.env.FRONTEND_URL}/auth/error?error=missing_credentials`);
+    }
+
+    // Exchange code for access token
+    const tokenResponse = await fetch('https://login.procore.com/oauth/token', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+      },
+      body: new URLSearchParams({
+        grant_type: 'authorization_code',
+        code: code,
+        client_id: process.env.PROCORE_CLIENT_ID,
+        client_secret: process.env.PROCORE_CLIENT_SECRET,
+        redirect_uri: 'https://concoord-production.up.railway.app/api/oauth/procore-callback'
+      })
+    });
+
+    if (!tokenResponse.ok) {
+      const errorText = await tokenResponse.text();
+      console.error('Procore token exchange failed:', errorText);
+      return res.redirect(`${process.env.FRONTEND_URL}/auth/error?error=token_exchange_failed`);
+    }
+
+    const tokenData = await tokenResponse.json();
+    console.log('Procore OAuth successful:', tokenData);
+
+    // Store credentials in database
+    try {
+      await prisma.procoreCredentials.upsert({
+        where: { userId: 'default-user' }, // TODO: Get from session
+        update: {
+          accessToken: tokenData.access_token,
+          refreshToken: tokenData.refresh_token,
+          expiresAt: new Date(Date.now() + (tokenData.expires_in * 1000))
+        },
+        create: {
+          userId: 'default-user', // TODO: Get from session
+          accessToken: tokenData.access_token,
+          refreshToken: tokenData.refresh_token,
+          expiresAt: new Date(Date.now() + (tokenData.expires_in * 1000))
+        }
+      });
+      console.log('Procore credentials stored successfully');
+    } catch (error) {
+      console.error('Error storing Procore credentials:', error);
+    }
+
+    res.redirect(`${process.env.FRONTEND_URL}/home?success=procore_connected`);
+  } catch (error) {
+    console.error('Error in Procore callback:', error);
+    res.redirect(`${process.env.FRONTEND_URL}/auth/error?error=callback_failed`);
   }
 });
 
