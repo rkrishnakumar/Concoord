@@ -5,7 +5,16 @@ export async function GET() {
     const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL
     console.log('Testing backend connection to:', baseUrl)
     
-    const response = await fetch(`${baseUrl}/api/credentials?userId=test`, {
+    // Test health endpoint first
+    const healthResponse = await fetch(`${baseUrl}/api/health`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      }
+    });
+    
+    // Test credentials endpoint
+    const credentialsResponse = await fetch(`${baseUrl}/api/credentials?userId=test`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
@@ -14,9 +23,15 @@ export async function GET() {
     
     return NextResponse.json({
       backendUrl: baseUrl,
-      status: response.status,
-      ok: response.ok,
-      headers: Object.fromEntries(response.headers.entries())
+      health: {
+        status: healthResponse.status,
+        ok: healthResponse.ok
+      },
+      credentials: {
+        status: credentialsResponse.status,
+        ok: credentialsResponse.ok
+      },
+      headers: Object.fromEntries(credentialsResponse.headers.entries())
     })
   } catch (error) {
     console.error('Backend test error:', error)
