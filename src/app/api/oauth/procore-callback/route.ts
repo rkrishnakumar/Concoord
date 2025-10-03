@@ -36,12 +36,30 @@ export async function GET(request: NextRequest) {
     const tokenData = await tokenResponse.json()
     console.log('Procore OAuth successful:', tokenData)
 
-    // TODO: Store credentials in database once schema is fixed
-    console.log('Procore OAuth successful - tokens received:', {
-      access_token: tokenData.access_token ? 'present' : 'missing',
-      refresh_token: tokenData.refresh_token ? 'present' : 'missing',
-      expires_in: tokenData.expires_in
-    });
+    // Store credentials in database
+    try {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/credentials`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          userId: 'default-user', // TODO: Get from session
+          system: 'procore',
+          accessToken: tokenData.access_token,
+          refreshToken: tokenData.refresh_token,
+          expiresIn: tokenData.expires_in
+        })
+      });
+      
+      if (response.ok) {
+        console.log('Procore credentials stored successfully');
+      } else {
+        console.error('Failed to store Procore credentials');
+      }
+    } catch (error) {
+      console.error('Error storing Procore credentials:', error);
+    }
 
     return NextResponse.redirect(new URL('/home?success=procore_connected', request.url))
   } catch (error) {
