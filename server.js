@@ -146,8 +146,40 @@ app.get('/api/auth/acc/callback', async (req, res) => {
     const tokenData = await tokenResponse.json();
     console.log('ACC OAuth successful:', tokenData);
 
-    // TODO: Store credentials in database for the user
-    // For now, just redirect to success
+    // Store credentials in database
+    // Note: In a real app, you'd get the user ID from the session
+    // For now, we'll use a placeholder user ID
+    const userId = req.query.userId || 'default-user'; // TODO: Get from session
+    
+    try {
+      await prisma.accCredentials.upsert({
+        where: { userId },
+        update: {
+          clientId: process.env.ACC_CLIENT_ID,
+          clientSecret: process.env.ACC_CLIENT_SECRET,
+          accessToken: tokenData.access_token,
+          refreshToken: tokenData.refresh_token || null,
+          expiresAt: new Date(Date.now() + (tokenData.expires_in * 1000)),
+          baseUrl: 'https://developer.api.autodesk.com'
+        },
+        create: {
+          id: `acc_${Date.now()}`,
+          userId,
+          clientId: process.env.ACC_CLIENT_ID,
+          clientSecret: process.env.ACC_CLIENT_SECRET,
+          accessToken: tokenData.access_token,
+          refreshToken: tokenData.refresh_token || null,
+          expiresAt: new Date(Date.now() + (tokenData.expires_in * 1000)),
+          baseUrl: 'https://developer.api.autodesk.com'
+        }
+      });
+      
+      console.log('ACC credentials stored successfully');
+    } catch (dbError) {
+      console.error('Error storing ACC credentials:', dbError);
+      return res.redirect(`${process.env.FRONTEND_URL}/auth/error?error=storage_failed`);
+    }
+
     res.redirect(`${process.env.FRONTEND_URL}/home?success=acc_connected`);
   } catch (error) {
     console.error('Error in ACC callback:', error);
@@ -190,8 +222,38 @@ app.get('/api/auth/procore/callback', async (req, res) => {
     const tokenData = await tokenResponse.json();
     console.log('Procore OAuth successful:', tokenData);
 
-    // TODO: Store credentials in database for the user
-    // For now, just redirect to success
+    // Store credentials in database
+    const userId = req.query.userId || 'default-user'; // TODO: Get from session
+    
+    try {
+      await prisma.procoreCredentials.upsert({
+        where: { userId },
+        update: {
+          clientId: process.env.PROCORE_CLIENT_ID,
+          clientSecret: process.env.PROCORE_CLIENT_SECRET,
+          accessToken: tokenData.access_token,
+          refreshToken: tokenData.refresh_token || null,
+          expiresAt: new Date(Date.now() + (tokenData.expires_in * 1000)),
+          baseUrl: 'https://api.procore.com'
+        },
+        create: {
+          id: `procore_${Date.now()}`,
+          userId,
+          clientId: process.env.PROCORE_CLIENT_ID,
+          clientSecret: process.env.PROCORE_CLIENT_SECRET,
+          accessToken: tokenData.access_token,
+          refreshToken: tokenData.refresh_token || null,
+          expiresAt: new Date(Date.now() + (tokenData.expires_in * 1000)),
+          baseUrl: 'https://api.procore.com'
+        }
+      });
+      
+      console.log('Procore credentials stored successfully');
+    } catch (dbError) {
+      console.error('Error storing Procore credentials:', dbError);
+      return res.redirect(`${process.env.FRONTEND_URL}/auth/error?error=storage_failed`);
+    }
+
     res.redirect(`${process.env.FRONTEND_URL}/home?success=procore_connected`);
   } catch (error) {
     console.error('Error in Procore callback:', error);
@@ -237,6 +299,46 @@ app.get('/api/auth/procore/connect', (req, res) => {
     res.redirect(`${process.env.FRONTEND_URL}/auth/error?error=oauth_failed`)
   }
 })
+
+// Revizto token storage endpoint
+app.post('/api/revizto/tokens', async (req, res) => {
+  try {
+    const { userId, accessToken, refreshToken, expiresIn } = req.body;
+    
+    if (!userId || !accessToken) {
+      return res.status(400).json({ error: 'userId and accessToken are required' });
+    }
+
+    // Store Revizto credentials in database
+    await prisma.reviztoCredentials.upsert({
+      where: { userId },
+      update: {
+        clientId: 'revizto-access-code', // Revizto uses access codes, not client ID/secret
+        clientSecret: 'revizto-access-code',
+        accessToken: accessToken,
+        refreshToken: refreshToken || null,
+        expiresAt: new Date(Date.now() + ((expiresIn || 3600) * 1000)),
+        baseUrl: 'https://api.virginia.revizto.com'
+      },
+      create: {
+        id: `revizto_${Date.now()}`,
+        userId,
+        clientId: 'revizto-access-code',
+        clientSecret: 'revizto-access-code',
+        accessToken: accessToken,
+        refreshToken: refreshToken || null,
+        expiresAt: new Date(Date.now() + ((expiresIn || 3600) * 1000)),
+        baseUrl: 'https://api.virginia.revizto.com'
+      }
+    });
+    
+    console.log('Revizto credentials stored successfully');
+    res.json({ success: true, message: 'Revizto credentials stored successfully' });
+  } catch (error) {
+    console.error('Error storing Revizto credentials:', error);
+    res.status(500).json({ error: 'Failed to store Revizto credentials' });
+  }
+});
 
 // Health check
 app.get('/api/health', (req, res) => {

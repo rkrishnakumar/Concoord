@@ -73,26 +73,49 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
 
     setLoading(true)
     try {
-      const response = await apiFetch('/api/auth/revizto/connect', {
+      // Exchange access code for tokens
+      const tokenResponse = await fetch('https://api.virginia.revizto.com/v5/oauth2', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: new URLSearchParams({
+          grant_type: 'authorization_code',
+          code: reviztoAccessCode
+        })
+      })
+
+      if (!tokenResponse.ok) {
+        const errorText = await tokenResponse.text()
+        console.error('Revizto token exchange failed:', errorText)
+        setMessage('Failed to exchange access code for tokens. Please check your access code.')
+        return
+      }
+
+      const tokenData = await tokenResponse.json()
+      console.log('Revizto tokens received:', tokenData)
+
+      // Store tokens in Railway backend
+      const response = await apiFetch('/api/revizto/tokens', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ 
-          accessCode: reviztoAccessCode
+          userId: 'default-user', // TODO: Get from session
+          accessToken: tokenData.access_token,
+          refreshToken: tokenData.refresh_token,
+          expiresIn: tokenData.expires_in
         })
       })
       
       if (response.ok) {
-        setMessage('Revizto access code configured successfully!')
+        setMessage('Revizto connected successfully!')
         setReviztoAccessCode('')
         await fetchCredentials()
       } else {
         const error = await response.json()
-        const errorMessage = error.details ? `${error.error}: ${error.details}` : error.error || 'Failed to configure access code'
-        setMessage(errorMessage)
+        setMessage(`Failed to store Revizto credentials: ${error.error || 'Unknown error'}`)
       }
     } catch (error) {
       console.error('Revizto authentication error:', error)
-      setMessage('Failed to configure access code')
+      setMessage('Failed to configure Revizto. Please try again.')
     } finally {
       setLoading(false)
     }
