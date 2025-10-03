@@ -44,7 +44,8 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
   const authenticateWithAcc = async () => {
     setLoading(true)
     try {
-      window.location.href = buildApiUrl('/api/auth/acc/connect')
+      // Direct redirect to Railway OAuth endpoint
+      window.location.href = `${process.env.NEXT_PUBLIC_API_BASE_URL?.replace(/\/$/, '')}/api/auth/acc/connect`
     } catch (error) {
       console.error('ACC authentication error:', error)
     } finally {
@@ -55,7 +56,8 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
   const authenticateWithProcore = async () => {
     setLoading(true)
     try {
-      window.location.href = buildApiUrl('/api/auth/procore/connect')
+      // Direct redirect to Railway OAuth endpoint
+      window.location.href = `${process.env.NEXT_PUBLIC_API_BASE_URL?.replace(/\/$/, '')}/api/auth/procore/connect`
     } catch (error) {
       console.error('Procore authentication error:', error)
     } finally {
