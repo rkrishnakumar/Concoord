@@ -265,6 +265,7 @@ app.get('/api/auth/procore/callback', async (req, res) => {
 app.get('/api/auth/acc/connect', (req, res) => {
   try {
     if (!process.env.ACC_CLIENT_ID) {
+      console.error('ACC_CLIENT_ID not set')
       return res.redirect(`${process.env.FRONTEND_URL}/auth/error?error=missing_client_id`)
     }
     
@@ -273,7 +274,9 @@ app.get('/api/auth/acc/connect', (req, res) => {
     
     // Store state in session or database for verification
     // For now, we'll include it in the URL
-    const accOAuthUrl = `https://developer.api.autodesk.com/authentication/v2/authorize?response_type=code&client_id=${process.env.ACC_CLIENT_ID}&redirect_uri=${process.env.FRONTEND_URL}/api/auth/acc/callback&scope=data:read data:write&state=${state}`
+    const accOAuthUrl = `https://developer.api.autodesk.com/authentication/v2/authorize?response_type=code&client_id=${process.env.ACC_CLIENT_ID}&redirect_uri=${process.env.FRONTEND_URL}/api/auth/acc/callback&scope=data:read+data:write&state=${state}`
+    
+    console.log('ACC OAuth URL:', accOAuthUrl)
     res.redirect(accOAuthUrl)
   } catch (error) {
     console.error('Error initiating ACC OAuth:', error)
@@ -284,6 +287,7 @@ app.get('/api/auth/acc/connect', (req, res) => {
 app.get('/api/auth/procore/connect', (req, res) => {
   try {
     if (!process.env.PROCORE_CLIENT_ID) {
+      console.error('PROCORE_CLIENT_ID not set')
       return res.redirect(`${process.env.FRONTEND_URL}/auth/error?error=missing_client_id`)
     }
     
@@ -292,7 +296,9 @@ app.get('/api/auth/procore/connect', (req, res) => {
     
     // Store state in session or database for verification
     // For now, we'll include it in the URL
-    const procoreOAuthUrl = `https://login.procore.com/oauth/authorize?response_type=code&client_id=${process.env.PROCORE_CLIENT_ID}&redirect_uri=${process.env.FRONTEND_URL}/api/auth/procore/callback&scope=read:coordination_issues write:coordination_issues&state=${state}`
+    const procoreOAuthUrl = `https://login.procore.com/oauth/authorize?response_type=code&client_id=${process.env.PROCORE_CLIENT_ID}&redirect_uri=${process.env.FRONTEND_URL}/api/auth/procore/callback&scope=read:coordination_issues+write:coordination_issues&state=${state}`
+    
+    console.log('Procore OAuth URL:', procoreOAuthUrl)
     res.redirect(procoreOAuthUrl)
   } catch (error) {
     console.error('Error initiating Procore OAuth:', error)
