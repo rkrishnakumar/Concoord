@@ -38,8 +38,8 @@ model AccCredentials {
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   
   // Client credentials (stored by user)
-  clientId     String
-  clientSecret String
+  clientId     String?
+  clientSecret String?
   
   // OAuth tokens (generated through OAuth flow)
   accessToken  String
@@ -61,8 +61,8 @@ model ProcoreCredentials {
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   
   // Client credentials (stored by user)
-  clientId     String
-  clientSecret String
+  clientId     String?
+  clientSecret String?
   
   // OAuth tokens (generated through OAuth flow)
   accessToken  String
@@ -84,8 +84,8 @@ model ReviztoCredentials {
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   
   // Client credentials (stored by user)
-  clientId     String
-  clientSecret String
+  clientId     String?
+  clientSecret String?
   
   // OAuth tokens (generated through OAuth flow)
   accessToken  String
