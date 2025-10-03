@@ -21,7 +21,7 @@ export default function Logo({ size = 'md', showText = true, className = '' }: L
 
   return (
     <div className={`flex items-center ${className}`}>
-      <div className={`${sizeClasses[size]} bg-white rounded-lg p-2 mr-3`}>
+      <div className={`${sizeClasses[size]} mr-3`}>
         <Image
           src="/concoord-logo.png"
           alt="Concoord Logo"
