@@ -248,7 +248,7 @@ app.get('/api/auth/procore/connect', (req, res) => {
     
     // Store state in session or database for verification
     // For now, we'll include it in the URL
-    const procoreOAuthUrl = `https://login.procore.com/oauth/authorize?response_type=code&client_id=${process.env.PROCORE_CLIENT_ID}&redirect_uri=${process.env.FRONTEND_URL}/api/auth/procore/callback&scope=read:coordination_issues write:coordination_issues&state=${state}`
+    const procoreOAuthUrl = `https://login.procore.com/oauth/authorize?response_type=code&client_id=${process.env.PROCORE_CLIENT_ID}&redirect_uri=${process.env.FRONTEND_URL}/api/auth/procore/callback&state=${state}`
     
     console.log('Procore OAuth URL:', procoreOAuthUrl)
     res.redirect(procoreOAuthUrl)
