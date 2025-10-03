@@ -1,22 +1,51 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { buildApiUrl } from '@/lib/api-helper'
 
 export async function GET(request: NextRequest) {
   try {
-    // Forward the callback to Railway backend
-    const url = new URL(request.url)
-    const railwayUrl = `${buildApiUrl('/api/auth/acc/callback')}${url.search}`
+    const { code, state } = Object.fromEntries(request.nextUrl.searchParams)
     
-    const response = await fetch(railwayUrl)
-    
-    if (response.redirected) {
-      return NextResponse.redirect(response.url)
+    if (!code) {
+      return NextResponse.redirect(new URL('/auth/error?error=missing_code', request.url))
     }
-    
-    const data = await response.json()
-    return NextResponse.json(data)
+
+    if (!process.env.ACC_CLIENT_ID || !process.env.ACC_CLIENT_SECRET) {
+      return NextResponse.redirect(new URL('/auth/error?error=missing_credentials', request.url))
+    }
+
+    // Exchange code for access token
+    const tokenResponse = await fetch('https://developer.api.autodesk.com/authentication/v2/token', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+      },
+      body: new URLSearchParams({
+        grant_type: 'authorization_code',
+        code: code,
+        client_id: process.env.ACC_CLIENT_ID,
+        client_secret: process.env.ACC_CLIENT_SECRET,
+        redirect_uri: `${process.env.NEXT_PUBLIC_NEXTAUTH_URL}/api/oauth/acc-callback`
+      })
+    });
+
+    if (!tokenResponse.ok) {
+      const errorText = await tokenResponse.text()
+      console.error('ACC token exchange failed:', errorText)
+      return NextResponse.redirect(new URL('/auth/error?error=token_exchange_failed', request.url))
+    }
+
+    const tokenData = await tokenResponse.json()
+    console.log('ACC OAuth successful:', tokenData)
+
+    // TODO: Store credentials in database once schema is fixed
+    console.log('ACC OAuth successful - tokens received:', {
+      access_token: tokenData.access_token ? 'present' : 'missing',
+      refresh_token: tokenData.refresh_token ? 'present' : 'missing',
+      expires_in: tokenData.expires_in
+    });
+
+    return NextResponse.redirect(new URL('/home?success=acc_connected', request.url))
   } catch (error) {
     console.error('Error in ACC callback:', error)
-    return NextResponse.redirect(new URL('/auth/error', request.url))
+    return NextResponse.redirect(new URL('/auth/error?error=callback_failed', request.url))
   }
 }
