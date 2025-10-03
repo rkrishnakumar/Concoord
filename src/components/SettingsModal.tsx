@@ -62,6 +62,10 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
       console.log('Procore OAuth URL:', url)
       console.log('NEXT_PUBLIC_API_BASE_URL:', process.env.NEXT_PUBLIC_API_BASE_URL)
       console.log('About to redirect to:', url)
+      
+      // Show alert with the values so you can see them
+      alert(`NEXT_PUBLIC_API_BASE_URL: ${process.env.NEXT_PUBLIC_API_BASE_URL}\n\nProcore OAuth URL: ${url}`)
+      
       window.location.href = url
     } catch (error) {
       console.error('Procore authentication error:', error)
