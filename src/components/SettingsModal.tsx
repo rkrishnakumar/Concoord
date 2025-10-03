@@ -18,6 +18,23 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
   const [accConnected, setAccConnected] = useState(false)
   const [procoreConnected, setProcoreConnected] = useState(false)
   const [reviztoConnected, setReviztoConnected] = useState(false)
+
+  // Check for success parameters in URL
+  useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search)
+    if (urlParams.get('success') === 'acc_connected') {
+      setAccConnected(true)
+      // Remove the success parameter from URL
+      const newUrl = window.location.pathname
+      window.history.replaceState({}, '', newUrl)
+    }
+    if (urlParams.get('success') === 'procore_connected') {
+      setProcoreConnected(true)
+      // Remove the success parameter from URL
+      const newUrl = window.location.pathname
+      window.history.replaceState({}, '', newUrl)
+    }
+  }, [])
   const [activeSection, setActiveSection] = useState<'about' | 'integrations'>('integrations')
 
   useEffect(() => {
