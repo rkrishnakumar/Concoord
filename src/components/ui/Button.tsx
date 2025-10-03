@@ -28,7 +28,13 @@ export default function Button({
   style
 }: ButtonProps) {
   const baseClasses = 'rounded-[2.5rem] font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed h-[2.5rem] flex items-center justify-center'
-  const variantClasses = colors.buttons[variant]
+  const variantClasses = {
+    primary: 'bg-black hover:bg-gray-800 text-white',
+    secondary: 'bg-gray-100 hover:bg-gray-200 text-gray-900',
+    black: 'bg-black hover:bg-gray-800 text-white',
+    success: 'bg-green-100 hover:bg-green-200 text-green-900',
+    danger: 'bg-red-600 hover:bg-red-700 text-white',
+  }[variant]
   
   const sizeClasses = {
     sm: 'px-3 text-sm',

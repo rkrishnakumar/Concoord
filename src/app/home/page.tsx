@@ -148,7 +148,7 @@ export default function HomePage() {
 
       {/* Connection Status */}
       {(accConnected && procoreConnected) ? null : (
-        <Alert type="warning" className="mb-6 bg-yellow-50 border-yellow-200 text-yellow-800">
+        <Alert type="warning" className="mb-6">
           <div className="flex items-center justify-between">
             <div>
               <p className="font-medium">Systems not fully connected</p>
@@ -163,7 +163,6 @@ export default function HomePage() {
               variant="primary" 
               size="lg" 
               onClick={() => setIsSettingsOpen(true)}
-              className="bg-black hover:bg-gray-800 text-white"
             >
               Connect Systems
             </Button>
@@ -179,7 +178,6 @@ export default function HomePage() {
           size="lg"
           href="/sync/new"
           disabled={!accConnected || !procoreConnected}
-          className="bg-black hover:bg-gray-800 text-white"
         >
           + New Sync
         </Button>
