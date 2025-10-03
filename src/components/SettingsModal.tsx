@@ -249,7 +249,7 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
                       </>
                     ) : (
                       <Button
-                        variant="black"
+                        variant="primary"
                         size="lg"
                         onClick={authenticateWithProcore}
                         loading={loading}
@@ -307,7 +307,7 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
                       </>
                     ) : (
                       <Button
-                        variant="black"
+                        variant="primary"
                         size="lg"
                         onClick={authenticateWithAcc}
                         loading={loading}
@@ -365,7 +365,7 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
                       </>
                     ) : (
                       <Button
-                        variant="black"
+                        variant="primary"
                         size="lg"
                         onClick={authenticateWithRevizto}
                         loading={loading}
@@ -390,7 +390,7 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
                           className="flex-1 px-3 py-2 bg-white border border-gray-300 rounded-md text-gray-800 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                         />
                         <Button
-                          variant="black"
+                          variant="primary"
                           size="lg"
                           onClick={authenticateWithRevizto}
                           loading={loading}

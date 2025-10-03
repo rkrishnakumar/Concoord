@@ -16,11 +16,11 @@ export const colors = {
     secondary: 'border-gray-200',
   },
   buttons: {
-    primary: 'bg-white hover:bg-gray-50 text-gray-900',
+    primary: 'bg-black hover:bg-gray-800 text-white',
     secondary: 'bg-gray-100 hover:bg-gray-200 text-gray-900',
     black: 'bg-black hover:bg-gray-800 text-white',
     success: 'bg-green-100 hover:bg-green-200 text-green-900',
-    danger: 'bg-red-100 hover:bg-red-200 text-red-900',
+    danger: 'bg-red-600 hover:bg-red-700 text-white',
   },
   status: {
     success: 'bg-green-900 text-green-200',
