@@ -47,7 +47,8 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
   const authenticateWithAcc = async () => {
     setLoading(true)
     try {
-      window.location.href = `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/auth/acc/connect`
+      const url = `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/auth/acc/connect`
+      window.location.href = url
     } catch (error) {
       console.error('ACC authentication error:', error)
     } finally {
