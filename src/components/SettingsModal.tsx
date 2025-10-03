@@ -29,6 +29,7 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
       window.history.replaceState({}, '', newUrl)
     }
     if (urlParams.get('success') === 'procore_connected') {
+      console.log('Detected procore_connected URL parameter - setting connected to true')
       setProcoreConnected(true)
       // Remove the success parameter from URL
       const newUrl = window.location.pathname
@@ -46,6 +47,7 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
 
   const fetchCredentials = async () => {
     try {
+      console.log('Current connection states:', { accConnected, procoreConnected, reviztoConnected })
       // Temporarily disabled to fix console spam
       // const response = await apiFetch('/api/credentials')
       // if (response.ok) {
