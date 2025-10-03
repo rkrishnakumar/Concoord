@@ -32,7 +32,17 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
 
   const fetchCredentials = async () => {
     try {
-      const response = await apiFetch('/api/credentials')
+      // Get the current user ID from the session
+      const sessionResponse = await fetch('/api/auth/session')
+      const session = await sessionResponse.json()
+      const userId = session?.user?.id
+      
+      if (!userId) {
+        console.error('No user session found')
+        return
+      }
+      
+      const response = await apiFetch(`/api/credentials?userId=${userId}`)
       if (response.ok) {
         const data = await response.json()
         setAccConnected(!!data.acc?.connected)
