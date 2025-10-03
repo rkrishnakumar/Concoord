@@ -6,6 +6,7 @@ import Button from '@/components/ui/Button'
 import Alert from '@/components/ui/Alert'
 import { apiFetch } from '@/lib/api-fetch'
 import { buildApiUrl } from '@/lib/api-helper'
+import { getSession } from 'next-auth/react'
 
 interface SettingsModalProps {
   isOpen: boolean
@@ -65,7 +66,12 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
   const authenticateWithAcc = async () => {
     setLoading(true)
     try {
-      const url = `${process.env.NEXT_PUBLIC_API_BASE_URL?.replace(/\/$/, '')}/api/auth/acc/connect`
+      const session = await getSession()
+      if (!session?.user?.id) {
+        console.error('No user session found')
+        return
+      }
+      const url = `${process.env.NEXT_PUBLIC_API_BASE_URL?.replace(/\/$/, '')}/api/auth/acc/connect?userId=${session.user.id}`
       window.location.href = url
     } catch (error) {
       console.error('ACC authentication error:', error)
@@ -77,7 +83,12 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
   const authenticateWithProcore = async () => {
     setLoading(true)
     try {
-      const url = `${process.env.NEXT_PUBLIC_API_BASE_URL?.replace(/\/$/, '')}/api/auth/procore/connect`
+      const session = await getSession()
+      if (!session?.user?.id) {
+        console.error('No user session found')
+        return
+      }
+      const url = `${process.env.NEXT_PUBLIC_API_BASE_URL?.replace(/\/$/, '')}/api/auth/procore/connect?userId=${session.user.id}`
       window.location.href = url
     } catch (error) {
       console.error('Procore authentication error:', error)

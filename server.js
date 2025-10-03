@@ -258,12 +258,18 @@ app.get('/api/auth/acc/connect', (req, res) => {
       return res.redirect(`${process.env.FRONTEND_URL}/auth/error?error=missing_client_id`)
     }
     
+    // Get user ID from query parameter
+    const { userId } = req.query;
+    if (!userId) {
+      return res.status(400).json({ error: 'User ID is required' });
+    }
+    
     // Generate state parameter for security
     const state = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15)
     
     // Store state in session or database for verification
     // For now, we'll include it in the URL
-    const accOAuthUrl = `https://developer.api.autodesk.com/authentication/v2/authorize?response_type=code&client_id=${process.env.ACC_CLIENT_ID}&redirect_uri=https://concoord-production.up.railway.app/api/oauth/acc-callback&scope=data:read data:write&state=${state}`
+    const accOAuthUrl = `https://developer.api.autodesk.com/authentication/v2/authorize?response_type=code&client_id=${process.env.ACC_CLIENT_ID}&redirect_uri=https://concoord-production.up.railway.app/api/oauth/acc-callback&scope=data:read data:write&state=${state}&user_id=${userId}`
     
     console.log('ACC OAuth URL:', accOAuthUrl)
     res.redirect(accOAuthUrl)
@@ -280,12 +286,18 @@ app.get('/api/auth/procore/connect', (req, res) => {
       return res.redirect(`${process.env.FRONTEND_URL}/auth/error?error=missing_client_id`)
     }
     
+    // Get user ID from query parameter
+    const { userId } = req.query;
+    if (!userId) {
+      return res.status(400).json({ error: 'User ID is required' });
+    }
+    
     // Generate state parameter for security
     const state = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15)
     
     // Store state in session or database for verification
     // For now, we'll include it in the URL
-    const procoreOAuthUrl = `https://login.procore.com/oauth/authorize?response_type=code&client_id=${process.env.PROCORE_CLIENT_ID}&redirect_uri=https://concoord-production.up.railway.app/api/oauth/procore-callback&state=${state}`
+    const procoreOAuthUrl = `https://login.procore.com/oauth/authorize?response_type=code&client_id=${process.env.PROCORE_CLIENT_ID}&redirect_uri=https://concoord-production.up.railway.app/api/oauth/procore-callback&state=${state}&user_id=${userId}`
     
     console.log('Procore OAuth URL:', procoreOAuthUrl)
     res.redirect(procoreOAuthUrl)
@@ -335,8 +347,13 @@ app.get('/api/oauth/acc-callback', async (req, res) => {
     // Store credentials in database
     const expiresAt = new Date(Date.now() + (tokenData.expires_in * 1000));
     
+    // Extract user ID from the OAuth URL
+    const { user_id } = req.query;
+    const userId = user_id || 'default-user';
+    console.log('Using user ID for ACC:', userId);
+    
     await prisma.accCredentials.upsert({
-      where: { userId: 'default-user' }, // TODO: Get actual user ID from session
+      where: { userId },
       update: {
         accessToken: tokenData.access_token,
         refreshToken: tokenData.refresh_token || null,
@@ -344,7 +361,9 @@ app.get('/api/oauth/acc-callback', async (req, res) => {
       },
       create: {
         id: `acc_${Date.now()}`,
-        userId: 'default-user', // TODO: Get actual user ID from session
+        userId,
+        clientId: process.env.ACC_CLIENT_ID,
+        clientSecret: process.env.ACC_CLIENT_SECRET,
         accessToken: tokenData.access_token,
         refreshToken: tokenData.refresh_token || null,
         expiresAt: expiresAt
@@ -630,12 +649,17 @@ app.get('/api/oauth/procore-callback', async (req, res) => {
 
     // Store credentials in database
     try {
+      // Extract user ID from the OAuth URL
+      const { user_id } = req.query;
+      const userId = user_id || 'default-user';
+      console.log('Using user ID for Procore:', userId);
+      
       // Ensure user exists
       await prisma.user.upsert({
-        where: { id: 'default-user' },
+        where: { id: userId },
         update: {},
         create: {
-          id: 'default-user',
+          id: userId,
           email: 'default@concoord.com',
           name: 'Default User',
           password: 'default-password'
@@ -643,14 +667,17 @@ app.get('/api/oauth/procore-callback', async (req, res) => {
       });
 
       await prisma.procoreCredentials.upsert({
-        where: { userId: 'default-user' }, // TODO: Get from session
+        where: { userId },
         update: {
           accessToken: tokenData.access_token,
           refreshToken: tokenData.refresh_token,
           expiresAt: new Date(Date.now() + (tokenData.expires_in * 1000))
         },
         create: {
-          userId: 'default-user', // TODO: Get from session
+          id: `procore_${Date.now()}`,
+          userId,
+          clientId: process.env.PROCORE_CLIENT_ID,
+          clientSecret: process.env.PROCORE_CLIENT_SECRET,
           accessToken: tokenData.access_token,
           refreshToken: tokenData.refresh_token,
           expiresAt: new Date(Date.now() + (tokenData.expires_in * 1000))
