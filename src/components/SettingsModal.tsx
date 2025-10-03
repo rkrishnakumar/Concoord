@@ -65,7 +65,7 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
   const authenticateWithAcc = async () => {
     setLoading(true)
     try {
-      const url = `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/auth/acc/connect`
+      const url = `${process.env.NEXT_PUBLIC_API_BASE_URL?.replace(/\/$/, '')}/api/auth/acc/connect`
       window.location.href = url
     } catch (error) {
       console.error('ACC authentication error:', error)
@@ -77,7 +77,7 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
   const authenticateWithProcore = async () => {
     setLoading(true)
     try {
-      const url = `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/auth/procore/connect`
+      const url = `${process.env.NEXT_PUBLIC_API_BASE_URL?.replace(/\/$/, '')}/api/auth/procore/connect`
       window.location.href = url
     } catch (error) {
       console.error('Procore authentication error:', error)

@@ -6,7 +6,6 @@ import PageLayout from '@/components/ui/PageLayout'
 import Card from '@/components/ui/Card'
 import Button from '@/components/ui/Button'
 import Alert from '@/components/ui/Alert'
-import SettingsModal from '@/components/SettingsModal'
 import { apiFetch } from '@/lib/api-fetch'
 
 interface Sync {
@@ -33,7 +32,6 @@ export default function HomePage() {
   const [syncs, setSyncs] = useState<Sync[]>([])
   const [accConnected, setAccConnected] = useState(false)
   const [procoreConnected, setProcoreConnected] = useState(false)
-  const [isSettingsOpen, setIsSettingsOpen] = useState(false)
   const [executingSync, setExecutingSync] = useState<string | null>(null)
 
   useEffect(() => {
@@ -146,44 +144,26 @@ export default function HomePage() {
     <PageLayout>
       {message && <Alert type="info" className="mb-6">{message}</Alert>}
 
-      {/* Connection Status */}
-      {(accConnected && procoreConnected) ? null : (
-        <Alert type="warning" className="mb-6">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="font-medium">Systems not fully connected</p>
-              <p className="text-sm mt-1">
-                {!accConnected && !procoreConnected 
-                  ? 'Connect systems to create syncs.'
-                  : 'Connect another system to create syncs.'
-                }
-              </p>
-            </div>
-            <Button 
-              variant="primary" 
-              size="lg" 
-              onClick={() => {
-                console.log('Connect Systems clicked');
-                setIsSettingsOpen(true);
-              }}
-            >
-              Connect Systems
-            </Button>
-          </div>
-        </Alert>
-      )}
 
       {/* Syncs Header */}
       <div className="flex items-center justify-between mb-6">
         <h1 className="text-2xl font-semibold text-gray-800">Your Syncs</h1>
-        <Button 
-          variant="primary" 
-          size="lg"
-          href="/sync/new"
-          disabled={!accConnected || !procoreConnected}
-        >
-          + New Sync
-        </Button>
+        <div className="relative group">
+          <Button 
+            variant="primary" 
+            size="lg"
+            href="/sync/new"
+            disabled={!accConnected || !procoreConnected}
+          >
+            + New Sync
+          </Button>
+          {(!accConnected || !procoreConnected) && (
+            <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-3 py-2 bg-gray-900 text-white text-sm rounded-md opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-10">
+              Please connect to systems in Settings before creating a new sync.
+              <div className="absolute top-full left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-4 border-r-4 border-t-4 border-transparent border-t-gray-900"></div>
+            </div>
+          )}
+        </div>
       </div>
 
       {/* Syncs List */}
@@ -269,10 +249,6 @@ export default function HomePage() {
         )}
       </div>
       
-      <SettingsModal 
-        isOpen={isSettingsOpen} 
-        onClose={() => setIsSettingsOpen(false)} 
-      />
     </PageLayout>
   )
 }
