@@ -20,22 +20,7 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
   const [reviztoConnected, setReviztoConnected] = useState(false)
 
   // Check for success parameters in URL
-  useEffect(() => {
-    const urlParams = new URLSearchParams(window.location.search)
-    if (urlParams.get('success') === 'acc_connected') {
-      setAccConnected(true)
-      // Remove the success parameter from URL
-      const newUrl = window.location.pathname
-      window.history.replaceState({}, '', newUrl)
-    }
-    if (urlParams.get('success') === 'procore_connected') {
-      console.log('Detected procore_connected URL parameter - setting connected to true')
-      setProcoreConnected(true)
-      // Remove the success parameter from URL
-      const newUrl = window.location.pathname
-      window.history.replaceState({}, '', newUrl)
-    }
-  }, [])
+  // Removed URL parameter detection - connection status comes from database
   const [activeSection, setActiveSection] = useState<'about' | 'integrations'>('integrations')
 
   useEffect(() => {
@@ -47,19 +32,13 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
 
   const fetchCredentials = async () => {
     try {
-      console.log('Current connection states:', { accConnected, procoreConnected, reviztoConnected })
-      console.log('Resetting all connection states to false for debugging')
-      setAccConnected(false)
-      setProcoreConnected(false)
-      setReviztoConnected(false)
-      // Temporarily disabled to fix console spam
-      // const response = await apiFetch('/api/credentials')
-      // if (response.ok) {
-      //   const data = await response.json()
-      //   setAccConnected(!!data.accCredentials?.accessToken)
-      //   setProcoreConnected(!!data.procoreCredentials?.accessToken)
-      //   setReviztoConnected(!!data.reviztoCredentials?.accessToken)
-      // }
+      const response = await apiFetch('/api/credentials')
+      if (response.ok) {
+        const data = await response.json()
+        setAccConnected(!!data.acc?.connected)
+        setProcoreConnected(!!data.procore?.connected)
+        setReviztoConnected(!!data.revizto?.connected)
+      }
     } catch (error) {
       console.error('Error fetching credentials:', error)
     }
@@ -68,12 +47,7 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
   const authenticateWithAcc = async () => {
     setLoading(true)
     try {
-      // Direct redirect to Railway OAuth endpoint
-      const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL?.replace(/\/$/, '')
-      const oauthUrl = `${baseUrl}/api/auth/acc/connect`
-      console.log('ACC OAuth URL:', oauthUrl)
-      console.log('NEXT_PUBLIC_API_BASE_URL:', process.env.NEXT_PUBLIC_API_BASE_URL)
-      window.location.href = oauthUrl
+      window.location.href = `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/auth/acc/connect`
     } catch (error) {
       console.error('ACC authentication error:', error)
     } finally {
@@ -84,12 +58,7 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
   const authenticateWithProcore = async () => {
     setLoading(true)
     try {
-      // Direct redirect to Railway OAuth endpoint
-      const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL?.replace(/\/$/, '')
-      const oauthUrl = `${baseUrl}/api/auth/procore/connect`
-      console.log('Procore OAuth URL:', oauthUrl)
-      console.log('NEXT_PUBLIC_API_BASE_URL:', process.env.NEXT_PUBLIC_API_BASE_URL)
-      window.location.href = oauthUrl
+      window.location.href = `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/auth/procore/connect`
     } catch (error) {
       console.error('Procore authentication error:', error)
     } finally {
