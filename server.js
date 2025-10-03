@@ -263,7 +263,7 @@ app.get('/api/auth/acc/connect', (req, res) => {
     
     // Store state in session or database for verification
     // For now, we'll include it in the URL
-    const accOAuthUrl = `https://developer.api.autodesk.com/authentication/v2/authorize?response_type=code&client_id=${process.env.ACC_CLIENT_ID}&redirect_uri=${process.env.FRONTEND_URL}/api/oauth/acc-callback&scope=data:read data:write&state=${state}`
+    const accOAuthUrl = `https://developer.api.autodesk.com/authentication/v2/authorize?response_type=code&client_id=${process.env.ACC_CLIENT_ID}&redirect_uri=https://concoord-production.up.railway.app/api/oauth/acc-callback&scope=data:read data:write&state=${state}`
     
     console.log('ACC OAuth URL:', accOAuthUrl)
     res.redirect(accOAuthUrl)
@@ -294,6 +294,70 @@ app.get('/api/auth/procore/connect', (req, res) => {
     res.redirect(`${process.env.FRONTEND_URL}/auth/error?error=oauth_failed`)
   }
 })
+
+// ACC OAuth callback endpoint
+app.get('/api/oauth/acc-callback', async (req, res) => {
+  try {
+    const { code, state } = req.query;
+    
+    if (!code) {
+      return res.redirect(`${process.env.FRONTEND_URL}/auth/error?error=missing_code`);
+    }
+
+    if (!process.env.ACC_CLIENT_ID || !process.env.ACC_CLIENT_SECRET) {
+      return res.redirect(`${process.env.FRONTEND_URL}/auth/error?error=missing_credentials`);
+    }
+
+    // Exchange code for access token
+    const tokenResponse = await fetch('https://developer.api.autodesk.com/authentication/v2/token', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+      },
+      body: new URLSearchParams({
+        grant_type: 'authorization_code',
+        code: code,
+        client_id: process.env.ACC_CLIENT_ID,
+        client_secret: process.env.ACC_CLIENT_SECRET,
+        redirect_uri: 'https://concoord-production.up.railway.app/api/oauth/acc-callback'
+      })
+    });
+
+    if (!tokenResponse.ok) {
+      const errorText = await tokenResponse.text();
+      console.error('ACC token exchange failed:', errorText);
+      return res.redirect(`${process.env.FRONTEND_URL}/auth/error?error=token_exchange_failed`);
+    }
+
+    const tokenData = await tokenResponse.json();
+    console.log('ACC OAuth successful:', tokenData);
+
+    // Store credentials in database
+    const expiresAt = new Date(Date.now() + (tokenData.expires_in * 1000));
+    
+    await prisma.accCredentials.upsert({
+      where: { userId: 'default-user' }, // TODO: Get actual user ID from session
+      update: {
+        accessToken: tokenData.access_token,
+        refreshToken: tokenData.refresh_token || null,
+        expiresAt: expiresAt
+      },
+      create: {
+        id: `acc_${Date.now()}`,
+        userId: 'default-user', // TODO: Get actual user ID from session
+        accessToken: tokenData.access_token,
+        refreshToken: tokenData.refresh_token || null,
+        expiresAt: expiresAt
+      }
+    });
+
+    console.log('ACC credentials stored successfully');
+    res.redirect(`${process.env.FRONTEND_URL}/home?success=acc_connected`);
+  } catch (error) {
+    console.error('Error in ACC callback:', error);
+    res.redirect(`${process.env.FRONTEND_URL}/auth/error?error=callback_failed`);
+  }
+});
 
 // Credentials storage endpoint for all OAuth providers
 
@@ -627,6 +691,8 @@ app.post('/api/credentials', async (req, res) => {
         create: {
           id: `acc_${Date.now()}`,
           userId,
+          clientId: process.env.ACC_CLIENT_ID,
+          clientSecret: process.env.ACC_CLIENT_SECRET,
           accessToken,
           refreshToken,
           expiresAt
@@ -643,6 +709,8 @@ app.post('/api/credentials', async (req, res) => {
         create: {
           id: `procore_${Date.now()}`,
           userId,
+          clientId: process.env.PROCORE_CLIENT_ID,
+          clientSecret: process.env.PROCORE_CLIENT_SECRET,
           accessToken,
           refreshToken,
           expiresAt
