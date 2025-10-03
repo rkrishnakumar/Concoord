@@ -597,7 +597,6 @@ app.get('/api/credentials', async (req, res) => {
   }
 });
 
-// OAuth callback endpoints
 app.get('/api/oauth/procore-callback', async (req, res) => {
   try {
     const { code, state } = req.query;

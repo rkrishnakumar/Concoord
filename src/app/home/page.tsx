@@ -143,15 +143,12 @@ export default function HomePage() {
   }
 
   return (
-    <PageLayout
-      title="Your Syncs"
-      description="Manage your data synchronization workflows between construction management systems."
-    >
+    <PageLayout>
       {message && <Alert type="info" className="mb-6">{message}</Alert>}
 
       {/* Connection Status */}
       {(accConnected && procoreConnected) ? null : (
-        <Alert type="warning" className="mb-6">
+        <Alert type="warning" className="mb-6 bg-yellow-50 border-yellow-200 text-yellow-800">
           <div className="flex items-center justify-between">
             <div>
               <p className="font-medium">Systems not fully connected</p>
@@ -169,38 +166,28 @@ export default function HomePage() {
         </Alert>
       )}
 
-      {/* Create New Sync */}
-      <div className="mb-8">
-        <Card>
-          <div className="flex items-center justify-between">
-            <div>
-              <h2 className="text-xl font-semibold text-gray-800 mb-2">Create New Sync</h2>
-              <p className="text-gray-700">
-                Set up a new data synchronization workflow between your connected systems.
-              </p>
-            </div>
-            <Button 
-              variant="primary" 
-              size="lg"
-              href="/sync/new"
-              disabled={!accConnected || !procoreConnected}
-            >
-              + New Sync
-            </Button>
-          </div>
-        </Card>
+      {/* Syncs Header */}
+      <div className="flex items-center justify-between mb-6">
+        <h1 className="text-2xl font-semibold text-gray-800">Your Syncs</h1>
+        <Button 
+          variant="primary" 
+          size="lg"
+          href="/sync/new"
+          disabled={!accConnected || !procoreConnected}
+        >
+          + New Sync
+        </Button>
       </div>
 
       {/* Syncs List */}
       <div className="space-y-4">
-        <div className="flex items-center justify-between">
-          <h2 className="text-xl font-semibold text-gray-800">Your Syncs ({syncs.length})</h2>
-          {syncs.length > 0 && (
+        {syncs.length > 0 && (
+          <div className="flex items-center justify-end">
             <Button variant="secondary" size="sm">
               View All
             </Button>
-          )}
-        </div>
+          </div>
+        )}
 
         {syncs.length === 0 ? (
           <Card>
