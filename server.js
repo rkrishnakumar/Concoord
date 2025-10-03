@@ -147,14 +147,26 @@ app.get('/api/auth/acc/callback', async (req, res) => {
     const tokenData = await tokenResponse.json();
     console.log('ACC OAuth successful:', tokenData);
 
-    // TODO: Store credentials in database once schema is fixed
-    console.log('ACC OAuth successful - tokens received:', {
-      access_token: tokenData.access_token ? 'present' : 'missing',
-      refresh_token: tokenData.refresh_token ? 'present' : 'missing',
-      expires_in: tokenData.expires_in
+    // Store credentials in database
+    const expiresAt = new Date(Date.now() + (tokenData.expires_in * 1000));
+    
+    await prisma.accCredentials.upsert({
+      where: { userId: 'default-user' }, // TODO: Get actual user ID from session
+      update: {
+        accessToken: tokenData.access_token,
+        refreshToken: tokenData.refresh_token || null,
+        expiresAt: expiresAt
+      },
+      create: {
+        id: `acc_${Date.now()}`,
+        userId: 'default-user', // TODO: Get actual user ID from session
+        accessToken: tokenData.access_token,
+        refreshToken: tokenData.refresh_token || null,
+        expiresAt: expiresAt
+      }
     });
 
-    console.log('Redirecting to success page:', `${process.env.FRONTEND_URL}/home?success=acc_connected`);
+    console.log('ACC credentials stored successfully');
     res.redirect(`${process.env.FRONTEND_URL}/home?success=acc_connected`);
   } catch (error) {
     console.error('Error in ACC callback:', error);
@@ -199,13 +211,26 @@ app.get('/api/auth/procore/callback', async (req, res) => {
     const tokenData = await tokenResponse.json();
     console.log('Procore OAuth successful:', tokenData);
 
-    // TODO: Store credentials in database once schema is fixed
-    console.log('Procore OAuth successful - tokens received:', {
-      access_token: tokenData.access_token ? 'present' : 'missing',
-      refresh_token: tokenData.refresh_token ? 'present' : 'missing',
-      expires_in: tokenData.expires_in
+    // Store credentials in database
+    const expiresAt = new Date(Date.now() + (tokenData.expires_in * 1000));
+    
+    await prisma.procoreCredentials.upsert({
+      where: { userId: 'default-user' }, // TODO: Get actual user ID from session
+      update: {
+        accessToken: tokenData.access_token,
+        refreshToken: tokenData.refresh_token || null,
+        expiresAt: expiresAt
+      },
+      create: {
+        id: `procore_${Date.now()}`,
+        userId: 'default-user', // TODO: Get actual user ID from session
+        accessToken: tokenData.access_token,
+        refreshToken: tokenData.refresh_token || null,
+        expiresAt: expiresAt
+      }
     });
 
+    console.log('Procore credentials stored successfully');
     res.redirect(`${process.env.FRONTEND_URL}/home?success=procore_connected`);
   } catch (error) {
     console.error('Error in Procore callback:', error);
@@ -257,6 +282,75 @@ app.get('/api/auth/procore/connect', (req, res) => {
     res.redirect(`${process.env.FRONTEND_URL}/auth/error?error=oauth_failed`)
   }
 })
+
+// Credentials storage endpoint for all OAuth providers
+app.post('/api/credentials', async (req, res) => {
+  try {
+    const { userId, system, accessToken, refreshToken, expiresAt } = req.body;
+    
+    if (!userId || !system || !accessToken) {
+      return res.status(400).json({ error: 'userId, system, and accessToken are required' });
+    }
+
+    console.log(`Storing ${system} credentials for user ${userId}`);
+
+    if (system === 'acc') {
+      await prisma.accCredentials.upsert({
+        where: { userId },
+        update: {
+          accessToken,
+          refreshToken: refreshToken || null,
+          expiresAt: new Date(expiresAt)
+        },
+        create: {
+          id: `acc_${Date.now()}`,
+          userId,
+          accessToken,
+          refreshToken: refreshToken || null,
+          expiresAt: new Date(expiresAt)
+        }
+      });
+    } else if (system === 'procore') {
+      await prisma.procoreCredentials.upsert({
+        where: { userId },
+        update: {
+          accessToken,
+          refreshToken: refreshToken || null,
+          expiresAt: new Date(expiresAt)
+        },
+        create: {
+          id: `procore_${Date.now()}`,
+          userId,
+          accessToken,
+          refreshToken: refreshToken || null,
+          expiresAt: new Date(expiresAt)
+        }
+      });
+    } else if (system === 'revizto') {
+      await prisma.reviztoCredentials.upsert({
+        where: { userId },
+        update: {
+          accessToken,
+          refreshToken: refreshToken || null,
+          expiresAt: new Date(expiresAt)
+        },
+        create: {
+          id: `revizto_${Date.now()}`,
+          userId,
+          accessToken,
+          refreshToken: refreshToken || null,
+          expiresAt: new Date(expiresAt)
+        }
+      });
+    }
+    
+    console.log(`${system} credentials stored successfully`);
+    res.json({ success: true, message: `${system} credentials stored successfully` });
+  } catch (error) {
+    console.error('Error storing credentials:', error);
+    res.status(500).json({ error: 'Failed to store credentials' });
+  }
+});
 
 // Revizto token storage endpoint
 app.post('/api/revizto/tokens', async (req, res) => {
