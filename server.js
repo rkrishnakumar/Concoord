@@ -248,7 +248,7 @@ app.get('/api/auth/procore/connect', (req, res) => {
     
     // Store state in session or database for verification
     // For now, we'll include it in the URL
-    const procoreOAuthUrl = `https://login.procore.com/oauth/authorize?response_type=code&client_id=${process.env.PROCORE_CLIENT_ID}&redirect_uri=${process.env.FRONTEND_URL}/api/oauth/procore-callback&scope=read:coordination_issues write:coordination_issues&state=${state}`
+    const procoreOAuthUrl = `https://login.procore.com/oauth/authorize?response_type=code&client_id=${process.env.PROCORE_CLIENT_ID}&redirect_uri=${process.env.FRONTEND_URL}/api/oauth/procore-callback&state=${state}`
     
     console.log('Procore OAuth URL:', procoreOAuthUrl)
     res.redirect(procoreOAuthUrl)
@@ -432,6 +432,74 @@ app.get('/api/credentials', async (req, res) => {
   } catch (error) {
     console.error('Error fetching credentials:', error);
     res.status(500).json({ error: 'Failed to fetch credentials' });
+  }
+});
+
+// Store credentials
+app.post('/api/credentials', async (req, res) => {
+  try {
+    const { userId, system, accessToken, refreshToken, expiresIn } = req.body;
+    
+    if (!userId || !system || !accessToken) {
+      return res.status(400).json({ error: 'User ID, system, and access token are required' });
+    }
+
+    // Calculate expiration time
+    const expiresAt = new Date(Date.now() + (expiresIn * 1000));
+
+    if (system === 'acc') {
+      await prisma.accCredentials.upsert({
+        where: { userId },
+        update: {
+          accessToken,
+          refreshToken,
+          expiresAt
+        },
+        create: {
+          userId,
+          accessToken,
+          refreshToken,
+          expiresAt
+        }
+      });
+    } else if (system === 'procore') {
+      await prisma.procoreCredentials.upsert({
+        where: { userId },
+        update: {
+          accessToken,
+          refreshToken,
+          expiresAt
+        },
+        create: {
+          userId,
+          accessToken,
+          refreshToken,
+          expiresAt
+        }
+      });
+    } else if (system === 'revizto') {
+      await prisma.reviztoCredentials.upsert({
+        where: { userId },
+        update: {
+          accessToken,
+          refreshToken,
+          expiresAt
+        },
+        create: {
+          userId,
+          accessToken,
+          refreshToken,
+          expiresAt
+        }
+      });
+    } else {
+      return res.status(400).json({ error: 'Invalid system' });
+    }
+
+    res.json({ success: true });
+  } catch (error) {
+    console.error('Error storing credentials:', error);
+    res.status(500).json({ error: 'Failed to store credentials' });
   }
 });
 

@@ -39,6 +39,7 @@ export async function GET(request: NextRequest) {
 
     // Get user session
     const session = await auth()
+    console.log('Session in ACC callback:', session)
     if (!session?.user?.id) {
       console.error('No user session found')
       return NextResponse.redirect(new URL('/auth/error?error=no_session', request.url))
@@ -63,7 +64,8 @@ export async function GET(request: NextRequest) {
       if (response.ok) {
         console.log('ACC credentials stored successfully');
       } else {
-        console.error('Failed to store ACC credentials');
+        const errorText = await response.text();
+        console.error('Failed to store ACC credentials:', response.status, errorText);
       }
     } catch (error) {
       console.error('Error storing ACC credentials:', error);
