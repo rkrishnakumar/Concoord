@@ -154,9 +154,12 @@ app.get('/api/auth/acc/callback', async (req, res) => {
       expires_in: tokenData.expires_in
     });
 
+    console.log('Redirecting to success page:', `${process.env.FRONTEND_URL}/home?success=acc_connected`);
     res.redirect(`${process.env.FRONTEND_URL}/home?success=acc_connected`);
   } catch (error) {
     console.error('Error in ACC callback:', error);
+    console.error('Error details:', error.message);
+    console.error('Error stack:', error.stack);
     res.redirect(`${process.env.FRONTEND_URL}/auth/error?error=callback_failed`);
   }
 });
