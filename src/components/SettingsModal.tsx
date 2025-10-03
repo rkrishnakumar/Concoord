@@ -42,12 +42,20 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
         return
       }
       
+      console.log('Fetching credentials for userId:', userId)
+      
       const response = await apiFetch(`/api/credentials?userId=${userId}`)
+      console.log('Credentials response:', response.status, response.statusText)
+      
       if (response.ok) {
         const data = await response.json()
+        console.log('Credentials data:', data)
         setAccConnected(!!data.acc?.connected)
         setProcoreConnected(!!data.procore?.connected)
         setReviztoConnected(!!data.revizto?.connected)
+      } else {
+        const error = await response.json()
+        console.error('Credentials fetch error:', error)
       }
     } catch (error) {
       console.error('Error fetching credentials:', error)
@@ -151,11 +159,15 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
         return
       }
       
+      console.log('Testing connection with:', { userId, type })
+      
       const response = await apiFetch('/api/test-connection', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ userId, type })
       })
+      
+      console.log('Test connection response:', response.status, response.statusText)
       
       if (response.ok) {
         const data = await response.json()
