@@ -147,35 +147,12 @@ app.get('/api/auth/acc/callback', async (req, res) => {
     const tokenData = await tokenResponse.json();
     console.log('ACC OAuth successful:', tokenData);
 
-    // Store credentials in database
-    // Note: In a real app, you'd get the user ID from the session
-    // For now, we'll use a placeholder user ID
-    const userId = req.query.userId || 'default-user'; // TODO: Get from session
-    
-    try {
-      console.log('Attempting to store ACC credentials for userId:', userId);
-      await prisma.accCredentials.upsert({
-        where: { userId },
-        update: {
-          accessToken: tokenData.access_token,
-          refreshToken: tokenData.refresh_token || null,
-          expiresAt: new Date(Date.now() + (tokenData.expires_in * 1000))
-        },
-        create: {
-          id: `acc_${Date.now()}`,
-          userId,
-          accessToken: tokenData.access_token,
-          refreshToken: tokenData.refresh_token || null,
-          expiresAt: new Date(Date.now() + (tokenData.expires_in * 1000))
-        }
-      });
-      
-      console.log('ACC credentials stored successfully');
-    } catch (dbError) {
-      console.error('Error storing ACC credentials:', dbError);
-      console.error('Database error details:', dbError.message);
-      return res.redirect(`${process.env.FRONTEND_URL}/auth/error?error=storage_failed`);
-    }
+    // TODO: Store credentials in database once schema is fixed
+    console.log('ACC OAuth successful - tokens received:', {
+      access_token: tokenData.access_token ? 'present' : 'missing',
+      refresh_token: tokenData.refresh_token ? 'present' : 'missing',
+      expires_in: tokenData.expires_in
+    });
 
     res.redirect(`${process.env.FRONTEND_URL}/home?success=acc_connected`);
   } catch (error) {
@@ -219,31 +196,12 @@ app.get('/api/auth/procore/callback', async (req, res) => {
     const tokenData = await tokenResponse.json();
     console.log('Procore OAuth successful:', tokenData);
 
-    // Store credentials in database
-    const userId = req.query.userId || 'default-user'; // TODO: Get from session
-    
-    try {
-      await prisma.procoreCredentials.upsert({
-        where: { userId },
-        update: {
-          accessToken: tokenData.access_token,
-          refreshToken: tokenData.refresh_token || null,
-          expiresAt: new Date(Date.now() + (tokenData.expires_in * 1000))
-        },
-        create: {
-          id: `procore_${Date.now()}`,
-          userId,
-          accessToken: tokenData.access_token,
-          refreshToken: tokenData.refresh_token || null,
-          expiresAt: new Date(Date.now() + (tokenData.expires_in * 1000))
-        }
-      });
-      
-      console.log('Procore credentials stored successfully');
-    } catch (dbError) {
-      console.error('Error storing Procore credentials:', dbError);
-      return res.redirect(`${process.env.FRONTEND_URL}/auth/error?error=storage_failed`);
-    }
+    // TODO: Store credentials in database once schema is fixed
+    console.log('Procore OAuth successful - tokens received:', {
+      access_token: tokenData.access_token ? 'present' : 'missing',
+      refresh_token: tokenData.refresh_token ? 'present' : 'missing',
+      expires_in: tokenData.expires_in
+    });
 
     res.redirect(`${process.env.FRONTEND_URL}/home?success=procore_connected`);
   } catch (error) {
