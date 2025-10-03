@@ -196,7 +196,7 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
         </div>
 
         {/* Right Content */}
-        <div className="flex-1  overflow-y-auto">
+        <div className="flex-1 bg-white overflow-y-auto">
           <div className="p-6">
             <h2 className="text-xl font-semibold text-gray-800 mb-6">
               {activeSection === 'about' ? 'About' : 'Integrations'}
