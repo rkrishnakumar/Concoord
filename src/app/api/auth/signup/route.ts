@@ -30,7 +30,8 @@ export async function POST(request: NextRequest) {
     }
 
     // Forward request to Railway backend
-    const url = `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/auth/signup`
+    const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL?.replace(/\/$/, '') // Remove trailing slash
+    const url = `${baseUrl}/api/auth/signup`
     console.log('Making request to:', url)
     
     try {
