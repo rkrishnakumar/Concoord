@@ -159,16 +159,14 @@ app.get('/api/auth/acc/callback', async (req, res) => {
         update: {
           accessToken: tokenData.access_token,
           refreshToken: tokenData.refresh_token || null,
-          expiresAt: new Date(Date.now() + (tokenData.expires_in * 1000)),
-          baseUrl: 'https://developer.api.autodesk.com'
+          expiresAt: new Date(Date.now() + (tokenData.expires_in * 1000))
         },
         create: {
           id: `acc_${Date.now()}`,
           userId,
           accessToken: tokenData.access_token,
           refreshToken: tokenData.refresh_token || null,
-          expiresAt: new Date(Date.now() + (tokenData.expires_in * 1000)),
-          baseUrl: 'https://developer.api.autodesk.com'
+          expiresAt: new Date(Date.now() + (tokenData.expires_in * 1000))
         }
       });
       
@@ -230,16 +228,14 @@ app.get('/api/auth/procore/callback', async (req, res) => {
         update: {
           accessToken: tokenData.access_token,
           refreshToken: tokenData.refresh_token || null,
-          expiresAt: new Date(Date.now() + (tokenData.expires_in * 1000)),
-          baseUrl: 'https://api.procore.com'
+          expiresAt: new Date(Date.now() + (tokenData.expires_in * 1000))
         },
         create: {
           id: `procore_${Date.now()}`,
           userId,
           accessToken: tokenData.access_token,
           refreshToken: tokenData.refresh_token || null,
-          expiresAt: new Date(Date.now() + (tokenData.expires_in * 1000)),
-          baseUrl: 'https://api.procore.com'
+          expiresAt: new Date(Date.now() + (tokenData.expires_in * 1000))
         }
       });
       
@@ -316,16 +312,14 @@ app.post('/api/revizto/tokens', async (req, res) => {
       update: {
         accessToken: accessToken,
         refreshToken: refreshToken || null,
-        expiresAt: new Date(Date.now() + ((expiresIn || 3600) * 1000)),
-        baseUrl: 'https://api.virginia.revizto.com'
+        expiresAt: new Date(Date.now() + ((expiresIn || 3600) * 1000))
       },
       create: {
         id: `revizto_${Date.now()}`,
         userId,
         accessToken: accessToken,
         refreshToken: refreshToken || null,
-        expiresAt: new Date(Date.now() + ((expiresIn || 3600) * 1000)),
-        baseUrl: 'https://api.virginia.revizto.com'
+        expiresAt: new Date(Date.now() + ((expiresIn || 3600) * 1000))
       }
     });
     
