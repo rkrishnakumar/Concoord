@@ -150,6 +150,18 @@ app.get('/api/auth/acc/callback', async (req, res) => {
     // Store credentials in database
     const expiresAt = new Date(Date.now() + (tokenData.expires_in * 1000));
     
+    // Ensure user exists
+    await prisma.user.upsert({
+      where: { id: 'default-user' },
+      update: {},
+      create: {
+        id: 'default-user',
+        email: 'default@concoord.com',
+        name: 'Default User',
+        password: 'default-password'
+      }
+    });
+    
     await prisma.accCredentials.upsert({
       where: { userId: 'default-user' }, // TODO: Get actual user ID from session
       update: {
@@ -624,6 +636,18 @@ app.get('/api/oauth/procore-callback', async (req, res) => {
 
     // Store credentials in database
     try {
+      // Ensure user exists
+      await prisma.user.upsert({
+        where: { id: 'default-user' },
+        update: {},
+        create: {
+          id: 'default-user',
+          email: 'default@concoord.com',
+          name: 'Default User',
+          password: 'default-password'
+        }
+      });
+
       await prisma.procoreCredentials.upsert({
         where: { userId: 'default-user' }, // TODO: Get from session
         update: {
