@@ -5,6 +5,7 @@ import Modal from '@/components/ui/Modal'
 import Button from '@/components/ui/Button'
 import Alert from '@/components/ui/Alert'
 import { apiFetch } from '@/lib/api-fetch'
+import { buildApiUrl } from '@/lib/api-helper'
 
 interface SettingsModalProps {
   isOpen: boolean
@@ -43,8 +44,7 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
   const authenticateWithAcc = async () => {
     setLoading(true)
     try {
-      const backendUrl = process.env.NEXT_PUBLIC_API_BASE_URL || ''
-      window.location.href = `${backendUrl}/api/auth/acc/connect`
+      window.location.href = buildApiUrl('/api/auth/acc/connect')
     } catch (error) {
       console.error('ACC authentication error:', error)
     } finally {
@@ -55,8 +55,7 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
   const authenticateWithProcore = async () => {
     setLoading(true)
     try {
-      const backendUrl = process.env.NEXT_PUBLIC_API_BASE_URL || ''
-      window.location.href = `${backendUrl}/api/auth/procore/connect`
+      window.location.href = buildApiUrl('/api/auth/procore/connect')
     } catch (error) {
       console.error('Procore authentication error:', error)
     } finally {
