@@ -10,7 +10,7 @@ export default function Home() {
   // Show loading while checking session
   if (status === 'loading') {
     return (
-      <div className="min-h-screen bg-gray-900 flex items-center justify-center">
+      <div className="min-h-screen flex items-center justify-center">
         <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-white"></div>
       </div>
     )
@@ -23,7 +23,7 @@ export default function Home() {
 
   // Show marketing/landing page for unauthenticated users
   return (
-    <div className="min-h-screen bg-cream">
+    <div className="min-h-screen">
       {/* Navigation */}
       <nav className="bg-white border-b border-gray-200 shadow-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -33,7 +33,7 @@ export default function Home() {
               <img 
                 src="/concoord-logo.png" 
                 alt="Concoord Logo" 
-                className="h-12 w-12 mr-4 bg-cream rounded-lg p-2"
+                className="h-12 w-12 mr-4 bg-white rounded-lg p-2"
               />
               <span className="text-xl font-semibold text-gray-900">Concoord</span>
             </div>
