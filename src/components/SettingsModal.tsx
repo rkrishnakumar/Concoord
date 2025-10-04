@@ -203,10 +203,21 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
   const disconnectAccount = async (type: 'acc' | 'procore' | 'revizto') => {
     setLoading(true)
     try {
+      // Get the current user ID from the session
+      const sessionResponse = await fetch('/api/auth/session')
+      const session = await sessionResponse.json()
+      const userId = session?.user?.id
+      
+      if (!userId) {
+        setMessage('No user session found')
+        setLoading(false)
+        return
+      }
+      
       const response = await apiFetch('/api/disconnect', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ type })
+        body: JSON.stringify({ userId, system: type })
       })
       
       if (response.ok) {
