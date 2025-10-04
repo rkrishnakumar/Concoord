@@ -169,12 +169,14 @@ export default function FieldMapping({
       {sourceFields.length > 0 && destinationFields.length > 0 && (
         <div className="mb-6 p-4 bg-blue-50 rounded-lg border border-blue-200">
           <div className="flex items-center justify-between mb-3">
-            <h4 className="text-sm font-medium text-blue-800">🤖 AI-Powered Field Mapping</h4>
+            <h4 className="text-sm font-medium text-gray-800">AI-Powered Field Mapping</h4>
             <button
               onClick={generateAiSuggestions}
               disabled={loadingAi}
-              className="px-3 py-1 bg-blue-600 text-white rounded text-sm hover:bg-blue-700 disabled:opacity-50"
+              className="flex items-center justify-center px-4 py-2 bg-black text-white rounded-md text-sm hover:bg-gray-800 disabled:opacity-50"
             >
+              <img src="/OpenAI-white-monoblossom.png" alt="OpenAI Logo" className="h-4 w-4 mr-2" />
+              <span className="mr-2">Powered by OpenAI</span>
               {loadingAi ? 'Generating...' : 'Get AI Suggestions'}
             </button>
           </div>
@@ -215,7 +217,7 @@ export default function FieldMapping({
       )}
 
       {/* Add New Mapping */}
-      <div className="mb-6 p-4 bg-gray-600 rounded-lg">
+      <div className="mb-6 p-4 bg-white rounded-lg border border-gray-200">
         <h4 className="text-sm font-medium text-gray-800 mb-3">Add Field Mapping</h4>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div>
@@ -304,21 +306,6 @@ export default function FieldMapping({
         </div>
       )}
 
-      {validation.warnings.length > 0 && (
-        <div className="mb-4 p-3 bg-yellow-900 text-yellow-200 border border-yellow-700 rounded-md">
-          <h4 className="font-medium mb-2">⚠️ Mapping Warnings ({validation.warnings.length})</h4>
-          <div className="space-y-1">
-            {validation.warnings.map((warning, index) => (
-              <div key={index} className="text-sm">
-                <span className="font-medium">
-                  {getFieldLabel(warning.mapping.sourceField, sourceFields)} → {getFieldLabel(warning.mapping.destinationField, destinationFields)}
-                </span>
-                <p className="text-yellow-300">{warning.warning}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
 
       {/* Existing Mappings */}
       <div>
