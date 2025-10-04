@@ -1332,7 +1332,20 @@ app.get('/api/revizto/projects', async (req, res) => {
           }
         });
         console.log(`Projects response for license ${license.uuid}:`, JSON.stringify(projectsResponse.data, null, 2));
-        allProjects = allProjects.concat(projectsResponse.data.data || []);
+        const projects = projectsResponse.data.data?.data || [];
+        console.log(`Raw projects from API:`, projects);
+        
+        // Transform projects to match expected format
+        const transformedProjects = projects.map(project => ({
+          id: project.uuid,
+          name: project.title,
+          description: project.description || '',
+          created: project.created,
+          updated: project.updated
+        }));
+        
+        console.log(`Transformed projects:`, transformedProjects);
+        allProjects = allProjects.concat(transformedProjects);
         console.log(`Added ${projectsResponse.data.data?.length || 0} projects from license ${license.uuid}`);
       } catch (error) {
         console.error(`Error fetching projects for license ${license.uuid}:`, error.message);
