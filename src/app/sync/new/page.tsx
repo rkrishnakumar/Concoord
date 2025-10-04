@@ -341,9 +341,9 @@ export default function NewSyncPage() {
       if (system === 'revizto' && selectedReviztoProject) {
         url += `?userId=${session?.user?.id}&projectId=${selectedReviztoProject}`
         console.log(`Fetching Revizto fields for project: ${selectedReviztoProject}`)
-      } else if (system === 'procore' && selectedProcoreProject) {
-        url += `?userId=${session?.user?.id}&projectId=${selectedProcoreProject}`
-        console.log(`Fetching Procore fields for project: ${selectedProcoreProject}`)
+      } else if (system === 'procore' && selectedProcoreProject && selectedProcoreCompany) {
+        url += `?userId=${session?.user?.id}&projectId=${selectedProcoreProject}&companyId=${selectedProcoreCompany}`
+        console.log(`Fetching Procore fields for project: ${selectedProcoreProject}, company: ${selectedProcoreCompany}`)
       }
       
       const response = await apiFetch(url)

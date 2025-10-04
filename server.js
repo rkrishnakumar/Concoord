@@ -1251,10 +1251,10 @@ app.get('/api/procore/projects', async (req, res) => {
 
 app.get('/api/procore/fields', async (req, res) => {
   try {
-    const { userId, projectId } = req.query;
+    const { userId, projectId, companyId } = req.query;
     
-    if (!userId || !projectId) {
-      return res.status(400).json({ error: 'User ID and project ID are required' });
+    if (!userId || !projectId || !companyId) {
+      return res.status(400).json({ error: 'User ID, project ID, and company ID are required' });
     }
 
     const user = await prisma.user.findUnique({
@@ -1270,7 +1270,8 @@ app.get('/api/procore/fields', async (req, res) => {
     const response = await axios.get(`https://api.procore.com/rest/v1.0/coordination_issues?project_id=${projectId}`, {
       headers: {
         'Authorization': `Bearer ${user.procoreCredentials.accessToken}`,
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
+        'Procore-Company-Id': companyId
       }
     });
 
