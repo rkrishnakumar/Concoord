@@ -107,7 +107,7 @@ export default function FieldMapping({
 
     setLoadingAi(true)
     try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/ai/suggest-mappings`, {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}api/ai/suggest-mappings`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
