@@ -362,8 +362,6 @@ app.get('/api/oauth/acc-callback', async (req, res) => {
       create: {
         id: `acc_${Date.now()}`,
         userId,
-        clientId: process.env.ACC_CLIENT_ID,
-        clientSecret: process.env.ACC_CLIENT_SECRET,
         accessToken: tokenData.access_token,
         refreshToken: tokenData.refresh_token || null,
         expiresAt: expiresAt
@@ -676,8 +674,6 @@ app.get('/api/oauth/procore-callback', async (req, res) => {
         create: {
           id: `procore_${Date.now()}`,
           userId,
-          clientId: process.env.PROCORE_CLIENT_ID,
-          clientSecret: process.env.PROCORE_CLIENT_SECRET,
           accessToken: tokenData.access_token,
           refreshToken: tokenData.refresh_token,
           expiresAt: new Date(Date.now() + (tokenData.expires_in * 1000))
