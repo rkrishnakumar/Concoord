@@ -1051,12 +1051,23 @@ function applyFieldMappings(issues, fieldMappings) {
     // Apply each field mapping
     mappings.forEach(mapping => {
       const sourceValue = issue[mapping.sourceField];
-      if (sourceValue !== undefined) {
+      console.log(`Mapping ${mapping.sourceField} -> ${mapping.destinationField}:`, {
+        sourceValue,
+        hasValue: sourceValue !== undefined,
+        type: typeof sourceValue
+      });
+      
+      if (sourceValue !== undefined && sourceValue !== null && sourceValue !== '') {
         transformedIssue[mapping.destinationField] = sourceValue;
       }
     });
 
-    console.log('Transformed issue:', { original: issue, transformed: transformedIssue });
+    console.log('Transformed issue:', { 
+      original: Object.keys(issue).slice(0, 5), // Show first 5 keys
+      transformed: transformedIssue,
+      hasTitle: !!transformedIssue.title,
+      titleValue: transformedIssue.title
+    });
     return transformedIssue;
   });
 }
