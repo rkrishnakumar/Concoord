@@ -1014,6 +1014,27 @@ async function fetchReviztoIssues(credentials, projectId) {
   }
 }
 
+// Helper function to validate required field mappings
+function validateRequiredMappings(fieldMappings) {
+  if (!fieldMappings || !fieldMappings.issues) {
+    console.log('No field mappings found');
+    return false;
+  }
+
+  const mappings = fieldMappings.issues;
+  const hasTitleMapping = mappings.some(mapping => 
+    mapping.destinationField === 'title'
+  );
+
+  console.log('Field mapping validation:', {
+    totalMappings: mappings.length,
+    hasTitleMapping,
+    mappings: mappings.map(m => ({ source: m.sourceField, destination: m.destinationField }))
+  });
+
+  return hasTitleMapping;
+}
+
 // Helper function to apply field mappings
 function applyFieldMappings(issues, fieldMappings) {
   if (!fieldMappings || !fieldMappings.issues) {
@@ -1161,7 +1182,14 @@ app.post('/api/syncs/:id/execute', async (req, res) => {
         });
       }
 
-      // Step 3: Apply field mappings and transform data
+      // Step 3: Validate required field mappings
+      console.log('Validating required field mappings...');
+      const hasTitleMapping = validateRequiredMappings(sync.fieldMappings);
+      if (!hasTitleMapping) {
+        throw new Error('Cannot execute sync: "title" field mapping is required for Procore coordination issues');
+      }
+
+      // Step 4: Apply field mappings and transform data
       console.log('Applying field mappings...');
       const transformedIssues = applyFieldMappings(reviztoIssues, sync.fieldMappings);
       console.log(`Transformed ${transformedIssues.length} issues for Procore`);

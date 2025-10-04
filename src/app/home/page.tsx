@@ -21,6 +21,7 @@ interface Sync {
   lastRunAt?: string
   nextRunAt?: string
   lastRunStatus?: string
+  fieldMappings?: any
   createdAt: string
   updatedAt: string
 }
@@ -92,6 +93,15 @@ export default function HomePage() {
       case 'draft': return '📝'
       default: return '⏳'
     }
+  }
+
+  const hasRequiredMappings = (sync: Sync) => {
+    if (!sync.fieldMappings || !sync.fieldMappings.issues) {
+      return false;
+    }
+    
+    const mappings = sync.fieldMappings.issues;
+    return mappings.some((mapping: any) => mapping.destinationField === 'title');
   }
 
   const formatDate = (dateString: string) => {
@@ -226,7 +236,8 @@ export default function HomePage() {
                       variant="primary" 
                       size="sm"
                       onClick={() => executeSync(sync.id)}
-                      disabled={executingSync === sync.id}
+                      disabled={executingSync === sync.id || !hasRequiredMappings(sync)}
+                      title={!hasRequiredMappings(sync) ? 'Cannot execute: "title" field mapping is required' : ''}
                     >
                       {executingSync === sync.id ? 'Executing...' : 'Execute'}
                     </Button>
