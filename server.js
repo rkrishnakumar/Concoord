@@ -407,12 +407,49 @@ app.post('/api/revizto/tokens', async (req, res) => {
   }
 });
 
+// Check if tables exist and have correct schema
+async function checkTablesExist() {
+  try {
+    // Check if tables exist by querying their structure
+    const accTable = await prisma.$queryRaw`
+      SELECT column_name, data_type 
+      FROM information_schema.columns 
+      WHERE table_name = 'acc_credentials' AND table_schema = 'public'
+    `;
+    
+    const procoreTable = await prisma.$queryRaw`
+      SELECT column_name, data_type 
+      FROM information_schema.columns 
+      WHERE table_name = 'procore_credentials' AND table_schema = 'public'
+    `;
+    
+    // Check if tables exist and don't have clientId/clientSecret columns (old schema)
+    const hasOldSchema = accTable.some(col => col.column_name === 'clientId') || 
+                        procoreTable.some(col => col.column_name === 'clientId');
+    
+    return accTable.length > 0 && procoreTable.length > 0 && !hasOldSchema;
+  } catch (error) {
+    console.log('Tables do not exist or error checking:', error.message);
+    return false;
+  }
+}
+
 // Fix database constraints on startup
 async function fixDatabaseConstraints() {
   try {
-    console.log('Checking and fixing database schema...');
+    console.log('Checking database schema...');
     
-    // Drop and recreate credential tables to match new schema
+    // Check if tables exist and have the correct schema
+    const tablesExist = await checkTablesExist();
+    
+    if (tablesExist) {
+      console.log('✅ Database tables already exist with correct schema');
+      return;
+    }
+    
+    console.log('⚠️ Tables missing or incorrect schema - recreating...');
+    
+    // Only drop and recreate if tables don't exist or have wrong schema
     try {
       await prisma.$executeRaw`DROP TABLE IF EXISTS "procore_credentials" CASCADE`;
       await prisma.$executeRaw`DROP TABLE IF EXISTS "acc_credentials" CASCADE`;
