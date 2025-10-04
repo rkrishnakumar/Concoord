@@ -152,8 +152,11 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
         refreshToken: tokenData.refresh_token ? 'present' : 'missing',
         expiresIn: tokenData.expires_in
       })
-      console.log('Full tokenData:', tokenData)
+      console.log('Full tokenData:', JSON.stringify(tokenData, null, 2))
       console.log('User ID:', userId)
+      console.log('Access token present:', !!tokenData.access_token)
+      console.log('Refresh token present:', !!tokenData.refresh_token)
+      console.log('Expires in:', tokenData.expires_in)
       
       const response = await apiFetch('/api/revizto/tokens', {
         method: 'POST',
