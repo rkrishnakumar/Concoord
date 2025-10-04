@@ -69,10 +69,8 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
       const session = await getSession()
       console.log('Session for ACC:', session)
       if (!session?.user?.id) {
-        console.error('No user session found, using fallback')
-        // Fallback to default user for now
-        const url = `${process.env.NEXT_PUBLIC_API_BASE_URL?.replace(/\/$/, '')}/api/auth/acc/connect?userId=default-user`
-        window.location.href = url
+        console.error('No user session found - redirecting to sign in')
+        window.location.href = '/auth/signin'
         return
       }
       const url = `${process.env.NEXT_PUBLIC_API_BASE_URL?.replace(/\/$/, '')}/api/auth/acc/connect?userId=${session.user.id}`
@@ -91,10 +89,8 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
       const session = await getSession()
       console.log('Session for Procore:', session)
       if (!session?.user?.id) {
-        console.error('No user session found, using fallback')
-        // Fallback to default user for now
-        const url = `${process.env.NEXT_PUBLIC_API_BASE_URL?.replace(/\/$/, '')}/api/auth/procore/connect?userId=default-user`
-        window.location.href = url
+        console.error('No user session found - redirecting to sign in')
+        window.location.href = '/auth/signin'
         return
       }
       const url = `${process.env.NEXT_PUBLIC_API_BASE_URL?.replace(/\/$/, '')}/api/auth/procore/connect?userId=${session.user.id}`
