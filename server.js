@@ -1337,8 +1337,8 @@ app.get('/api/revizto/projects', async (req, res) => {
         
         // Transform projects to match expected format
         const transformedProjects = projects.map(project => ({
-          id: project.uuid,
-          name: project.title,
+          uuid: project.uuid,
+          title: project.title,
           description: project.description || '',
           created: project.created,
           updated: project.updated
