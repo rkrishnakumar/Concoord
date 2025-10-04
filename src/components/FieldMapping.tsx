@@ -122,7 +122,13 @@ export default function FieldMapping({
         setAiSuggestions(data.suggestions || [])
         console.log('AI suggestions:', data.suggestions)
       } else {
-        console.error('Failed to get AI suggestions:', await response.text())
+        const errorText = await response.text()
+        console.error('Failed to get AI suggestions:', errorText)
+        
+        // Show user-friendly error for quota issues
+        if (errorText.includes('quota') || errorText.includes('billing')) {
+          alert('AI suggestions are temporarily unavailable. Please check your OpenAI account billing or try again later.')
+        }
       }
     } catch (error) {
       console.error('Error getting AI suggestions:', error)
