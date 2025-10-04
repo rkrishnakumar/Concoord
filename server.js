@@ -1315,7 +1315,9 @@ app.get('/api/revizto/projects', async (req, res) => {
       }
     });
 
+    console.log('Revizto licenses response:', JSON.stringify(licensesResponse.data, null, 2));
     const licenses = licensesResponse.data.data || [];
+    console.log('Licenses array:', licenses);
     let allProjects = [];
 
     // Get projects for each license
