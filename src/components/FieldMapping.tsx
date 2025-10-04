@@ -115,13 +115,6 @@ export default function FieldMapping({
         {dataType.charAt(0).toUpperCase() + dataType.slice(1)} Field Mapping
       </h3>
       
-      {/* Debug Info */}
-      <div className="mb-4 p-2 bg-gray-600 rounded text-xs text-gray-600">
-        <p>Source fields: {sourceFields.length} | Destination fields: {destinationFields.length}</p>
-        {sourceFields.length > 0 && (
-          <p>Source field IDs: {sourceFields.map(f => f.id).join(', ')}</p>
-        )}
-      </div>
 
       {/* Add New Mapping */}
       <div className="mb-6 p-4 bg-gray-600 rounded-lg">
