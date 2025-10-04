@@ -994,6 +994,93 @@ app.get('/api/syncs/:id', async (req, res) => {
 });
 
 // Execute sync
+// Helper function to fetch issues from Revizto
+async function fetchReviztoIssues(credentials, projectId) {
+  try {
+    const response = await axios.get(`https://api.virginia.revizto.com/v5/project/${projectId}/issue-filter/filter`, {
+      headers: {
+        'Authorization': `Bearer ${credentials.accessToken}`,
+        'Content-Type': 'application/json'
+      }
+    });
+
+    console.log('Revizto issues response:', response.status);
+    const issues = response.data?.data?.data || [];
+    console.log(`Fetched ${issues.length} issues from Revizto`);
+    return issues;
+  } catch (error) {
+    console.error('Error fetching Revizto issues:', error.message);
+    throw new Error(`Failed to fetch issues from Revizto: ${error.message}`);
+  }
+}
+
+// Helper function to apply field mappings
+function applyFieldMappings(issues, fieldMappings) {
+  if (!fieldMappings || !fieldMappings.issues) {
+    console.log('No field mappings found, returning original issues');
+    return issues;
+  }
+
+  const mappings = fieldMappings.issues;
+  console.log('Applying field mappings:', mappings);
+
+  return issues.map(issue => {
+    const transformedIssue = {};
+    
+    // Apply each field mapping
+    mappings.forEach(mapping => {
+      const sourceValue = issue[mapping.sourceField];
+      if (sourceValue !== undefined) {
+        transformedIssue[mapping.destinationField] = sourceValue;
+      }
+    });
+
+    console.log('Transformed issue:', { original: issue, transformed: transformedIssue });
+    return transformedIssue;
+  });
+}
+
+// Helper function to post issues to Procore
+async function postIssuesToProcore(credentials, companyId, projectId, issues) {
+  let created = 0;
+  let updated = 0;
+  const errors = [];
+
+  console.log(`Posting ${issues.length} issues to Procore...`);
+
+  for (const issue of issues) {
+    try {
+      const response = await axios.post('https://api.procore.com/rest/v1.0/coordination_issues', {
+        ...issue,
+        project_id: projectId
+      }, {
+        headers: {
+          'Authorization': `Bearer ${credentials.accessToken}`,
+          'Procore-Company-Id': companyId,
+          'Content-Type': 'application/json'
+        }
+      });
+
+      if (response.status === 201) {
+        created++;
+        console.log(`Created issue: ${issue.title || issue.name || 'Untitled'}`);
+      } else if (response.status === 200) {
+        updated++;
+        console.log(`Updated issue: ${issue.title || issue.name || 'Untitled'}`);
+      }
+    } catch (error) {
+      console.error('Error posting issue to Procore:', error.response?.data || error.message);
+      errors.push({
+        issue: issue.title || issue.name || 'Untitled',
+        error: error.response?.data?.message || error.message
+      });
+    }
+  }
+
+  console.log(`Procore sync results: ${created} created, ${updated} updated, ${errors.length} errors`);
+  return { created, updated, errors };
+}
+
 app.post('/api/syncs/:id/execute', async (req, res) => {
   try {
     const { id } = req.params;
@@ -1023,20 +1110,123 @@ app.post('/api/syncs/:id/execute', async (req, res) => {
       }
     });
 
-    // For now, just simulate success
-    await prisma.sync.update({
-      where: { id },
-      data: { 
-        status: 'completed',
-        lastRunAt: new Date()
-      }
+    // Real sync implementation
+    console.log('Starting real sync execution for:', {
+      syncId: id,
+      sourceSystem: sync.sourceSystem,
+      destinationSystem: sync.destinationSystem,
+      sourceProjectId: sync.sourceProjectId,
+      destinationProjectId: sync.destinationProjectId,
+      destinationCompanyId: sync.destinationCompanyId
     });
 
-    res.json({ 
-      success: true, 
-      message: 'Sync executed successfully! 0 issues created.',
-      syncId: id
-    });
+    let issuesCreated = 0;
+    let issuesUpdated = 0;
+    let errors = [];
+
+    try {
+      // Step 1: Get user credentials for both systems
+      const user = await prisma.user.findUnique({
+        where: { id: userId },
+        include: {
+          reviztoCredentials: true,
+          procoreCredentials: true
+        }
+      });
+
+      if (!user) {
+        throw new Error('User not found');
+      }
+
+      // Step 2: Fetch issues from Revizto
+      console.log('Fetching issues from Revizto...');
+      const reviztoIssues = await fetchReviztoIssues(user.reviztoCredentials, sync.sourceProjectId);
+      console.log(`Found ${reviztoIssues.length} issues in Revizto`);
+
+      if (reviztoIssues.length === 0) {
+        console.log('No issues found in Revizto project');
+        await prisma.sync.update({
+          where: { id },
+          data: { 
+            status: 'completed',
+            lastRunAt: new Date(),
+            lastRunStatus: 'success'
+          }
+        });
+
+        return res.json({ 
+          success: true, 
+          message: 'Sync completed successfully! No issues to transfer.',
+          results: { issues: { created: 0, updated: 0 } }
+        });
+      }
+
+      // Step 3: Apply field mappings and transform data
+      console.log('Applying field mappings...');
+      const transformedIssues = applyFieldMappings(reviztoIssues, sync.fieldMappings);
+      console.log(`Transformed ${transformedIssues.length} issues for Procore`);
+
+      // Step 4: Post to Procore
+      console.log('Posting issues to Procore...');
+      const procoreResults = await postIssuesToProcore(
+        user.procoreCredentials, 
+        sync.destinationCompanyId,
+        sync.destinationProjectId,
+        transformedIssues
+      );
+
+      issuesCreated = procoreResults.created;
+      issuesUpdated = procoreResults.updated;
+      errors = procoreResults.errors;
+
+      // Step 5: Update sync status
+      const finalStatus = errors.length > 0 ? 'partial' : 'success';
+      await prisma.sync.update({
+        where: { id },
+        data: { 
+          status: finalStatus === 'success' ? 'completed' : 'error',
+          lastRunAt: new Date(),
+          lastRunStatus: finalStatus
+        }
+      });
+
+      console.log(`Sync completed: ${issuesCreated} created, ${issuesUpdated} updated, ${errors.length} errors`);
+
+      res.json({ 
+        success: true, 
+        message: `Sync executed successfully! ${issuesCreated} issues created, ${issuesUpdated} updated.`,
+        results: { 
+          issues: { 
+            created: issuesCreated, 
+            updated: issuesUpdated,
+            errors: errors.length
+          }
+        }
+      });
+
+    } catch (error) {
+      console.error('Sync execution failed:', error);
+      
+      await prisma.sync.update({
+        where: { id },
+        data: { 
+          status: 'error',
+          lastRunAt: new Date(),
+          lastRunStatus: 'error'
+        }
+      });
+
+      res.status(500).json({ 
+        error: `Sync failed: ${error.message}`,
+        results: { 
+          issues: { 
+            created: issuesCreated, 
+            updated: issuesUpdated,
+            errors: errors.length + 1
+          }
+        }
+      });
+    }
   } catch (error) {
     console.error('Error executing sync:', error);
     res.status(500).json({ error: 'Failed to execute sync' });
