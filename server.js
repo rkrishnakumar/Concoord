@@ -1321,19 +1321,27 @@ app.get('/api/revizto/projects', async (req, res) => {
     let allProjects = [];
 
     // Get projects for each license
+    console.log(`Found ${licenses.length} licenses, fetching projects...`);
     for (const license of licenses) {
       try {
+        console.log(`Fetching projects for license ${license.uuid} (${license.name})`);
         const projectsResponse = await axios.get(`https://api.virginia.revizto.com/v5/project/list/${license.uuid}/paged`, {
           headers: {
             'Authorization': `Bearer ${user.reviztoCredentials.accessToken}`,
             'Content-Type': 'application/json'
           }
         });
+        console.log(`Projects response for license ${license.uuid}:`, JSON.stringify(projectsResponse.data, null, 2));
         allProjects = allProjects.concat(projectsResponse.data.data || []);
+        console.log(`Added ${projectsResponse.data.data?.length || 0} projects from license ${license.uuid}`);
       } catch (error) {
-        console.error(`Error fetching projects for license ${license.uuid}:`, error);
+        console.error(`Error fetching projects for license ${license.uuid}:`, error.message);
+        console.error(`Full error:`, error);
       }
     }
+    
+    console.log(`Total projects found: ${allProjects.length}`);
+    console.log('Final projects:', allProjects);
 
     res.json({ success: true, projects: allProjects });
   } catch (error) {
