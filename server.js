@@ -1110,10 +1110,22 @@ async function postIssuesToProcore(credentials, companyId, projectId, issues) {
 
   for (const issue of issues) {
     try {
-      const response = await axios.post('https://api.procore.com/rest/v1.0/coordination_issues', {
+      const payload = {
         ...issue,
         project_id: projectId
-      }, {
+      };
+      
+      console.log('Posting to Procore:', {
+        url: 'https://api.procore.com/rest/v1.0/coordination_issues',
+        payload,
+        headers: {
+          'Authorization': `Bearer ${credentials.accessToken.substring(0, 20)}...`,
+          'Procore-Company-Id': companyId,
+          'Content-Type': 'application/json'
+        }
+      });
+      
+      const response = await axios.post('https://api.procore.com/rest/v1.0/coordination_issues', payload, {
         headers: {
           'Authorization': `Bearer ${credentials.accessToken}`,
           'Procore-Company-Id': companyId,
@@ -1129,10 +1141,21 @@ async function postIssuesToProcore(credentials, companyId, projectId, issues) {
         console.log(`Updated issue: ${issue.title || issue.name || 'Untitled'}`);
       }
     } catch (error) {
-      console.error('Error posting issue to Procore:', error.response?.data || error.message);
+      console.error('Error posting issue to Procore:', {
+        status: error.response?.status,
+        statusText: error.response?.statusText,
+        data: error.response?.data,
+        message: error.message,
+        issue: {
+          title: issue.title,
+          project_id: issue.project_id,
+          keys: Object.keys(issue)
+        }
+      });
       errors.push({
         issue: issue.title || issue.name || 'Untitled',
-        error: error.response?.data?.message || error.message
+        error: error.response?.data?.message || error.message,
+        status: error.response?.status
       });
     }
   }
