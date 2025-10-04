@@ -1051,15 +1051,41 @@ app.get('/api/acc/projects', async (req, res) => {
       return res.status(404).json({ error: 'No ACC credentials found' });
     }
 
-    // Make real API call to ACC
-    const response = await axios.get('https://developer.api.autodesk.com/project/v1/hubs', {
+    const accessToken = user.accCredentials.accessToken;
+    
+    // Step 1: Get Hub ID
+    const hubsResponse = await axios.get('https://developer.api.autodesk.com/project/v1/hubs', {
       headers: {
-        'Authorization': `Bearer ${user.accCredentials.accessToken}`,
+        'Authorization': `Bearer ${accessToken}`,
         'Content-Type': 'application/json'
       }
     });
 
-    res.json({ success: true, projects: response.data.data || [] });
+    const hubs = hubsResponse.data.data || [];
+    if (hubs.length === 0) {
+      return res.json({ success: true, projects: [] });
+    }
+
+    // Step 2: Get Projects for each Hub
+    const allProjects = [];
+    for (const hub of hubs) {
+      try {
+        const projectsResponse = await axios.get(`https://developer.api.autodesk.com/project/v1/hubs/${hub.id}/projects`, {
+          headers: {
+            'Authorization': `Bearer ${accessToken}`,
+            'Content-Type': 'application/json'
+          }
+        });
+        
+        const hubProjects = projectsResponse.data.data || [];
+        allProjects.push(...hubProjects);
+      } catch (hubError) {
+        console.error(`Error fetching projects for hub ${hub.id}:`, hubError.message);
+        // Continue with other hubs even if one fails
+      }
+    }
+
+    res.json({ success: true, projects: allProjects });
   } catch (error) {
     console.error('Error fetching ACC projects:', error);
     res.status(500).json({ error: 'Failed to fetch ACC projects' });
