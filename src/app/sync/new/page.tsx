@@ -581,6 +581,7 @@ export default function NewSyncPage() {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
+          userId: session?.user?.id,
           name: syncName,
           description: description || null,
           sourceSystem: selectedSourceSystem,
