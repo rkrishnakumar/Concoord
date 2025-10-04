@@ -26,12 +26,9 @@ async function initializeDatabase() {
       CREATE TABLE IF NOT EXISTS "acc_credentials" (
         "id" TEXT NOT NULL PRIMARY KEY,
         "userId" TEXT NOT NULL,
-        "clientId" TEXT NOT NULL,
-        "clientSecret" TEXT NOT NULL,
         "accessToken" TEXT NOT NULL,
         "refreshToken" TEXT,
         "expiresAt" TIMESTAMP(3) NOT NULL,
-        "baseUrl" TEXT NOT NULL DEFAULT 'https://developer.api.autodesk.com',
         "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
         "updatedAt" TIMESTAMP(3) NOT NULL,
         FOREIGN KEY ("userId") REFERENCES "users"("id") ON DELETE CASCADE ON UPDATE CASCADE
@@ -42,12 +39,9 @@ async function initializeDatabase() {
       CREATE TABLE IF NOT EXISTS "procore_credentials" (
         "id" TEXT NOT NULL PRIMARY KEY,
         "userId" TEXT NOT NULL,
-        "clientId" TEXT NOT NULL,
-        "clientSecret" TEXT NOT NULL,
         "accessToken" TEXT NOT NULL,
         "refreshToken" TEXT,
         "expiresAt" TIMESTAMP(3) NOT NULL,
-        "baseUrl" TEXT NOT NULL DEFAULT 'https://api.procore.com',
         "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
         "updatedAt" TIMESTAMP(3) NOT NULL,
         FOREIGN KEY ("userId") REFERENCES "users"("id") ON DELETE CASCADE ON UPDATE CASCADE
@@ -58,8 +52,6 @@ async function initializeDatabase() {
       CREATE TABLE IF NOT EXISTS "revizto_credentials" (
         "id" TEXT NOT NULL PRIMARY KEY,
         "userId" TEXT NOT NULL,
-        "clientId" TEXT NOT NULL,
-        "clientSecret" TEXT NOT NULL,
         "accessToken" TEXT NOT NULL,
         "refreshToken" TEXT,
         "expiresAt" TIMESTAMP(3) NOT NULL,
@@ -590,13 +582,13 @@ app.get('/api/credentials', async (req, res) => {
     res.json({
       acc: user.accCredentials ? {
         connected: true,
-        clientId: user.accCredentials.clientId,
-        baseUrl: user.accCredentials.baseUrl
+        clientId: process.env.ACC_CLIENT_ID,
+        baseUrl: 'https://developer.api.autodesk.com'
       } : { connected: false },
       procore: user.procoreCredentials ? {
         connected: true,
-        clientId: user.procoreCredentials.clientId,
-        baseUrl: user.procoreCredentials.baseUrl
+        clientId: process.env.PROCORE_CLIENT_ID,
+        baseUrl: 'https://api.procore.com'
       } : { connected: false },
       revizto: user.reviztoCredentials ? {
         connected: true,
@@ -714,8 +706,6 @@ app.post('/api/credentials', async (req, res) => {
         create: {
           id: `acc_${Date.now()}`,
           userId,
-          clientId: process.env.ACC_CLIENT_ID,
-          clientSecret: process.env.ACC_CLIENT_SECRET,
           accessToken,
           refreshToken,
           expiresAt
@@ -732,8 +722,6 @@ app.post('/api/credentials', async (req, res) => {
         create: {
           id: `procore_${Date.now()}`,
           userId,
-          clientId: process.env.PROCORE_CLIENT_ID,
-          clientSecret: process.env.PROCORE_CLIENT_SECRET,
           accessToken,
           refreshToken,
           expiresAt
