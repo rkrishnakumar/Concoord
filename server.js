@@ -1058,7 +1058,14 @@ function applyFieldMappings(issues, fieldMappings) {
       });
       
       if (sourceValue !== undefined && sourceValue !== null && sourceValue !== '') {
-        transformedIssue[mapping.destinationField] = sourceValue;
+        // Extract value from Revizto's nested object structure
+        let finalValue = sourceValue;
+        if (typeof sourceValue === 'object' && sourceValue.value !== undefined) {
+          finalValue = sourceValue.value;
+          console.log(`Extracted value from nested object: ${sourceValue.value}`);
+        }
+        
+        transformedIssue[mapping.destinationField] = finalValue;
       }
     });
 
