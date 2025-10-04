@@ -338,10 +338,10 @@ export default function NewSyncPage() {
     console.log(`Fetching fields for ${system} with data types:`, dataTypes)
     setLoadingFields(true)
     try {
-      // For Revizto, pass the selected project ID
+      // For Revizto, pass the selected project ID and user ID
       let url = `/api/${system}/fields`
       if (system === 'revizto' && selectedReviztoProject) {
-        url += `?projectId=${selectedReviztoProject}`
+        url += `?userId=${session?.user?.id}&projectId=${selectedReviztoProject}`
         console.log(`Fetching Revizto fields for project: ${selectedReviztoProject}`)
       }
       
