@@ -171,6 +171,7 @@ export default function FieldMapping({
           <div className="flex items-center justify-between mb-3">
             <h4 className="text-sm font-medium text-gray-800">AI-Powered Field Mapping</h4>
             <button
+              type="button"
               onClick={generateAiSuggestions}
               disabled={loadingAi}
               className="flex items-center justify-center px-4 py-2 bg-black text-white rounded-md text-sm hover:bg-gray-800 disabled:opacity-50"
@@ -203,6 +204,7 @@ export default function FieldMapping({
                       {suggestion.reasoning}
                     </span>
                     <button
+                      type="button"
                       onClick={() => applyAiSuggestion(suggestion)}
                       className="px-2 py-1 bg-green-600 text-white rounded text-xs hover:bg-green-700"
                     >
@@ -274,6 +276,7 @@ export default function FieldMapping({
         )}
 
         <button
+          type="button"
           onClick={addMapping}
           disabled={!newMapping.sourceField || !newMapping.destinationField || (currentCompatibility && !currentCompatibility.compatible) || false}
           className="mt-3 px-4 py-2 bg-orange-600 text-gray-800 rounded-md text-sm font-medium hover:bg-orange-700 disabled:opacity-50 disabled:cursor-not-allowed"
@@ -348,6 +351,7 @@ export default function FieldMapping({
                     )}
                   </div>
                   <button
+                    type="button"
                     onClick={() => removeMapping(index)}
                     className="text-red-400 hover:text-red-300 text-sm"
                   >
