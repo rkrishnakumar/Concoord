@@ -256,12 +256,12 @@ app.get('/api/auth/acc/connect', (req, res) => {
       return res.status(400).json({ error: 'User ID is required' });
     }
     
-    // Generate state parameter for security
-    const state = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15)
+    // Generate state parameter that includes user ID
+    const state = `${userId}_${Math.random().toString(36).substring(2, 15)}`
     
     // Store state in session or database for verification
     // For now, we'll include it in the URL
-    const accOAuthUrl = `https://developer.api.autodesk.com/authentication/v2/authorize?response_type=code&client_id=${process.env.ACC_CLIENT_ID}&redirect_uri=https://concoord-production.up.railway.app/api/oauth/acc-callback&scope=data:read data:write&state=${state}&user_id=${userId}`
+    const accOAuthUrl = `https://developer.api.autodesk.com/authentication/v2/authorize?response_type=code&client_id=${process.env.ACC_CLIENT_ID}&redirect_uri=https://concoord-production.up.railway.app/api/oauth/acc-callback&scope=data:read data:write&state=${state}`
     
     console.log('ACC OAuth URL:', accOAuthUrl)
     res.redirect(accOAuthUrl)
@@ -284,12 +284,12 @@ app.get('/api/auth/procore/connect', (req, res) => {
       return res.status(400).json({ error: 'User ID is required' });
     }
     
-    // Generate state parameter for security
-    const state = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15)
+    // Generate state parameter that includes user ID
+    const state = `${userId}_${Math.random().toString(36).substring(2, 15)}`
     
     // Store state in session or database for verification
     // For now, we'll include it in the URL
-    const procoreOAuthUrl = `https://login.procore.com/oauth/authorize?response_type=code&client_id=${process.env.PROCORE_CLIENT_ID}&redirect_uri=https://concoord-production.up.railway.app/api/oauth/procore-callback&state=${state}&user_id=${userId}`
+    const procoreOAuthUrl = `https://login.procore.com/oauth/authorize?response_type=code&client_id=${process.env.PROCORE_CLIENT_ID}&redirect_uri=https://concoord-production.up.railway.app/api/oauth/procore-callback&state=${state}`
     
     console.log('Procore OAuth URL:', procoreOAuthUrl)
     res.redirect(procoreOAuthUrl)
@@ -339,9 +339,9 @@ app.get('/api/oauth/acc-callback', async (req, res) => {
     // Store credentials in database
     const expiresAt = new Date(Date.now() + (tokenData.expires_in * 1000));
     
-    // Extract user ID from the OAuth URL
-    const { user_id } = req.query;
-    const userId = user_id || 'default-user';
+    // Extract user ID from the state parameter
+    const { state } = req.query;
+    const userId = state ? state.split('_')[0] : 'default-user';
     console.log('Using user ID for ACC:', userId);
     
     await prisma.accCredentials.upsert({
@@ -407,51 +407,73 @@ app.post('/api/revizto/tokens', async (req, res) => {
 // Fix database constraints on startup
 async function fixDatabaseConstraints() {
   try {
-    console.log('Checking and fixing database constraints...');
+    console.log('Checking and fixing database schema...');
     
-    // Add unique constraints if they don't exist
-    await prisma.$executeRaw`
-      DO $$ 
-      BEGIN
-        IF NOT EXISTS (
-          SELECT 1 FROM pg_constraint 
-          WHERE conname = 'procore_credentials_userid_key'
-        ) THEN
-          ALTER TABLE procore_credentials ADD CONSTRAINT procore_credentials_userid_key UNIQUE ("userId");
-        END IF;
-      END $$;
-    `;
-    console.log('✅ procore_credentials unique constraint fixed');
+    // Drop and recreate credential tables to match new schema
+    try {
+      await prisma.$executeRaw`DROP TABLE IF EXISTS "procore_credentials" CASCADE`;
+      await prisma.$executeRaw`DROP TABLE IF EXISTS "acc_credentials" CASCADE`;
+      await prisma.$executeRaw`DROP TABLE IF EXISTS "revizto_credentials" CASCADE`;
+      console.log('✅ Dropped old credential tables');
+    } catch (error) {
+      console.log('⚠️ Error dropping tables:', error.message);
+    }
     
+    // Recreate tables with correct schema (no clientId/clientSecret columns)
     await prisma.$executeRaw`
-      DO $$ 
-      BEGIN
-        IF NOT EXISTS (
-          SELECT 1 FROM pg_constraint 
-          WHERE conname = 'acc_credentials_userid_key'
-        ) THEN
-          ALTER TABLE acc_credentials ADD CONSTRAINT acc_credentials_userid_key UNIQUE ("userId");
-        END IF;
-      END $$;
+      CREATE TABLE IF NOT EXISTS "acc_credentials" (
+        "id" TEXT NOT NULL PRIMARY KEY,
+        "userId" TEXT NOT NULL,
+        "accessToken" TEXT NOT NULL,
+        "refreshToken" TEXT,
+        "expiresAt" TIMESTAMP(3) NOT NULL,
+        "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+        "updatedAt" TIMESTAMP(3) NOT NULL,
+        FOREIGN KEY ("userId") REFERENCES "users"("id") ON DELETE CASCADE ON UPDATE CASCADE
+      );
     `;
-    console.log('✅ acc_credentials unique constraint fixed');
     
     await prisma.$executeRaw`
-      DO $$ 
-      BEGIN
-        IF NOT EXISTS (
-          SELECT 1 FROM pg_constraint 
-          WHERE conname = 'revizto_credentials_userid_key'
-        ) THEN
-          ALTER TABLE revizto_credentials ADD CONSTRAINT revizto_credentials_userid_key UNIQUE ("userId");
-        END IF;
-      END $$;
+      CREATE TABLE IF NOT EXISTS "procore_credentials" (
+        "id" TEXT NOT NULL PRIMARY KEY,
+        "userId" TEXT NOT NULL,
+        "accessToken" TEXT NOT NULL,
+        "refreshToken" TEXT,
+        "expiresAt" TIMESTAMP(3) NOT NULL,
+        "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+        "updatedAt" TIMESTAMP(3) NOT NULL,
+        FOREIGN KEY ("userId") REFERENCES "users"("id") ON DELETE CASCADE ON UPDATE CASCADE
+      );
     `;
-    console.log('✅ revizto_credentials unique constraint fixed');
     
-    console.log('🎉 Database constraints fixed successfully!');
+    await prisma.$executeRaw`
+      CREATE TABLE IF NOT EXISTS "revizto_credentials" (
+        "id" TEXT NOT NULL PRIMARY KEY,
+        "userId" TEXT NOT NULL,
+        "accessToken" TEXT NOT NULL,
+        "refreshToken" TEXT,
+        "expiresAt" TIMESTAMP(3) NOT NULL,
+        "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+        "updatedAt" TIMESTAMP(3) NOT NULL,
+        FOREIGN KEY ("userId") REFERENCES "users"("id") ON DELETE CASCADE ON UPDATE CASCADE
+      );
+    `;
+    
+    console.log('✅ Recreated credential tables with correct schema');
+    
+    // Add unique constraints
+    try {
+      await prisma.$executeRaw`ALTER TABLE "procore_credentials" ADD CONSTRAINT "procore_credentials_userId_key" UNIQUE ("userId")`;
+      await prisma.$executeRaw`ALTER TABLE "acc_credentials" ADD CONSTRAINT "acc_credentials_userId_key" UNIQUE ("userId")`;
+      await prisma.$executeRaw`ALTER TABLE "revizto_credentials" ADD CONSTRAINT "revizto_credentials_userId_key" UNIQUE ("userId")`;
+      console.log('✅ Unique constraints added');
+    } catch (error) {
+      console.log('⚠️ Constraint error:', error.message);
+    }
+    
+    console.log('🎉 Database schema fixed successfully!');
   } catch (error) {
-    console.error('Error fixing database constraints:', error);
+    console.error('Error fixing database schema:', error);
   }
 }
 
@@ -639,9 +661,9 @@ app.get('/api/oauth/procore-callback', async (req, res) => {
 
     // Store credentials in database
     try {
-      // Extract user ID from the OAuth URL
-      const { user_id } = req.query;
-      const userId = user_id || 'default-user';
+      // Extract user ID from the state parameter
+      const { state } = req.query;
+      const userId = state ? state.split('_')[0] : 'default-user';
       console.log('Using user ID for Procore:', userId);
       
       // Ensure user exists
