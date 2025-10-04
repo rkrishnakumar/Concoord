@@ -376,9 +376,13 @@ app.get('/api/oauth/acc-callback', async (req, res) => {
 // Revizto token storage endpoint
 app.post('/api/revizto/tokens', async (req, res) => {
   try {
+    console.log('Revizto tokens request body:', req.body);
     const { userId, accessToken, refreshToken, expiresIn } = req.body;
     
+    console.log('Extracted values:', { userId, accessToken: accessToken ? 'present' : 'missing', refreshToken: refreshToken ? 'present' : 'missing', expiresIn });
+    
     if (!userId || !accessToken) {
+      console.log('Validation failed - missing required fields');
       return res.status(400).json({ error: 'userId and accessToken are required' });
     }
 
