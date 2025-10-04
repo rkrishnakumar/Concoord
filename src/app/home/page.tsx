@@ -112,7 +112,13 @@ export default function HomePage() {
     
     try {
       const response = await apiFetch(`/api/syncs/${syncId}/execute`, {
-        method: 'POST'
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          userId: session?.user?.id
+        })
       })
       
       if (response.ok) {
