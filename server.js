@@ -3,9 +3,15 @@ const cors = require('cors');
 const bcrypt = require('bcryptjs');
 const axios = require('axios');
 const { PrismaClient } = require('@prisma/client');
+const OpenAI = require('openai');
 
 const app = express();
 const prisma = new PrismaClient();
+
+// Initialize OpenAI
+const openai = new OpenAI({
+  apiKey: process.env.OPENAI_API_KEY
+});
 
 // Initialize database tables
 async function initializeDatabase() {
@@ -1401,6 +1407,106 @@ app.get('/api/revizto/fields', async (req, res) => {
   } catch (error) {
     console.error('Error fetching Revizto fields:', error);
     res.status(500).json({ error: 'Failed to fetch Revizto fields' });
+  }
+});
+
+// AI-powered field mapping suggestions
+app.post('/api/ai/suggest-mappings', async (req, res) => {
+  try {
+    const { sourceFields, destinationFields, dataType } = req.body;
+    
+    if (!sourceFields || !destinationFields || !dataType) {
+      return res.status(400).json({ error: 'Source fields, destination fields, and data type are required' });
+    }
+
+    if (!process.env.OPENAI_API_KEY) {
+      return res.status(500).json({ error: 'OpenAI API key not configured' });
+    }
+
+    console.log(`Generating AI field mappings for ${dataType}:`, {
+      sourceFields: sourceFields.length,
+      destinationFields: destinationFields.length
+    });
+
+    const prompt = `
+You are an expert at mapping fields between construction management systems. 
+
+Analyze these field lists and suggest intelligent mappings for ${dataType} data:
+
+SOURCE FIELDS (${sourceFields.length}):
+${sourceFields.map(f => `- ${f.id}: ${f.label} (${f.type})`).join('\n')}
+
+DESTINATION FIELDS (${destinationFields.length}):
+${destinationFields.map(f => `- ${f.id}: ${f.label} (${f.type})`).join('\n')}
+
+Return a JSON array of suggested mappings. Each mapping should have:
+- sourceField: the source field ID
+- destinationField: the destination field ID  
+- confidence: number 0-1 indicating how confident you are in this mapping
+- reasoning: brief explanation of why these fields should be mapped
+
+Focus on:
+1. Exact name matches (case-insensitive)
+2. Semantic similarity (e.g., "title" matches "name")
+3. Type compatibility (string to string, number to number)
+4. Construction industry context
+
+Return only valid JSON, no other text.
+`;
+
+    const completion = await openai.chat.completions.create({
+      model: "gpt-4",
+      messages: [
+        {
+          role: "system",
+          content: "You are an expert at field mapping for construction management systems. Always return valid JSON."
+        },
+        {
+          role: "user", 
+          content: prompt
+        }
+      ],
+      temperature: 0.3,
+      max_tokens: 2000
+    });
+
+    const response = completion.choices[0].message.content;
+    console.log('OpenAI response:', response);
+
+    // Parse the JSON response
+    let suggestions;
+    try {
+      suggestions = JSON.parse(response);
+    } catch (parseError) {
+      console.error('Failed to parse OpenAI response:', parseError);
+      return res.status(500).json({ error: 'Failed to parse AI response' });
+    }
+
+    // Validate the response structure
+    if (!Array.isArray(suggestions)) {
+      return res.status(500).json({ error: 'AI response is not an array' });
+    }
+
+    // Filter out invalid mappings
+    const validSuggestions = suggestions.filter(s => 
+      s.sourceField && 
+      s.destinationField && 
+      sourceFields.some(f => f.id === s.sourceField) &&
+      destinationFields.some(f => f.id === s.destinationField)
+    );
+
+    console.log(`Generated ${validSuggestions.length} valid field mapping suggestions`);
+
+    res.json({ 
+      success: true, 
+      suggestions: validSuggestions,
+      totalSourceFields: sourceFields.length,
+      totalDestinationFields: destinationFields.length
+    });
+
+  } catch (error) {
+    console.error('Error generating AI field mappings:', error);
+    res.status(500).json({ error: 'Failed to generate field mapping suggestions' });
   }
 });
 

@@ -48,6 +48,8 @@ export default function FieldMapping({
     errors: any[]
     warnings: any[]
   }>({ valid: true, errors: [], warnings: [] })
+  const [aiSuggestions, setAiSuggestions] = useState<any[]>([])
+  const [loadingAi, setLoadingAi] = useState(false)
 
   // Validate mappings whenever they change
   useEffect(() => {
@@ -98,6 +100,48 @@ export default function FieldMapping({
     return getFieldCompatibility(sourceField, destinationField)
   }
 
+  const generateAiSuggestions = async () => {
+    if (sourceFields.length === 0 || destinationFields.length === 0) {
+      return
+    }
+
+    setLoadingAi(true)
+    try {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/ai/suggest-mappings`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          sourceFields,
+          destinationFields,
+          dataType
+        })
+      })
+
+      if (response.ok) {
+        const data = await response.json()
+        setAiSuggestions(data.suggestions || [])
+        console.log('AI suggestions:', data.suggestions)
+      } else {
+        console.error('Failed to get AI suggestions:', await response.text())
+      }
+    } catch (error) {
+      console.error('Error getting AI suggestions:', error)
+    } finally {
+      setLoadingAi(false)
+    }
+  }
+
+  const applyAiSuggestion = (suggestion: any) => {
+    const newMappings = [...mappings, {
+      sourceField: suggestion.sourceField,
+      destinationField: suggestion.destinationField
+    }]
+    onMappingsChange(newMappings)
+    
+    // Remove the applied suggestion
+    setAiSuggestions(prev => prev.filter(s => s !== suggestion))
+  }
+
   const currentCompatibility = getCurrentMappingCompatibility()
 
   if (loading) {
@@ -115,6 +159,54 @@ export default function FieldMapping({
         {dataType.charAt(0).toUpperCase() + dataType.slice(1)} Field Mapping
       </h3>
       
+      {/* AI Suggestions */}
+      {sourceFields.length > 0 && destinationFields.length > 0 && (
+        <div className="mb-6 p-4 bg-blue-50 rounded-lg border border-blue-200">
+          <div className="flex items-center justify-between mb-3">
+            <h4 className="text-sm font-medium text-blue-800">🤖 AI-Powered Field Mapping</h4>
+            <button
+              onClick={generateAiSuggestions}
+              disabled={loadingAi}
+              className="px-3 py-1 bg-blue-600 text-white rounded text-sm hover:bg-blue-700 disabled:opacity-50"
+            >
+              {loadingAi ? 'Generating...' : 'Get AI Suggestions'}
+            </button>
+          </div>
+          
+          {aiSuggestions.length > 0 && (
+            <div className="space-y-2">
+              <p className="text-xs text-blue-600 mb-2">AI found {aiSuggestions.length} intelligent field mappings:</p>
+              {aiSuggestions.map((suggestion, index) => (
+                <div key={index} className="flex items-center justify-between p-2 bg-white rounded border">
+                  <div className="flex items-center space-x-3">
+                    <span className="text-sm font-medium text-gray-800">
+                      {getFieldLabel(suggestion.sourceField, sourceFields)}
+                    </span>
+                    <span className="text-gray-400">→</span>
+                    <span className="text-sm font-medium text-gray-800">
+                      {getFieldLabel(suggestion.destinationField, destinationFields)}
+                    </span>
+                    <span className="text-xs text-blue-600">
+                      ({Math.round(suggestion.confidence * 100)}% confidence)
+                    </span>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <span className="text-xs text-gray-500 max-w-xs truncate">
+                      {suggestion.reasoning}
+                    </span>
+                    <button
+                      onClick={() => applyAiSuggestion(suggestion)}
+                      className="px-2 py-1 bg-green-600 text-white rounded text-xs hover:bg-green-700"
+                    >
+                      Apply
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      )}
 
       {/* Add New Mapping */}
       <div className="mb-6 p-4 bg-gray-600 rounded-lg">
