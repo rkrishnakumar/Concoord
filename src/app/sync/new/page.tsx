@@ -425,7 +425,9 @@ export default function NewSyncPage() {
 
   const loadProcoreCompanies = async () => {
     try {
-      const response = await apiFetch('/api/procore/companies')
+      if (!session?.user?.id) return
+      
+      const response = await apiFetch(`/api/procore/companies?userId=${session.user.id}`)
       if (response.ok) {
         const data = await response.json()
         const companies = data.companies || data
@@ -442,8 +444,10 @@ export default function NewSyncPage() {
 
   const loadProcoreProjects = async (companyId: string) => {
     try {
+      if (!session?.user?.id) return
+      
       console.log('Loading Procore projects for company:', companyId)
-      const response = await fetch(`/api/procore/projects?companyId=${companyId}`)
+      const response = await apiFetch(`/api/procore/projects?companyId=${companyId}&userId=${session.user.id}`)
       console.log('Procore projects response:', response.status)
       if (response.ok) {
         const data = await response.json()
