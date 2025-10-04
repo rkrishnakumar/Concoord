@@ -12,7 +12,7 @@ async function initializeDatabase() {
   try {
     console.log('Initializing database tables...');
     await prisma.$executeRaw`
-      CREATE TABLE IF NOT EXISTS "users" (
+      CREATE TABLE "users" (
         "id" TEXT NOT NULL PRIMARY KEY,
         "email" TEXT NOT NULL UNIQUE,
         "name" TEXT,
@@ -23,7 +23,7 @@ async function initializeDatabase() {
     `;
     
     await prisma.$executeRaw`
-      CREATE TABLE IF NOT EXISTS "acc_credentials" (
+      CREATE TABLE "acc_credentials" (
         "id" TEXT NOT NULL PRIMARY KEY,
         "userId" TEXT NOT NULL,
         "accessToken" TEXT NOT NULL,
@@ -31,12 +31,13 @@ async function initializeDatabase() {
         "expiresAt" TIMESTAMP(3) NOT NULL,
         "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
         "updatedAt" TIMESTAMP(3) NOT NULL,
-        FOREIGN KEY ("userId") REFERENCES "users"("id") ON DELETE CASCADE ON UPDATE CASCADE
+        FOREIGN KEY ("userId") REFERENCES "users"("id") ON DELETE CASCADE ON UPDATE CASCADE,
+        UNIQUE("userId")
       );
     `;
     
     await prisma.$executeRaw`
-      CREATE TABLE IF NOT EXISTS "procore_credentials" (
+      CREATE TABLE "procore_credentials" (
         "id" TEXT NOT NULL PRIMARY KEY,
         "userId" TEXT NOT NULL,
         "accessToken" TEXT NOT NULL,
@@ -44,12 +45,13 @@ async function initializeDatabase() {
         "expiresAt" TIMESTAMP(3) NOT NULL,
         "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
         "updatedAt" TIMESTAMP(3) NOT NULL,
-        FOREIGN KEY ("userId") REFERENCES "users"("id") ON DELETE CASCADE ON UPDATE CASCADE
+        FOREIGN KEY ("userId") REFERENCES "users"("id") ON DELETE CASCADE ON UPDATE CASCADE,
+        UNIQUE("userId")
       );
     `;
     
     await prisma.$executeRaw`
-      CREATE TABLE IF NOT EXISTS "revizto_credentials" (
+      CREATE TABLE "revizto_credentials" (
         "id" TEXT NOT NULL PRIMARY KEY,
         "userId" TEXT NOT NULL,
         "accessToken" TEXT NOT NULL,
@@ -58,12 +60,13 @@ async function initializeDatabase() {
         "baseUrl" TEXT NOT NULL DEFAULT 'https://developer.revizto.com',
         "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
         "updatedAt" TIMESTAMP(3) NOT NULL,
-        FOREIGN KEY ("userId") REFERENCES "users"("id") ON DELETE CASCADE ON UPDATE CASCADE
+        FOREIGN KEY ("userId") REFERENCES "users"("id") ON DELETE CASCADE ON UPDATE CASCADE,
+        UNIQUE("userId")
       );
     `;
     
     await prisma.$executeRaw`
-      CREATE TABLE IF NOT EXISTS "syncs" (
+      CREATE TABLE "syncs" (
         "id" TEXT NOT NULL PRIMARY KEY,
         "userId" TEXT NOT NULL,
         "name" TEXT NOT NULL,
@@ -86,7 +89,8 @@ async function initializeDatabase() {
         "fieldMappings" JSONB,
         "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
         "updatedAt" TIMESTAMP(3) NOT NULL,
-        FOREIGN KEY ("userId") REFERENCES "users"("id") ON DELETE CASCADE ON UPDATE CASCADE
+        FOREIGN KEY ("userId") REFERENCES "users"("id") ON DELETE CASCADE ON UPDATE CASCADE,
+        UNIQUE("userId")
       );
     `;
     
@@ -420,7 +424,7 @@ async function fixDatabaseConstraints() {
     
     // Recreate tables with correct schema (no clientId/clientSecret columns)
     await prisma.$executeRaw`
-      CREATE TABLE IF NOT EXISTS "acc_credentials" (
+      CREATE TABLE "acc_credentials" (
         "id" TEXT NOT NULL PRIMARY KEY,
         "userId" TEXT NOT NULL,
         "accessToken" TEXT NOT NULL,
@@ -428,12 +432,13 @@ async function fixDatabaseConstraints() {
         "expiresAt" TIMESTAMP(3) NOT NULL,
         "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
         "updatedAt" TIMESTAMP(3) NOT NULL,
-        FOREIGN KEY ("userId") REFERENCES "users"("id") ON DELETE CASCADE ON UPDATE CASCADE
+        FOREIGN KEY ("userId") REFERENCES "users"("id") ON DELETE CASCADE ON UPDATE CASCADE,
+        UNIQUE("userId")
       );
     `;
     
     await prisma.$executeRaw`
-      CREATE TABLE IF NOT EXISTS "procore_credentials" (
+      CREATE TABLE "procore_credentials" (
         "id" TEXT NOT NULL PRIMARY KEY,
         "userId" TEXT NOT NULL,
         "accessToken" TEXT NOT NULL,
@@ -441,12 +446,13 @@ async function fixDatabaseConstraints() {
         "expiresAt" TIMESTAMP(3) NOT NULL,
         "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
         "updatedAt" TIMESTAMP(3) NOT NULL,
-        FOREIGN KEY ("userId") REFERENCES "users"("id") ON DELETE CASCADE ON UPDATE CASCADE
+        FOREIGN KEY ("userId") REFERENCES "users"("id") ON DELETE CASCADE ON UPDATE CASCADE,
+        UNIQUE("userId")
       );
     `;
     
     await prisma.$executeRaw`
-      CREATE TABLE IF NOT EXISTS "revizto_credentials" (
+      CREATE TABLE "revizto_credentials" (
         "id" TEXT NOT NULL PRIMARY KEY,
         "userId" TEXT NOT NULL,
         "accessToken" TEXT NOT NULL,
@@ -454,21 +460,14 @@ async function fixDatabaseConstraints() {
         "expiresAt" TIMESTAMP(3) NOT NULL,
         "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
         "updatedAt" TIMESTAMP(3) NOT NULL,
-        FOREIGN KEY ("userId") REFERENCES "users"("id") ON DELETE CASCADE ON UPDATE CASCADE
+        FOREIGN KEY ("userId") REFERENCES "users"("id") ON DELETE CASCADE ON UPDATE CASCADE,
+        UNIQUE("userId")
       );
     `;
     
     console.log('✅ Recreated credential tables with correct schema');
     
-    // Add unique constraints
-    try {
-      await prisma.$executeRaw`ALTER TABLE "procore_credentials" ADD CONSTRAINT "procore_credentials_userId_key" UNIQUE ("userId")`;
-      await prisma.$executeRaw`ALTER TABLE "acc_credentials" ADD CONSTRAINT "acc_credentials_userId_key" UNIQUE ("userId")`;
-      await prisma.$executeRaw`ALTER TABLE "revizto_credentials" ADD CONSTRAINT "revizto_credentials_userId_key" UNIQUE ("userId")`;
-      console.log('✅ Unique constraints added');
-    } catch (error) {
-      console.log('⚠️ Constraint error:', error.message);
-    }
+    console.log('✅ Tables created with unique constraints');
     
     console.log('🎉 Database schema fixed successfully!');
   } catch (error) {
