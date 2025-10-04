@@ -144,6 +144,15 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
       }
 
       // Store tokens in Railway backend
+      console.log('Sending Revizto tokens to Railway backend...')
+      console.log('API_BASE_URL:', process.env.NEXT_PUBLIC_API_BASE_URL)
+      console.log('Request data:', { 
+        userId: userId,
+        accessToken: tokenData.access_token ? 'present' : 'missing',
+        refreshToken: tokenData.refresh_token ? 'present' : 'missing',
+        expiresIn: tokenData.expires_in
+      })
+      
       const response = await apiFetch('/api/revizto/tokens', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -154,6 +163,8 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
           expiresIn: tokenData.expires_in
         })
       })
+      
+      console.log('Revizto tokens response:', response.status, response.statusText)
       
       if (response.ok) {
         setMessage('Revizto connected successfully!')
