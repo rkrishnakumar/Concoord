@@ -154,14 +154,16 @@ export default function NewSyncPage() {
 
   const checkConnectionStatus = async () => {
     try {
-      const response = await apiFetch('/api/credentials')
+      if (!session?.user?.id) return
+      
+      const response = await apiFetch(`/api/credentials?userId=${session.user.id}`)
       if (response.ok) {
         const data = await response.json()
-        setAccConnected(!!data.accCredentials?.accessToken)
-        setProcoreConnected(!!data.procoreCredentials?.accessToken)
-        setReviztoConnected(!!data.reviztoCredentials?.accessToken)
+        setAccConnected(!!data.acc?.connected)
+        setProcoreConnected(!!data.procore?.connected)
+        setReviztoConnected(!!data.revizto?.connected)
         
-        if (data.procoreCredentials?.accessToken) {
+        if (data.procore?.connected) {
           loadProcoreCompanies()
         }
       }
@@ -613,28 +615,14 @@ export default function NewSyncPage() {
   }
 
   return (
-    <PageLayout
-      title="Create New Sync"
-      description="Set up a new data synchronization workflow between your connected systems."
-    >
+    <PageLayout>
       {message && <Alert type="info" className="mb-6">{message}</Alert>}
 
-      {/* Connection Status Check */}
-      {(!accConnected || !procoreConnected) && (
-        <Alert type="warning" className="mb-6">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="font-medium">Systems not fully connected</p>
-              <p className="text-sm mt-1">
-                You need to connect both source and destination systems before creating a sync.
-              </p>
-            </div>
-            <Button variant="primary" size="lg" href="/settings">
-              Connect Systems
-            </Button>
-          </div>
-        </Alert>
-      )}
+      {/* Header */}
+      <div className="flex items-center justify-between mb-6">
+        <h1 className="text-2xl font-semibold text-gray-800">Create New Sync</h1>
+      </div>
+
 
       <form onSubmit={handleSubmit} className="space-y-8">
         {/* Basic Information */}
