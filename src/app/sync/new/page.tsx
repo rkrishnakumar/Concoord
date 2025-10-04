@@ -385,7 +385,9 @@ export default function NewSyncPage() {
 
   const loadAccProjects = async () => {
     try {
-      const response = await apiFetch('/api/acc/projects')
+      if (!session?.user?.id) return
+      
+      const response = await apiFetch(`/api/acc/projects?userId=${session.user.id}`)
       if (response.ok) {
         const data = await response.json()
         const projects = data.projects || data
@@ -402,7 +404,9 @@ export default function NewSyncPage() {
 
   const loadReviztoProjects = async () => {
     try {
-      const response = await apiFetch('/api/revizto/projects')
+      if (!session?.user?.id) return
+      
+      const response = await apiFetch(`/api/revizto/projects?userId=${session.user.id}`)
       if (response.ok) {
         const data = await response.json()
         console.log('Revizto projects response:', data)
