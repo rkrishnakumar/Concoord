@@ -340,7 +340,6 @@ app.get('/api/oauth/acc-callback', async (req, res) => {
     const expiresAt = new Date(Date.now() + (tokenData.expires_in * 1000));
     
     // Extract user ID from the state parameter
-    const { state } = req.query;
     const userId = state ? state.split('_')[0] : 'default-user';
     console.log('Using user ID for ACC:', userId);
     
@@ -662,7 +661,6 @@ app.get('/api/oauth/procore-callback', async (req, res) => {
     // Store credentials in database
     try {
       // Extract user ID from the state parameter
-      const { state } = req.query;
       const userId = state ? state.split('_')[0] : 'default-user';
       console.log('Using user ID for Procore:', userId);
       
