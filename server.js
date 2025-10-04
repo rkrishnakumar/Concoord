@@ -1065,6 +1065,27 @@ function applyFieldMappings(issues, fieldMappings) {
           console.log(`Extracted value from nested object: ${sourceValue.value}`);
         }
         
+        // Handle date formatting for Procore
+        if (mapping.destinationField === 'due_date' && finalValue) {
+          // Skip invalid dates (like '2000-01-01 00:00:00')
+          if (finalValue === '2000-01-01 00:00:00' || finalValue.includes('2000-01-01')) {
+            console.log(`Skipping invalid due_date: ${finalValue}`);
+            return; // Skip this mapping
+          }
+          
+          // Convert date to yyyy-mm-dd format
+          try {
+            const date = new Date(finalValue);
+            if (!isNaN(date.getTime())) {
+              finalValue = date.toISOString().split('T')[0]; // yyyy-mm-dd format
+              console.log(`Formatted due_date: ${finalValue}`);
+            }
+          } catch (error) {
+            console.log(`Error formatting due_date: ${error.message}`);
+            return; // Skip this mapping
+          }
+        }
+        
         transformedIssue[mapping.destinationField] = finalValue;
       }
     });
