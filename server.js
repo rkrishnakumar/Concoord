@@ -1054,6 +1054,7 @@ app.get('/api/acc/projects', async (req, res) => {
     const accessToken = user.accCredentials.accessToken;
     
     // Step 1: Get Hub ID
+    console.log('Fetching ACC hubs with token:', accessToken.substring(0, 20) + '...');
     const hubsResponse = await axios.get('https://developer.api.autodesk.com/project/v1/hubs', {
       headers: {
         'Authorization': `Bearer ${accessToken}`,
@@ -1061,8 +1062,14 @@ app.get('/api/acc/projects', async (req, res) => {
       }
     });
 
+    console.log('Hubs response status:', hubsResponse.status);
+    console.log('Hubs response data:', JSON.stringify(hubsResponse.data, null, 2));
+
     const hubs = hubsResponse.data.data || [];
+    console.log('Found hubs:', hubs.length, hubs.map(h => ({ id: h.id, name: h.attributes?.name })));
+    
     if (hubs.length === 0) {
+      console.log('No hubs found - returning empty projects');
       return res.json({ success: true, projects: [] });
     }
 
@@ -1070,6 +1077,7 @@ app.get('/api/acc/projects', async (req, res) => {
     const allProjects = [];
     for (const hub of hubs) {
       try {
+        console.log(`Fetching projects for hub ${hub.id} (${hub.attributes?.name})`);
         const projectsResponse = await axios.get(`https://developer.api.autodesk.com/project/v1/hubs/${hub.id}/projects`, {
           headers: {
             'Authorization': `Bearer ${accessToken}`,
@@ -1077,14 +1085,21 @@ app.get('/api/acc/projects', async (req, res) => {
           }
         });
         
+        console.log(`Projects response for hub ${hub.id}:`, projectsResponse.status);
+        console.log(`Projects data for hub ${hub.id}:`, JSON.stringify(projectsResponse.data, null, 2));
+        
         const hubProjects = projectsResponse.data.data || [];
+        console.log(`Found ${hubProjects.length} projects in hub ${hub.id}`);
         allProjects.push(...hubProjects);
       } catch (hubError) {
         console.error(`Error fetching projects for hub ${hub.id}:`, hubError.message);
+        console.error(`Hub error details:`, hubError.response?.data);
         // Continue with other hubs even if one fails
       }
     }
 
+    console.log(`Total projects found: ${allProjects.length}`);
+    console.log('Final projects:', allProjects.map(p => ({ id: p.id, name: p.attributes?.name })));
     res.json({ success: true, projects: allProjects });
   } catch (error) {
     console.error('Error fetching ACC projects:', error);
