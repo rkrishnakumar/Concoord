@@ -58,10 +58,12 @@ export default function HomePage() {
 
   const loadSyncs = async () => {
     try {
-      const response = await apiFetch('/api/syncs')
+      if (!session?.user?.id) return
+      
+      const response = await apiFetch(`/api/syncs?userId=${session.user.id}`)
       if (response.ok) {
-        const syncs = await response.json()
-        setSyncs(syncs)
+        const data = await response.json()
+        setSyncs(data.syncs || [])
       } else {
         console.error('Failed to load syncs')
         setSyncs([])
