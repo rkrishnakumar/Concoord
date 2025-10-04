@@ -237,7 +237,6 @@ export default function HomePage() {
                       size="sm"
                       onClick={() => executeSync(sync.id)}
                       disabled={executingSync === sync.id || !hasRequiredMappings(sync)}
-                      title={!hasRequiredMappings(sync) ? 'Cannot execute: "title" field mapping is required' : ''}
                     >
                       {executingSync === sync.id ? 'Executing...' : 'Execute'}
                     </Button>
