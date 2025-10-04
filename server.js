@@ -12,7 +12,7 @@ async function initializeDatabase() {
   try {
     console.log('Initializing database tables...');
     await prisma.$executeRaw`
-      CREATE TABLE "users" (
+      CREATE TABLE IF NOT EXISTS "users" (
         "id" TEXT NOT NULL PRIMARY KEY,
         "email" TEXT NOT NULL UNIQUE,
         "name" TEXT,
@@ -23,7 +23,7 @@ async function initializeDatabase() {
     `;
     
     await prisma.$executeRaw`
-      CREATE TABLE "acc_credentials" (
+      CREATE TABLE IF NOT EXISTS "acc_credentials" (
         "id" TEXT NOT NULL PRIMARY KEY,
         "userId" TEXT NOT NULL,
         "accessToken" TEXT NOT NULL,
@@ -37,7 +37,7 @@ async function initializeDatabase() {
     `;
     
     await prisma.$executeRaw`
-      CREATE TABLE "procore_credentials" (
+      CREATE TABLE IF NOT EXISTS "procore_credentials" (
         "id" TEXT NOT NULL PRIMARY KEY,
         "userId" TEXT NOT NULL,
         "accessToken" TEXT NOT NULL,
@@ -51,7 +51,7 @@ async function initializeDatabase() {
     `;
     
     await prisma.$executeRaw`
-      CREATE TABLE "revizto_credentials" (
+      CREATE TABLE IF NOT EXISTS "revizto_credentials" (
         "id" TEXT NOT NULL PRIMARY KEY,
         "userId" TEXT NOT NULL,
         "accessToken" TEXT NOT NULL,
@@ -66,7 +66,7 @@ async function initializeDatabase() {
     `;
     
     await prisma.$executeRaw`
-      CREATE TABLE "syncs" (
+      CREATE TABLE IF NOT EXISTS "syncs" (
         "id" TEXT NOT NULL PRIMARY KEY,
         "userId" TEXT NOT NULL,
         "name" TEXT NOT NULL,
@@ -461,7 +461,7 @@ async function fixDatabaseConstraints() {
     
     // Recreate tables with correct schema (no clientId/clientSecret columns)
     await prisma.$executeRaw`
-      CREATE TABLE "acc_credentials" (
+      CREATE TABLE IF NOT EXISTS "acc_credentials" (
         "id" TEXT NOT NULL PRIMARY KEY,
         "userId" TEXT NOT NULL,
         "accessToken" TEXT NOT NULL,
@@ -475,7 +475,7 @@ async function fixDatabaseConstraints() {
     `;
     
     await prisma.$executeRaw`
-      CREATE TABLE "procore_credentials" (
+      CREATE TABLE IF NOT EXISTS "procore_credentials" (
         "id" TEXT NOT NULL PRIMARY KEY,
         "userId" TEXT NOT NULL,
         "accessToken" TEXT NOT NULL,
@@ -489,7 +489,7 @@ async function fixDatabaseConstraints() {
     `;
     
     await prisma.$executeRaw`
-      CREATE TABLE "revizto_credentials" (
+      CREATE TABLE IF NOT EXISTS "revizto_credentials" (
         "id" TEXT NOT NULL PRIMARY KEY,
         "userId" TEXT NOT NULL,
         "accessToken" TEXT NOT NULL,

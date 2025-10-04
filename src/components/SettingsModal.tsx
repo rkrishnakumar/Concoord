@@ -133,12 +133,22 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
       const tokenData = await tokenResponse.json()
       console.log('Revizto tokens received:', tokenData)
 
+      // Get the current user ID from the session
+      const sessionResponse = await fetch('/api/auth/session')
+      const session = await sessionResponse.json()
+      const userId = session?.user?.id
+      
+      if (!userId) {
+        setMessage('No user session found')
+        return
+      }
+
       // Store tokens in Railway backend
       const response = await apiFetch('/api/revizto/tokens', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ 
-          userId: 'default-user', // TODO: Get from session
+          userId: userId,
           accessToken: tokenData.access_token,
           refreshToken: tokenData.refresh_token,
           expiresIn: tokenData.expires_in

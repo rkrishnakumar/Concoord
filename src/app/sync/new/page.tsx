@@ -387,34 +387,7 @@ export default function NewSyncPage() {
     try {
       if (!session?.user?.id) return
       
-      // Get the access token from credentials
-      const credentialsResponse = await apiFetch(`/api/credentials?userId=${session.user.id}`)
-      if (!credentialsResponse.ok) {
-        console.error('Failed to get credentials')
-        setAccProjects([])
-        return
-      }
-      
-      const credentials = await credentialsResponse.json()
-      if (!credentials.acc?.connected) {
-        console.error('ACC not connected')
-        setAccProjects([])
-        return
-      }
-      
-      // Get the access token from the database
-      const userResponse = await apiFetch(`/api/credentials?userId=${session.user.id}`)
-      const userData = await userResponse.json()
-      
-      // We need to get the actual access token from the database
-      // For now, let's use the existing pattern but with Authorization header
-      const response = await fetch('/api/acc/projects', {
-        headers: {
-          'Authorization': `Bearer ${userData.acc?.accessToken || 'dummy-token'}`,
-          'Content-Type': 'application/json'
-        }
-      })
-      
+      const response = await apiFetch(`/api/acc/projects?userId=${session.user.id}`)
       if (response.ok) {
         const data = await response.json()
         const projects = data.projects || data
