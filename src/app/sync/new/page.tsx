@@ -182,9 +182,7 @@ export default function NewSyncPage() {
 
   const getAvailableDataTypes = (system: string) => {
     const dataTypes = [
-      { value: 'issues', label: 'Issues', description: 'Coordination issues and problems' },
-      { value: 'rfis', label: 'RFIs', description: 'Request for Information' },
-      { value: 'submittals', label: 'Submittals', description: 'Document submittals and approvals' }
+      { value: 'issues', label: 'Issues', description: 'Coordination issues and problems' }
     ]
     return dataTypes
   }
@@ -338,11 +336,14 @@ export default function NewSyncPage() {
     console.log(`Fetching fields for ${system} with data types:`, dataTypes)
     setLoadingFields(true)
     try {
-      // For Revizto, pass the selected project ID and user ID
+      // For Revizto and Procore, pass the selected project ID and user ID
       let url = `/api/${system}/fields`
       if (system === 'revizto' && selectedReviztoProject) {
         url += `?userId=${session?.user?.id}&projectId=${selectedReviztoProject}`
         console.log(`Fetching Revizto fields for project: ${selectedReviztoProject}`)
+      } else if (system === 'procore' && selectedProcoreProject) {
+        url += `?userId=${session?.user?.id}&projectId=${selectedProcoreProject}`
+        console.log(`Fetching Procore fields for project: ${selectedProcoreProject}`)
       }
       
       const response = await apiFetch(url)
