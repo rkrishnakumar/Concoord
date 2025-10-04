@@ -36,19 +36,20 @@ export default function HomePage() {
 
   useEffect(() => {
     if (session) {
-      // Temporarily disabled to fix console spam
-      // checkConnectionStatus()
-      // loadSyncs()
+      checkConnectionStatus()
+      loadSyncs()
     }
   }, [session])
 
   const checkConnectionStatus = async () => {
     try {
-      const response = await apiFetch('/api/credentials')
+      if (!session?.user?.id) return
+      
+      const response = await apiFetch(`/api/credentials?userId=${session.user.id}`)
       if (response.ok) {
         const data = await response.json()
-        setAccConnected(!!data.accCredentials?.accessToken)
-        setProcoreConnected(!!data.procoreCredentials?.accessToken)
+        setAccConnected(!!data.acc?.connected)
+        setProcoreConnected(!!data.procore?.connected)
       }
     } catch (error) {
       console.error('Error checking connection:', error)
