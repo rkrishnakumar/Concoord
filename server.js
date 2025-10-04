@@ -1473,12 +1473,22 @@ Return only valid JSON, no other text.
     const response = completion.choices[0].message.content;
     console.log('OpenAI response:', response);
 
-    // Parse the JSON response
+    // Clean and parse the JSON response
     let suggestions;
     try {
-      suggestions = JSON.parse(response);
+      // Remove any markdown code blocks if present
+      let cleanedResponse = response.trim();
+      if (cleanedResponse.startsWith('```json')) {
+        cleanedResponse = cleanedResponse.replace(/^```json\s*/, '').replace(/\s*```$/, '');
+      } else if (cleanedResponse.startsWith('```')) {
+        cleanedResponse = cleanedResponse.replace(/^```\s*/, '').replace(/\s*```$/, '');
+      }
+      
+      console.log('Cleaned response:', cleanedResponse);
+      suggestions = JSON.parse(cleanedResponse);
     } catch (parseError) {
       console.error('Failed to parse OpenAI response:', parseError);
+      console.error('Raw response:', response);
       return res.status(500).json({ error: 'Failed to parse AI response' });
     }
 
