@@ -1115,19 +1115,19 @@ async function postIssuesToProcore(credentials, companyId, projectId, issues) {
   });
 
   for (const issue of issues) {
+    const payload = {
+      ...issue,
+      project_id: projectId
+    };
+    
+    console.log('Creating payload:', {
+      originalIssue: issue,
+      projectId,
+      finalPayload: payload,
+      hasProjectId: !!payload.project_id
+    });
+    
     try {
-      const payload = {
-        ...issue,
-        project_id: projectId
-      };
-      
-      console.log('Creating payload:', {
-        originalIssue: issue,
-        projectId,
-        finalPayload: payload,
-        hasProjectId: !!payload.project_id
-      });
-      
       console.log('Posting to Procore:', {
         url: 'https://api.procore.com/rest/v1.0/coordination_issues',
         payload,
