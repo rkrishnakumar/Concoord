@@ -1114,6 +1114,27 @@ async function postIssuesToProcore(credentials, companyId, projectId, issues) {
     credentialsPresent: !!credentials
   });
 
+  // Test Procore API connectivity first
+  try {
+    console.log('Testing Procore API connectivity...');
+    const testResponse = await axios.get('https://api.procore.com/rest/v1.0/me', {
+      headers: {
+        'Authorization': `Bearer ${credentials.accessToken}`,
+        'Procore-Company-Id': companyId
+      }
+    });
+    console.log('Procore API test successful:', {
+      status: testResponse.status,
+      user: testResponse.data?.name || 'Unknown'
+    });
+  } catch (testError) {
+    console.error('Procore API test failed:', {
+      status: testError.response?.status,
+      data: testError.response?.data,
+      message: testError.message
+    });
+  }
+
   for (const issue of issues) {
     const payload = {
       ...issue,
@@ -1144,6 +1165,12 @@ async function postIssuesToProcore(credentials, companyId, projectId, issues) {
           'Procore-Company-Id': companyId,
           'Content-Type': 'application/json'
         }
+      });
+      
+      console.log('Procore API response:', {
+        status: response.status,
+        statusText: response.statusText,
+        data: response.data
       });
 
       if (response.status === 201) {
