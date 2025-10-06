@@ -514,6 +514,19 @@ export default function NewSyncPage() {
       return
     }
 
+    // Validate required field mappings for Procore
+    if (selectedDestinationSystem === 'procore') {
+      const hasTitleMapping = fieldMappings?.issues?.some((mapping: any) => 
+        mapping.destinationField === 'title'
+      )
+      
+      if (!hasTitleMapping) {
+        setMessage('Title field mapping is required when Procore is the destination system. Please map a source field to the "title" field in Procore.')
+        setLoading(false)
+        return
+      }
+    }
+
     // Get project IDs based on selected systems
     let sourceProjectId = ''
     let sourceProjectName = ''
@@ -888,6 +901,7 @@ export default function NewSyncPage() {
                     mappings={currentMappings}
                     onMappingsChange={(mappings) => handleFieldMappingsChange(dataType, mappings)}
                     loading={loadingFields}
+                    destinationSystem={selectedDestinationSystem}
                   />
                 )
               })}

@@ -24,6 +24,7 @@ interface FieldMappingProps {
   mappings: FieldMapping[]
   onMappingsChange: (mappings: FieldMapping[]) => void
   loading?: boolean
+  destinationSystem?: string
 }
 
 export default function FieldMapping({ 
@@ -32,7 +33,8 @@ export default function FieldMapping({
   destinationFields, 
   mappings, 
   onMappingsChange,
-  loading = false 
+  loading = false,
+  destinationSystem = ''
 }: FieldMappingProps) {
   console.log(`FieldMapping for ${dataType}:`, {
     sourceFields: sourceFields.length,
@@ -82,6 +84,14 @@ export default function FieldMapping({
   const getFieldLabel = (fieldId: string, fields: Field[]) => {
     const field = fields.find(f => f.id === fieldId)
     return field ? `${field.label} (${field.type})` : fieldId
+  }
+
+  // Check if a field is required for the destination system
+  const isFieldRequired = (fieldId: string) => {
+    if (destinationSystem === 'procore' && fieldId === 'title') {
+      return true
+    }
+    return false
   }
 
   // Get compatibility status for current mapping
@@ -239,9 +249,17 @@ export default function FieldMapping({
             <Select
               value={newMapping.destinationField}
               onChange={(value) => setNewMapping(prev => ({ ...prev, destinationField: value }))}
-              options={destinationFields.map(field => ({ value: field.id, label: `${field.label} (${field.type})` }))}
+              options={destinationFields.map(field => ({ 
+                value: field.id, 
+                label: `${field.label} (${field.type})${isFieldRequired(field.id) ? ' *' : ''}` 
+              }))}
               placeholder="Select destination field"
             />
+            {destinationSystem === 'procore' && (
+              <p className="mt-1 text-xs text-orange-600">
+                * Required field for Procore coordination issues
+              </p>
+            )}
           </div>
         </div>
         {/* Type Compatibility Indicator */}
@@ -337,6 +355,9 @@ export default function FieldMapping({
                     <span className="text-gray-400">→</span>
                     <span className="text-sm text-gray-800 font-medium">
                       {getFieldLabel(mapping.destinationField, destinationFields)}
+                      {isFieldRequired(mapping.destinationField) && (
+                        <span className="ml-1 text-orange-500">*</span>
+                      )}
                     </span>
                     {compatibility && (
                       <span className={`text-xs px-2 py-1 rounded ${
