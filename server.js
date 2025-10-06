@@ -1159,10 +1159,10 @@ async function postIssuesToProcore(credentials, companyId, projectId, issues) {
         statusText: error.response?.statusText,
         data: error.response?.data,
         message: error.message,
-        issue: {
-          title: issue.title,
-          project_id: issue.project_id,
-          keys: Object.keys(issue)
+        payload: {
+          title: payload.title,
+          project_id: payload.project_id,
+          keys: Object.keys(payload)
         }
       });
       errors.push({
