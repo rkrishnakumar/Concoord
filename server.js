@@ -1141,23 +1141,11 @@ async function postIssuesToProcore(credentials, companyId, projectId, issues) {
       project_id: projectId
     };
     
-    console.log('Creating payload:', {
-      originalIssue: issue,
-      projectId,
-      finalPayload: payload,
-      hasProjectId: !!payload.project_id
-    });
+    // Reduced logging to avoid rate limits
+    console.log(`Creating payload for: ${issue.title}`);
     
     try {
-      console.log('Posting to Procore:', {
-        url: 'https://api.procore.com/rest/v1.0/coordination_issues',
-        payload,
-        headers: {
-          'Authorization': `Bearer ${credentials.accessToken.substring(0, 20)}...`,
-          'Procore-Company-Id': companyId,
-          'Content-Type': 'application/json'
-        }
-      });
+      console.log(`Posting to Procore: ${issue.title}`);
       
       const response = await axios.post('https://api.procore.com/rest/v1.0/coordination_issues', payload, {
         headers: {
