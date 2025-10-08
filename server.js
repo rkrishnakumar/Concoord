@@ -1136,14 +1136,19 @@ async function postIssuesToProcore(credentials, companyId, projectId, issues) {
   }
 
   for (const issue of issues) {
-    // Only include fields we explicitly mapped + project_id
+    // Only include fields that exist in the issue (were mapped)
     // Don't spread all issue fields as some might conflict with Procore's internal fields
     const payload = {
-      title: issue.title,
-      priority: issue.priority,
-      assignee: issue.assignee,
       project_id: projectId
     };
+    
+    // Add only the fields that were actually mapped and have values
+    const acceptedFields = ['title', 'description', 'status', 'priority', 'assignee', 'due_date', 'location', 'drawing', 'trade'];
+    acceptedFields.forEach(field => {
+      if (issue[field] !== undefined && issue[field] !== null && issue[field] !== '') {
+        payload[field] = issue[field];
+      }
+    });
     
     // Reduced logging to avoid rate limits
     console.log(`Creating payload for: ${issue.title}`, payload);
@@ -1595,12 +1600,31 @@ app.get('/api/procore/fields', async (req, res) => {
 
     // Extract fields from issues
     const issues = response.data || [];
-    const fields = issues.length > 0 ? Object.keys(issues[0]).map(key => ({
-      id: key,
-      label: key.charAt(0).toUpperCase() + key.slice(1),
-      type: typeof issues[0][key]
-    })) : [];
+    
+    // Whitelist of fields that Procore accepts when creating coordination issues
+    // Read-only fields like 'id', 'uuid', 'created_at', etc. are excluded
+    const acceptedFields = [
+      'title',
+      'description', 
+      'status',
+      'priority',
+      'assignee',
+      'due_date',
+      'location',
+      'drawing',
+      'trade'
+    ];
+    
+    const allFields = issues.length > 0 ? Object.keys(issues[0]) : [];
+    const fields = allFields
+      .filter(key => acceptedFields.includes(key))
+      .map(key => ({
+        id: key,
+        label: key.charAt(0).toUpperCase() + key.slice(1).replace(/_/g, ' '),
+        type: typeof issues[0][key]
+      }));
 
+    console.log(`Filtered Procore fields: ${fields.length} writable out of ${allFields.length} total`);
     res.json({ success: true, fields: { issues: fields } });
   } catch (error) {
     console.error('Error fetching Procore fields:', error);
