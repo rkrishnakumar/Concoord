@@ -1136,13 +1136,17 @@ async function postIssuesToProcore(credentials, companyId, projectId, issues) {
   }
 
   for (const issue of issues) {
+    // Only include fields we explicitly mapped + project_id
+    // Don't spread all issue fields as some might conflict with Procore's internal fields
     const payload = {
-      ...issue,
+      title: issue.title,
+      priority: issue.priority,
+      assignee: issue.assignee,
       project_id: projectId
     };
     
     // Reduced logging to avoid rate limits
-    console.log(`Creating payload for: ${issue.title}`);
+    console.log(`Creating payload for: ${issue.title}`, payload);
     
     try {
       console.log(`Posting to Procore: ${issue.title}`);
