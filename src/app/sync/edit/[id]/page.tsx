@@ -35,11 +35,16 @@ interface ReviztoProject {
   description?: string
 }
 
-export default function EditSyncPage({ params }: { params: { id: string } }) {
+export default function EditSyncPage({ params }: { params: Promise<{ id: string }> }) {
   const { data: session } = useSession()
   const [loading, setLoading] = useState(true)
   const [message, setMessage] = useState('')
-  const [syncId] = useState(params.id)
+  const [syncId, setSyncId] = useState<string>('')
+  
+  // Unwrap params Promise
+  useEffect(() => {
+    params.then(p => setSyncId(p.id))
+  }, [params])
   
   // Form data
   const [syncName, setSyncName] = useState('')
@@ -82,11 +87,11 @@ export default function EditSyncPage({ params }: { params: { id: string } }) {
   const [reviztoConnected, setReviztoConnected] = useState(false)
 
   useEffect(() => {
-    if (session) {
+    if (session && syncId) {
       checkConnectionStatus()
       loadSyncData()
     }
-  }, [session])
+  }, [session, syncId])
 
   const loadSyncData = async () => {
     try {
