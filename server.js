@@ -1028,6 +1028,70 @@ app.delete('/api/syncs/:id', async (req, res) => {
   }
 });
 
+// Update sync
+app.put('/api/syncs/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { 
+      userId, 
+      name, 
+      description, 
+      sourceSystem, 
+      sourceProjectId, 
+      sourceProjectName,
+      sourceDataTypes,
+      destinationSystem,
+      destinationProjectId,
+      destinationProjectName,
+      destinationCompanyId,
+      destinationDataTypes,
+      fieldMappings
+    } = req.body;
+
+    if (!userId) {
+      return res.status(400).json({ error: 'User ID is required' });
+    }
+
+    // Check if sync exists and belongs to user
+    const existingSync = await prisma.sync.findFirst({
+      where: { 
+        id,
+        userId 
+      }
+    });
+
+    if (!existingSync) {
+      return res.status(404).json({ error: 'Sync not found' });
+    }
+
+    // Update the sync
+    const sync = await prisma.sync.update({
+      where: { id },
+      data: {
+        name,
+        description,
+        sourceSystem,
+        sourceProjectId,
+        sourceProjectName,
+        sourceDataTypes,
+        destinationSystem,
+        destinationProjectId,
+        destinationProjectName,
+        destinationCompanyId,
+        destinationDataTypes,
+        fieldMappings,
+        updatedAt: new Date()
+      }
+    });
+
+    console.log(`Updated sync ${id} for user ${userId}`);
+    res.json({ success: true, sync });
+  } catch (error) {
+    console.error('Error updating sync:', error);
+    res.status(500).json({ error: 'Failed to update sync' });
+  }
+});
+
 // Execute sync
 // Helper function to fetch issues from Revizto
 async function fetchReviztoIssues(credentials, projectId) {

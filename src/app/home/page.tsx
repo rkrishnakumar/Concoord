@@ -283,14 +283,15 @@ export default function HomePage() {
                     <Button 
                       variant="secondary" 
                       size="sm"
-                      onClick={() => {
-                        console.log('Sync details:', sync)
-                        alert(`Sync: ${sync.name}\nDescription: ${sync.description || 'No description'}\nSource: ${sync.sourceSystem} (${sync.sourceProjectName})\nDestination: ${sync.destinationSystem} (${sync.destinationProjectName})\nStatus: ${sync.status}`)
-                      }}
+                      onClick={() => window.location.href = `/sync/edit/${sync.id}`}
                     >
                       View
                     </Button>
-                    <Button variant="secondary" size="sm">
+                    <Button 
+                      variant="secondary" 
+                      size="sm"
+                      onClick={() => window.location.href = `/sync/edit/${sync.id}`}
+                    >
                       Edit
                     </Button>
                     <Button 
