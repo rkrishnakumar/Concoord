@@ -148,6 +148,46 @@ export default function HomePage() {
     }
   }
 
+  const deleteSync = async (syncId: string, syncName: string) => {
+    // Show confirmation dialog
+    const confirmed = window.confirm(
+      `Are you sure you want to delete "${syncName}"?\n\nThis action cannot be undone.`
+    )
+    
+    if (!confirmed) {
+      return
+    }
+
+    setLoading(true)
+    setMessage('')
+    
+    try {
+      const response = await apiFetch(`/api/syncs/${syncId}`, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          userId: session?.user?.id
+        })
+      })
+      
+      if (response.ok) {
+        setMessage(`✅ Sync "${syncName}" deleted successfully!`)
+        // Reload syncs to show updated list
+        loadSyncs()
+      } else {
+        const error = await response.json()
+        setMessage(`❌ Failed to delete sync: ${error.error}`)
+      }
+    } catch (error) {
+      console.error('Error deleting sync:', error)
+      setMessage(`❌ Failed to delete sync: ${(error as any)?.message}`)
+    } finally {
+      setLoading(false)
+    }
+  }
+
   if (!session) {
     return (
       <div className="min-h-screen bg-[#f0eee6] flex items-center justify-center">
@@ -253,7 +293,12 @@ export default function HomePage() {
                     <Button variant="secondary" size="sm">
                       Edit
                     </Button>
-                    <Button variant="danger" size="sm">
+                    <Button 
+                      variant="danger" 
+                      size="sm"
+                      onClick={() => deleteSync(sync.id, sync.name)}
+                      disabled={loading || executingSync === sync.id}
+                    >
                       Delete
                     </Button>
                   </div>

@@ -993,6 +993,41 @@ app.get('/api/syncs/:id', async (req, res) => {
   }
 });
 
+// Delete sync
+app.delete('/api/syncs/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { userId } = req.body;
+
+    if (!userId) {
+      return res.status(400).json({ error: 'User ID is required' });
+    }
+
+    // Check if sync exists and belongs to user
+    const sync = await prisma.sync.findFirst({
+      where: { 
+        id,
+        userId 
+      }
+    });
+
+    if (!sync) {
+      return res.status(404).json({ error: 'Sync not found' });
+    }
+
+    // Delete the sync
+    await prisma.sync.delete({
+      where: { id }
+    });
+
+    console.log(`Deleted sync ${id} for user ${userId}`);
+    res.json({ success: true, message: 'Sync deleted successfully' });
+  } catch (error) {
+    console.error('Error deleting sync:', error);
+    res.status(500).json({ error: 'Failed to delete sync' });
+  }
+});
+
 // Execute sync
 // Helper function to fetch issues from Revizto
 async function fetchReviztoIssues(credentials, projectId) {
